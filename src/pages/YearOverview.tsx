@@ -177,41 +177,46 @@ const YearOverview = () => {
           text: `${year} 年度轉型正義立法論述檔案`, 
           heading: HeadingLevel.HEADING_1, 
           alignment: AlignmentType.CENTER 
-        }),
-        new Paragraph({ text: `會議類型：${session?.meeting_type || "N/A"}`, alignment: AlignmentType.CENTER }),
-        new Paragraph({ text: "" }),
-        new Paragraph({ text: "發言人論述清單", heading: HeadingLevel.HEADING_2 }),
+        } as any),
+        new Paragraph({ text: `會議類型：${session?.meeting_type || "N/A"}`, alignment: AlignmentType.CENTER } as any),
+        new Paragraph({ text: "" } as any),
+        new Paragraph({ text: "發言人論述清單", heading: HeadingLevel.HEADING_2 } as any),
       ];
 
       for (const s of filteredData) {
-        children.push(new Paragraph({ text: "" }));
+        children.push(new Paragraph({ text: "" } as any));
         children.push(new Paragraph({ 
           children: [
-            new TextRun({ text: `【${s.speaker}】`, bold: true, size: 28 }),
-            new TextRun({ text: ` — ${s.identity}`, italic: true })
+            new TextRun({ text: `【${s.speaker}】`, bold: true, size: 28 } as any),
+            new TextRun({ text: ` — ${s.identity}`, italics: true } as any)
           ] 
-        }));
-        children.push(new Paragraph({ text: `日期：${s.date} | 法案：${s.lawName} | 階段：${s.stage}` }));
+        } as any));
+        children.push(new Paragraph({ text: `日期：${s.date} | 法案：${s.lawName} | 階段：${s.stage}` } as any));
         children.push(new Paragraph({ 
           children: [
-            new TextRun({ text: "政治取向：", bold: true }),
-            new TextRun({ text: s.political_orientation })
+            new TextRun({ text: "政治取向：", bold: true } as any),
+            new TextRun({ text: s.political_orientation } as any)
           ] 
-        }));
+        } as any));
         children.push(new Paragraph({ 
           children: [
-            new TextRun({ text: "論述邏輯：", bold: true }),
-            new TextRun({ text: `「${s.discourse_logic}」`, italic: true })
+            new TextRun({ text: "論述邏輯：", bold: true } as any),
+            new TextRun({ text: `「${s.discourse_logic}」`, italics: true } as any)
           ] 
-        }));
-        children.push(new Paragraph({ text: "具體立場：", bold: true }));
+        } as any));
+        
+        children.push(new Paragraph({ 
+          children: [new TextRun({ text: "具體立場：", bold: true } as any)] 
+        } as any));
         
         s.stances.forEach(st => {
-          children.push(new Paragraph({ text: `• ${st.topic}: ${st.position}`, bullet: { level: 0 } }));
+          children.push(new Paragraph({ text: `• ${st.topic}: ${st.position}`, bullet: { level: 0 } } as any));
         });
 
         if (s.imagePaths && s.imagePaths.length > 0) {
-          children.push(new Paragraph({ text: "原始檔案截圖：", bold: true }));
+          children.push(new Paragraph({ 
+            children: [new TextRun({ text: "原始檔案截圖：", bold: true } as any)] 
+          } as any));
           for (const imgPath of s.imagePaths) {
             const fullUrl = DataManager.getImageUrl(imgPath);
             const imgData = await fetchImageAsUint8Array(fullUrl);
@@ -221,17 +226,19 @@ const YearOverview = () => {
                   new ImageRun({
                     data: imgData,
                     transformation: { width: 500, height: 700 },
-                  }),
+                  } as any),
                 ],
-              }));
-              children.push(new Paragraph({ text: "" }));
+              } as any));
+              children.push(new Paragraph({ text: "" } as any));
             }
           }
         }
-        children.push(new Paragraph({ text: "--------------------------------------------------", color: "CCCCCC" }));
+        children.push(new Paragraph({ 
+          children: [new TextRun({ text: "--------------------------------------------------", color: "CCCCCC" } as any)] 
+        } as any));
       }
 
-      const doc = new Document({ sections: [{ properties: {}, children: children }] });
+      const doc = new Document({ sections: [{ properties: {}, children: children }] } as any);
       const blob = await Packer.toBlob(doc);
       saveAs(blob, `${year}_轉型正義立法論述檔案.docx`);
     } catch (err) {
@@ -242,11 +249,9 @@ const YearOverview = () => {
 
   const getStanceColor = (stance: string) => {
     const s = stance.trim();
-    if (s.includes('支持') || s.includes('積極') || s.includes('改革')) return 'bg-emerald-600 text-white border-emerald-700';
-    if (s.includes('反對') || s.includes('保留') || s.includes('批判')) return 'bg-rose-700 text-white border-rose-800';
-    if (s.includes('中立') || s.includes('程序') || s.includes('法制')) return 'bg-slate-700 text-white border-slate-800';
-    if (s.includes('保守') || s.includes('穩定')) return 'bg-[#8C2F39] text-white border-[#6D232B]';
-    return 'bg-amber-600 text-white border-amber-700';
+    if (s.includes('支持') || s.includes('積極')) return 'bg-emerald-600 text-white border-emerald-700';
+    if (s.includes('反對') || s.includes('保留')) return 'bg-rose-700 text-white border-rose-800';
+    return 'bg-slate-700 text-white border-slate-800';
   };
 
   if (loading) return (
@@ -352,7 +357,6 @@ const YearOverview = () => {
       </footer>
     </div>
   );
-
 };
 
 export default YearOverview;
