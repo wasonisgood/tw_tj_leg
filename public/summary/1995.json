@@ -1,0 +1,47 @@
+{
+  "metadata": {
+    "year": "1995",
+    "focus": "二二八事件處理及補償條例之定案與三讀",
+    "data_density": "Extreme_High"
+  },
+  "visual_engine_config": {
+    "render_hints": [
+      { "component": "LegislativeHeatmap", "source": "clash_points", "props": { "focus": "State_Responsibility" } },
+      { "component": "ComparisonTable", "source": "table_data", "props": { "variant": "detailed" } }
+    ]
+  },
+  "clash_points": [
+    {
+      "id": "1995-C1",
+      "topic": "名份之戰：賠償 (Reparation) vs. 補償 (Compensation)",
+      "severity": 1.0,
+      "actors": {
+        "government": {
+          "label": "行政院",
+          "stance": "補償",
+          "logic": "法律上『補償』代表行為合法但造成損失（如徵收），旨在規避政府對二二八的『違法性責任』。",
+          "keyword_focus": "社會福利、行政慰問、財政限度"
+        },
+        "opposition": {
+          "label": "民進黨委員 (如陳婉真、盧修一)",
+          "stance": "賠償",
+          "logic": "這是一場國家犯罪，必須使用『賠償』字眼，否則政府只是在發放救濟金，而非認錯。",
+          "keyword_focus": "國家暴力、認錯、尊嚴"
+        }
+      },
+      "micro_nuance": "原始紀錄中，委員抨擊行政院版是將農保、公保的『保險理賠』思維套用在歷史創傷上，極度缺乏人文厚度。"
+    }
+  ],
+  "historical_micro_analysis": {
+    "hidden_truths": [
+      {
+        "point": "六百萬上限的由來",
+        "description": "資料顯示政府曾精算過，若按正常損害賠償計算，國庫將無法負擔。六百萬是政治妥協下的產物，而非正義計算的結果。"
+      }
+    ]
+  },
+  "intelligence_layer": {
+    "summary_for_ai_voice": "1995 年是二二八正式法制化的轉捩點。雖然最終因財政壓力採用『補償』字眼，但在精神層面已確立了國家必須面對二二八的義務。",
+    "frontend_action_required": "應設計一個『名詞天平』，顯示『賠償』與『補償』在法理深度上的落差。"
+  }
+}
