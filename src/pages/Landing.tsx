@@ -1,7 +1,10 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FileDown, ArrowRight, BarChart3, Database, Globe } from 'lucide-react';
+import { FileDown, ArrowRight, Database, X, FileText, Link2, Loader2 } from 'lucide-react';
+import { Document, Packer, Paragraph, TextRun, HeadingLevel, AlignmentType, ExternalHyperlink } from 'docx';
+import { saveAs } from 'file-saver';
+import { DataManager, ProcessedSpeech } from '../DataManager';
 
 const PHASES = [
   {
@@ -37,37 +40,305 @@ const getBasePath = (): string => {
 const Landing = () => {
   const [hoveredYear, setHoveredYear] = useState<string | null>(null);
   const [yearStats, setYearStats] = useState<Record<string, { count: number, summary: string }>>({});
+  const [showExportModal, setShowExportModal] = useState(false);
+  const [exportStatus, setExportStatus] = useState<'idle' | 'loading' | 'complete'>('idle');
+  const [exportProgress, setExportProgress] = useState(0);
 
   useEffect(() => {
-    // 批量讀取所有年份數據以生成首頁統計
     const allYears = PHASES.flatMap(p => p.years);
     const basePath = getBasePath();
     allYears.forEach(year => {
       fetch(`${basePath}${year}.json`)
-        .then(res => res.json())
+        .then(res => {
+          if (!res.ok) throw new Error('Not found');
+          return res.json();
+        })
         .then(data => {
           const count = data.speakers_analysis ? Object.keys(data.speakers_analysis).length : 0;
           fetch(`${basePath}summary/${year}.json`)
-            .then(res => res.json())
+            .then(res => res.ok ? res.json() : null)
             .then(sData => {
-              setYearStats(prev => ({
-                ...prev,
-                [year]: {
-                  count,
-                  summary: sData?.intelligence_layer?.summary_for_ai_voice || ""
-                }
-              }));
-            });
-        }).catch(() => {});
+              if (sData) {
+                setYearStats(prev => ({
+                  ...prev,
+                  [year]: {
+                    count,
+                    summary: sData?.intelligence_layer?.summary_for_ai_voice || ""
+                  }
+                }));
+              }
+            }).catch(() => {});
+        })
+        .catch(() => {
+          fetch(`${basePath}summary/${year}.json`)
+            .then(res => res.ok ? res.json() : null)
+            .then(sData => {
+              if (sData) {
+                setYearStats(prev => ({
+                  ...prev,
+                  [year]: {
+                    count: 0,
+                    summary: sData?.intelligence_layer?.summary_for_ai_voice || ""
+                  }
+                }));
+              }
+            }).catch(() => {});
+        });
     });
   }, []);
 
+  const handleExport = async (mode: 'report' | 'index') => {
+    if (exportStatus === 'loading') return;
+    setExportStatus('loading');
+    setExportProgress(0);
+    const allYears = PHASES.flatMap(p => p.years);
+    const children: any[] = [];
+
+    try {
+      // 主標題
+      children.push(new Paragraph({ 
+        text: mode === 'report' ? "轉型正義立法論述：全年度彙整報告 (1987-2024)" : "轉型正義議事檔案：全年度連結索引 (1987-2024)", 
+        heading: HeadingLevel.HEADING_1, 
+        alignment: AlignmentType.CENTER,
+        spacing: { before: 400, after: 200 }
+      } as any));
+      children.push(new Paragraph({ 
+        children: [new TextRun({ text: "DIGITAL ARCHIVE FULL REPORT / 數位論述考古總彙整", bold: true, color: "8C2F39", size: 20 } as any)],
+        alignment: AlignmentType.CENTER,
+        spacing: { after: 600 }
+      } as any));
+
+      for (let i = 0; i < allYears.length; i++) {
+        const year = allYears[i];
+        setExportProgress(Math.round(((i + 1) / allYears.length) * 100));
+        
+        try {
+          const res = await DataManager.getProcessedYearData(year);
+          const summary = yearStats[year]?.summary || "";
+
+          // 年度大標題
+          children.push(new Paragraph({ 
+            text: `【YEAR ${year}】`, 
+            heading: HeadingLevel.HEADING_2,
+            spacing: { before: 800, after: 400 },
+            border: { bottom: { color: "8C2F39", style: "single", size: 12 } } as any
+          } as any));
+
+          if (summary) {
+            children.push(new Paragraph({ 
+              children: [new TextRun({ text: "年度背景：", bold: true, color: "8C2F39" } as any), new TextRun({ text: ` 「${summary}」`, italics: true, color: "666666" } as any)],
+              spacing: { after: 400 }
+            } as any));
+          }
+
+          if (mode === 'report') {
+            // --- 模式一：超詳細完整報告 (與各年份版本一致) ---
+            for (const s of res.speeches) {
+              // 1. 姓名與身分
+              children.push(new Paragraph({ 
+                children: [
+                  new TextRun({ text: `【${s.speaker}】`, bold: true, size: 28, color: "8C2F39" } as any),
+                  new TextRun({ text: `  ${s.identity}`, italics: true, size: 20, color: "555555" } as any)
+                ],
+                spacing: { before: 300, after: 150 }
+              } as any));
+
+              // 2. 元數據
+              children.push(new Paragraph({ 
+                children: [
+                  new TextRun({ text: "日期：", bold: true } as any), new TextRun({ text: `${s.date}  |  ` } as any),
+                  new TextRun({ text: "法案：", bold: true } as any), new TextRun({ text: `${s.lawName}  |  ` } as any),
+                  new TextRun({ text: "階段：", bold: true } as any), new TextRun({ text: s.stage } as any),
+                ],
+                spacing: { after: 100 }
+              } as any));
+
+              // 3. 論述與取向
+              children.push(new Paragraph({ 
+                children: [
+                  new TextRun({ text: "政治取向：", bold: true } as any),
+                  new TextRun({ text: s.political_orientation, color: "2E7D32" } as any)
+                ],
+                spacing: { after: 50 }
+              } as any));
+              children.push(new Paragraph({ 
+                children: [
+                  new TextRun({ text: "核心論述：", bold: true } as any),
+                  new TextRun({ text: `「${s.discourse_logic}」`, italics: true, bold: true, size: 24 } as any)
+                ],
+                spacing: { after: 150 }
+              } as any));
+
+              // 4. 具體立場細節
+              if (s.stances && s.stances.length > 0) {
+                s.stances.forEach(st => {
+                  children.push(new Paragraph({ 
+                    text: `· ${st.topic}: ${st.position}`,
+                    indent: { left: 360 },
+                    spacing: { after: 40 }
+                  } as any));
+                });
+              }
+
+              // 5. 檔案連結工具列
+              const linkElements: any[] = [new TextRun({ text: "檔案檢索：", bold: true, size: 18 } as any)];
+              if (s.metadata?.file_stem) {
+                const pdfLink = DataManager.getPDFLink(s.metadata.file_stem);
+                if (pdfLink) {
+                  linkElements.push(new ExternalHyperlink({
+                    children: [new TextRun({ text: "[原始PDF預覽]", color: "0000FF", underline: {} } as any)],
+                    link: pdfLink.previewLink
+                  } as any));
+                  linkElements.push(new TextRun({ text: "  " } as any));
+                }
+              }
+              if (s.imagePaths && s.imagePaths.length > 0) {
+                s.imagePaths.forEach((imgPath, idx) => {
+                  const fullUrl = DataManager.getImageUrl(imgPath);
+                  if (fullUrl) {
+                    linkElements.push(new ExternalHyperlink({
+                      children: [new TextRun({ text: `[截圖 ${idx + 1}]`, color: "0000FF", underline: {} } as any)],
+                      link: fullUrl
+                    } as any));
+                    linkElements.push(new TextRun({ text: " " } as any));
+                  }
+                });
+              }
+              children.push(new Paragraph({ children: linkElements, spacing: { before: 150, after: 300 } } as any));
+              
+              // 區隔細線
+              children.push(new Paragraph({ 
+                border: { bottom: { color: "EEEEEE", style: "single", size: 4 } } as any,
+                spacing: { after: 200 }
+              } as any));
+            }
+          } else {
+            // --- 模式二：檔案索引 (保持簡潔) ---
+            const uniqueFileStems = Array.from(new Set(res.speeches.map(s => s.metadata?.file_stem).filter(Boolean)));
+            for (const stem of uniqueFileStems) {
+              const pdfLink = DataManager.getPDFLink(stem!);
+              if (pdfLink) {
+                children.push(new Paragraph({ 
+                  children: [
+                    new TextRun({ text: `· ${stem} : `, size: 20 } as any),
+                    new ExternalHyperlink({
+                      children: [new TextRun({ text: "[原始PDF預覽連結]", color: "0000FF", underline: {} } as any)],
+                      link: pdfLink.previewLink
+                    } as any)
+                  ],
+                  indent: { left: 360 },
+                  spacing: { before: 100 }
+                } as any));
+              }
+            }
+          }
+        } catch (yearErr) {
+          console.warn(`Skip year ${year} due to error`, yearErr);
+        }
+      }
+
+      const doc = new Document({ sections: [{ properties: {}, children: children }] } as any);
+      const blob = await Packer.toBlob(doc);
+      saveAs(blob, `TRUTH_MAPPING_1987_2024_${mode === 'report' ? '論述總報告' : '檔案索引'}.docx`);
+      setExportStatus('complete');
+      setTimeout(() => {
+        setShowExportModal(false);
+        setExportStatus('idle');
+      }, 1500);
+    } catch (err) {
+      console.error(err);
+      alert("匯出失敗，請檢查網路連線。");
+      setExportStatus('idle');
+    }
+  };
+
   return (
     <div className="min-h-screen bg-[#F9F9F7] text-[#1A1A1A] py-20 px-6 md:px-16 relative overflow-x-hidden">
-      {/* 原始網格背景 */}
+      {/* 匯出選擇彈窗 */}
+      <AnimatePresence>
+        {showExportModal && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-6">
+            <motion.div 
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+              onClick={() => exportStatus !== 'loading' && setShowExportModal(false)}
+              className="absolute inset-0 bg-black/80 backdrop-blur-sm"
+            />
+            <motion.div 
+              initial={{ scale: 0.9, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.9, opacity: 0, y: 20 }}
+              className="relative bg-white w-full max-w-2xl border-[10px] border-black p-8 md:p-12 shadow-2xl"
+            >
+              {!exportStatus.includes('loading') && (
+                <button 
+                  onClick={() => setShowExportModal(false)}
+                  className="absolute top-4 right-4 hover:rotate-90 transition-transform p-2"
+                >
+                  <X className="w-8 h-8" />
+                </button>
+              )}
+
+              <div className="mb-12">
+                <h2 className="text-[10px] font-black uppercase tracking-[0.5em] text-[#8C2F39] mb-4">Export Full Archive</h2>
+                <h3 className="text-4xl md:text-5xl font-black serif uppercase leading-none">選擇匯出模式</h3>
+                <p className="text-sm font-bold text-gray-400 mt-4 uppercase tracking-widest italic">Select your digital archive structure</p>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <button 
+                  disabled={exportStatus === 'loading'}
+                  onClick={() => handleExport('report')}
+                  className="group relative border-4 border-black p-8 text-left hover:bg-black hover:text-white transition-all overflow-hidden disabled:opacity-50"
+                >
+                  <FileText className="w-10 h-10 mb-6 group-hover:text-[#8C2F39] transition-colors" />
+                  <h4 className="text-xl font-black serif mb-2">年度完整論述報告</h4>
+                  <p className="text-[10px] font-bold uppercase opacity-60 leading-relaxed">包含所有年度發言人、身分、政治取向與核心論述邏輯彙整。</p>
+                  {exportStatus === 'loading' && <div className="absolute bottom-0 left-0 h-1 bg-[#8C2F39] transition-all duration-300" style={{ width: `${exportProgress}%` }} />}
+                </button>
+
+                <button 
+                  disabled={exportStatus === 'loading'}
+                  onClick={() => handleExport('index')}
+                  className="group relative border-4 border-black p-8 text-left hover:bg-black hover:text-white transition-all overflow-hidden disabled:opacity-50"
+                >
+                  <Link2 className="w-10 h-10 mb-6 group-hover:text-[#8C2F39] transition-colors" />
+                  <h4 className="text-xl font-black serif mb-2">檔案索引與連結</h4>
+                  <p className="text-[10px] font-bold uppercase opacity-60 leading-relaxed">整理 1987-2024 所有原始 PDF 預覽連結與會議摘要清單。</p>
+                  {exportStatus === 'loading' && <div className="absolute bottom-0 left-0 h-1 bg-[#8C2F39] transition-all duration-300" style={{ width: `${exportProgress}%` }} />}
+                </button>
+              </div>
+
+              {exportStatus === 'loading' && (
+                <div className="mt-12 p-6 bg-gray-50 border-2 border-black flex flex-col items-center space-y-4">
+                  <div className="flex items-center space-x-4">
+                    <Loader2 className="w-6 h-6 animate-spin text-[#8C2F39]" />
+                    <span className="text-xs font-black uppercase tracking-[0.3em]">Archiving History... {exportProgress}%</span>
+                  </div>
+                  <div className="w-full bg-gray-200 h-1 mt-2">
+                    <motion.div 
+                      className="bg-[#8C2F39] h-full" 
+                      initial={{ width: 0 }}
+                      animate={{ width: `${exportProgress}%` }}
+                    />
+                  </div>
+                </div>
+              )}
+
+              {exportStatus === 'complete' && (
+                <motion.div 
+                  initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+                  className="mt-12 p-6 bg-green-50 border-2 border-green-600 text-green-700 text-center font-black uppercase tracking-widest text-xs"
+                >
+                  Archive Generated Successfully
+                </motion.div>
+              )}
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
       <div className="absolute inset-0 magazine-grid opacity-30 pointer-events-none"></div>
 
-      {/* 懸停巨型背景年份 */}
       <AnimatePresence>
         {hoveredYear && (
           <motion.div 
@@ -82,7 +353,6 @@ const Landing = () => {
       </AnimatePresence>
 
       <div className="max-w-7xl mx-auto relative z-10">
-        {/* Header - 恢復大氣佈局 */}
         <header className="mb-32 border-b-[6px] border-black pb-16">
           <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-12">
             <div className="space-y-6">
@@ -110,14 +380,17 @@ const Landing = () => {
               <p className="text-sm font-bold leading-relaxed text-gray-500 uppercase tracking-widest italic">
                 「透過數位工具，將散落的議事錄轉化為可視化的歷史論述地圖。」
               </p>
-              <button className="w-full py-4 bg-black text-white text-[10px] font-black uppercase tracking-[0.4em] hover:bg-[#8C2F39] transition-all shadow-2xl">
-                Export Full Word Archive
+              <button 
+                onClick={() => setShowExportModal(true)}
+                className="w-full py-4 bg-black text-white text-[10px] font-black uppercase tracking-[0.4em] hover:bg-[#8C2F39] transition-all shadow-2xl flex items-center justify-center space-x-4"
+              >
+                <FileDown className="w-4 h-4" />
+                <span>Export Full Word Archive</span>
               </button>
             </div>
           </div>
         </header>
 
-        {/* 分期導覽網格 */}
         <div className="space-y-32">
           {PHASES.map((phase, pIdx) => (
             <section key={pIdx} className="space-y-12">
@@ -138,7 +411,6 @@ const Landing = () => {
                     onMouseLeave={() => setHoveredYear(null)}
                     className="group relative bg-white aspect-square flex flex-col items-center justify-center hover:bg-black transition-all duration-500 overflow-hidden"
                   >
-                    {/* 背景數據 - 保持常駐可見 */}
                     <div className="absolute top-4 left-4 flex flex-col">
                       <span className="text-[10px] font-black serif group-hover:text-gray-600 transition-colors">#{year.slice(2)}</span>
                       <span className="text-[8px] font-black uppercase text-gray-300 mt-1">{yearStats[year]?.count || '--'} Records</span>
@@ -148,7 +420,6 @@ const Landing = () => {
                       {year}
                     </span>
 
-                    {/* 懸停覆蓋層 - 精緻摘要 */}
                     <AnimatePresence>
                       {hoveredYear === year && yearStats[year]?.summary && (
                         <motion.div 
@@ -169,7 +440,6 @@ const Landing = () => {
                       )}
                     </AnimatePresence>
                     
-                    {/* 底部裝飾線 */}
                     <div className="absolute bottom-4 flex space-x-1 opacity-20 group-hover:opacity-100 transition-all">
                        <div className="w-1 h-1 bg-gray-400 group-hover:bg-[#8C2F39] rounded-full"></div>
                        <div className="w-1 h-1 bg-gray-400 group-hover:bg-white rounded-full"></div>

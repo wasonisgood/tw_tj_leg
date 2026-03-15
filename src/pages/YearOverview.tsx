@@ -5,7 +5,7 @@ import { DataManager, ProcessedSpeech, SessionInfo } from '../DataManager';
 import { User, Filter, Search, BookOpen, Clock, Tag, ArrowLeft, ArrowRight, FileDown, Quote } from 'lucide-react';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
-import { Document, Packer, Paragraph, TextRun, HeadingLevel, AlignmentType, ImageRun } from 'docx';
+import { Document, Packer, Paragraph, TextRun, HeadingLevel, AlignmentType, ImageRun, ExternalHyperlink } from 'docx';
 import { saveAs } from 'file-saver';
 
 // Year Guides
@@ -189,91 +189,112 @@ const YearOverview = () => {
   const exportToWord = async () => {
     if (isExporting) return;
     setIsExporting(true);
-    console.log("[Export] Starting exportToWord...");
     try {
       const children: any[] = [
         new Paragraph({ 
           text: `${year} 年度轉型正義立法論述檔案`, 
           heading: HeadingLevel.HEADING_1, 
-          alignment: AlignmentType.CENTER 
+          alignment: AlignmentType.CENTER,
+          spacing: { before: 400, after: 200 }
         } as any),
-        new Paragraph({ text: `會議類型：${session?.meeting_type || "N/A"}`, alignment: AlignmentType.CENTER } as any),
-        new Paragraph({ text: "" } as any),
-        new Paragraph({ text: "發言人論述清單", heading: HeadingLevel.HEADING_2 } as any),
+        new Paragraph({ 
+          children: [
+            new TextRun({ text: "DIGITAL ARCHIVE REPORT", bold: true, color: "8C2F39", size: 18 } as any)
+          ],
+          alignment: AlignmentType.CENTER,
+          spacing: { after: 600 }
+        } as any),
       ];
 
       for (const s of filteredData) {
-        children.push(new Paragraph({ text: "" } as any));
+        // --- 1. 發言人與身分 (深紅大標) ---
         children.push(new Paragraph({ 
           children: [
-            new TextRun({ text: `【${s.speaker}】`, bold: true, size: 28 } as any),
-            new TextRun({ text: ` — ${s.identity}`, italics: true } as any)
-          ] 
+            new TextRun({ text: `【${s.speaker}】`, bold: true, size: 32, color: "8C2F39" } as any),
+            new TextRun({ text: `  ${s.identity}`, italics: true, size: 22, color: "555555" } as any)
+          ],
+          spacing: { before: 400, after: 200 }
         } as any));
-        children.push(new Paragraph({ text: `日期：${s.date} | 法案：${s.lawName} | 階段：${s.stage}` } as any));
+
+        // --- 2. 會議細節 (整齊排列) ---
+        children.push(new Paragraph({ 
+          children: [
+            new TextRun({ text: "日期：", bold: true } as any), new TextRun({ text: `${s.date}  |  ` } as any),
+            new TextRun({ text: "法案：", bold: true } as any), new TextRun({ text: `${s.lawName}  |  ` } as any),
+            new TextRun({ text: "階段：", bold: true } as any), new TextRun({ text: s.stage } as any),
+          ],
+          spacing: { after: 150 }
+        } as any));
+
+        // --- 3. 政治取向與論述 ---
         children.push(new Paragraph({ 
           children: [
             new TextRun({ text: "政治取向：", bold: true } as any),
-            new TextRun({ text: s.political_orientation } as any)
-          ] 
+            new TextRun({ text: s.political_orientation, color: "2E7D32" } as any)
+          ],
+          spacing: { after: 100 }
         } as any));
+
         children.push(new Paragraph({ 
           children: [
-            new TextRun({ text: "論述邏輯：", bold: true } as any),
-            new TextRun({ text: `「${s.discourse_logic}」`, italics: true } as any)
-          ] 
+            new TextRun({ text: "核心論述：", bold: true } as any),
+            new TextRun({ text: `「${s.discourse_logic}」`, italics: true, bold: true, size: 26, color: "1A1A1A" } as any)
+          ],
+          spacing: { after: 200, before: 100 }
         } as any));
-        
-        children.push(new Paragraph({ 
-          children: [new TextRun({ text: "具體立場：", bold: true } as any)] 
-        } as any));
-        
-        if (s.stances && Array.isArray(s.stances)) {
+
+        // --- 4. 具體立場 (簡潔項目符號) ---
+        if (s.stances && s.stances.length > 0) {
+          children.push(new Paragraph({ children: [new TextRun({ text: "具體立場：", bold: true } as any)], spacing: { after: 100 } } as any));
           s.stances.forEach(st => {
-            children.push(new Paragraph({ text: `• ${st.topic}: ${st.position}`, bullet: { level: 0 } } as any));
+            children.push(new Paragraph({ 
+              text: `· ${st.topic}: ${st.position}`,
+              indent: { left: 360 },
+              spacing: { after: 50 }
+            } as any));
           });
         }
 
-        if (s.imagePaths && s.imagePaths.length > 0) {
-          children.push(new Paragraph({ 
-            children: [new TextRun({ text: "原始檔案截圖：", bold: true } as any)] 
-          } as any));
-          for (const imgPath of s.imagePaths) {
-            const fullUrl = DataManager.getImageUrl(imgPath);
-            if (fullUrl) {
-              try {
-                const imgData = await fetchImageAsUint8Array(fullUrl);
-                if (imgData) {
-                  children.push(new Paragraph({
-                    children: [
-                      new ImageRun({
-                        data: imgData,
-                        transformation: { width: 500, height: 700 },
-                      } as any),
-                    ],
-                  } as any));
-                  children.push(new Paragraph({ text: "" } as any));
-                }
-              } catch (imgErr) {
-                console.warn(`[Export] Failed to embed image: ${fullUrl}`, imgErr);
-              }
-            }
+        // --- 5. 檔案檢索連結 (解決 HYPERLINK 顯示問題) ---
+        const linkElements: any[] = [new TextRun({ text: "檔案連結：", bold: true } as any)];
+        
+        // PDF 連結
+        if (s.metadata?.file_stem) {
+          const pdfLink = DataManager.getPDFLink(s.metadata.file_stem);
+          if (pdfLink) {
+            linkElements.push(new ExternalHyperlink({
+              children: [new TextRun({ text: "查看原始PDF", color: "0000FF", underline: { color: "0000FF" } } as any)],
+              link: pdfLink.previewLink
+            } as any));
+            linkElements.push(new TextRun({ text: "   " } as any));
           }
         }
+
+        // 截圖連結
+        if (s.imagePaths && s.imagePaths.length > 0) {
+          s.imagePaths.forEach((imgPath, idx) => {
+            const fullUrl = DataManager.getImageUrl(imgPath);
+            if (fullUrl) {
+              linkElements.push(new ExternalHyperlink({
+                children: [new TextRun({ text: `[會議截圖 ${idx + 1}]`, color: "0000FF", underline: { color: "0000FF" } } as any)],
+                link: fullUrl
+              } as any));
+              linkElements.push(new TextRun({ text: "  " } as any));
+            }
+          });
+        }
+        children.push(new Paragraph({ children: linkElements, spacing: { before: 200, after: 400 } } as any));
+
+        // --- 分割線 ---
         children.push(new Paragraph({ 
-          children: [new TextRun({ text: "--------------------------------------------------", color: "CCCCCC" } as any)] 
+          border: { bottom: { color: "DDDDDD", space: 5, style: "single", size: 12 } } as any,
+          spacing: { after: 400 }
         } as any));
       }
 
-      const doc = new Document({ 
-        sections: [{ 
-          properties: {}, 
-          children: children 
-        }] 
-      } as any);
-
+      const doc = new Document({ sections: [{ properties: {}, children: children }] } as any);
       const blob = await Packer.toBlob(doc);
-      saveAs(blob, `${year}_轉型正義立法論述檔案.docx`);
+      saveAs(blob, `${year}_轉型正義論述報告.docx`);
     } catch (err) {
       console.error("[Export] ERROR:", err);
       alert(`Word 導出失敗: ${err instanceof Error ? err.message : String(err)}`);
@@ -320,7 +341,10 @@ const YearOverview = () => {
     <div className="min-h-screen bg-[#F9F9F7] text-[#1A1A1A] selection:bg-[#8C2F39] selection:text-white">
       <header className="border-b-[3px] border-[#1A1A1A] mx-4 md:mx-8 pt-8 md:pt-12 pb-8 relative z-50">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-8 md:mb-12 relative z-50">
-          <button onClick={() => navigate('/')} className="text-[10px] font-black uppercase tracking-[0.5em] border-b-2 border-black pb-1 hover:text-[#8C2F39] hover:border-[#8C2F39] transition-all cursor-pointer relative z-50">
+          <button 
+            onClick={() => navigate('/')} 
+            className="text-[10px] font-black uppercase tracking-[0.5em] border-b-2 border-black pb-1 hover:text-[#8C2F39] hover:border-[#8C2F39] transition-all cursor-pointer relative z-50"
+          >
             ← Archive Index
           </button>
           <div className="flex bg-black p-1 rounded-sm shadow-2xl relative z-50">
