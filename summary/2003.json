@@ -1,0 +1,30 @@
+{
+  "metadata": {
+    "year": "2003",
+    "focus": "二二八補償條例修正：針對已領取救濟者之排除與納入討論",
+    "data_density": "High"
+  },
+  "visual_engine_config": {
+    "render_hints": [
+      { "component": "EligibilityDecisionTree", "source": "clash_points" },
+      { "component": "LegislativeUpdatePanel", "source": "metadata" }
+    ]
+  },
+  "clash_points": [
+    {
+      "id": "2003-C1",
+      "topic": "「曾依司法程序獲救濟者」之排除爭議",
+      "severity": 0.75,
+      "actors": {
+        "government": { "label": "法務部/二二八基金會", "stance": "不得重複領取", "logic": "已透過司法程序（如冤獄賠償）獲得救濟者，不應再申請補償，以維資源分配公平。" },
+        "opposition": { "label": "蔡同榮、黃宗源", "stance": "放寬認定", "logic": "司法救濟與二二八補償的性質可能不同（一為賠償、一為名譽平反），不應互斥。",
+          "keyword_focus": "重複領取之認定、精神撫恤" }
+      },
+      "micro_nuance": "原始文本中記錄了針對『附帶決議』的討論，顯示立法者對執行細節（如：誰能領、領多少）的控制力在加強。"
+    }
+  ],
+  "intelligence_layer": {
+    "summary_for_ai_voice": "2003 年聚焦於補償資格的精確釐清，試圖在『公平分配』與『全面平反』之間找到最後的平衡點。",
+    "frontend_action_required": "設計一個『資格檢查器』組件，模擬 2003 年修正後的補償申請流程。"
+  }
+}

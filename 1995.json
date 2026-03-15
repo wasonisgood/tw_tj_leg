@@ -1,0 +1,83 @@
+{
+  "session_info": {
+    "year": "1995",
+    "meeting_type": "立法院委員會 / 院會 (二二八與權利回復條例)",
+    "analyzed_topics": [
+      "二二八事件處理及補償條例",
+      "戒嚴時期人民受難權利回復條例",
+      "補償與賠償法律爭議",
+      "受難者財產發還與名譽平反"
+    ]
+  },
+  "speakers_analysis": {
+    "spk-1995-faafc3131c9ad348": {
+      "speaker": "李慶華",
+      "identity": "立法委員",
+      "discourse_logic": "政治妥協與現實主義",
+      "political_orientation": "溫和修正派",
+      "stances": [
+        { "topic": "法案名稱", "position": "支持賠償", "note": "認為名稱應坦然面對歷史" },
+        { "topic": "賠償金額", "position": "中間路線", "note": "建議800萬作為國民黨與民進黨的折衷" }
+      ]
+    },
+    "spk-1995-159aaf632be788b1": {
+      "speaker": "廖福本",
+      "identity": "立法委員 (黨鞭)",
+      "discourse_logic": "行政主導與財政約束",
+      "political_orientation": "守舊/行政優先派",
+      "stances": [
+        { "topic": "法案名稱", "position": "堅持補償", "note": "主張以行政補償化解爭議，反對法律賠償義務" },
+        { "topic": "程序控管", "position": "效率優先", "note": "批評在野黨利用發言拖延議程" }
+      ]
+    },
+    "spk-1995-268738bf5d572316": {
+      "speaker": "柯建銘",
+      "identity": "立法委員",
+      "discourse_logic": "受害者代議與體制批判",
+      "political_orientation": "激進平反派",
+      "stances": [
+        { "topic": "二二八條例", "position": "強烈反對改補償", "note": "斥責補償說法是逃避責任" },
+        { "topic": "社會權利", "position": "反對凍結農保", "note": "認為政府不應以二二八立法為由擱置農民福祉" }
+      ]
+    },
+    "spk-1995-25393ebf56bc4ec7": {
+      "speaker": "尤宏",
+      "identity": "立法委員",
+      "discourse_logic": "憲法基本權保障論",
+      "political_orientation": "民權擴張派",
+      "stances": [
+        { "topic": "權利回復", "position": "全面解除禁令", "note": "主張刪除所有限制政治犯工作權的消極資格" },
+        { "topic": "法律救濟", "position": "程序溯及", "note": "要求給予戒嚴時期受難者重新申請應考及任官的機會" }
+      ]
+    },
+    "spk-1995-feee6bae62e3c9b9": {
+      "speaker": "陳供儒",
+      "identity": "立法委員",
+      "discourse_logic": "轉型正義與責任歸屬論",
+      "political_orientation": "激進問責派",
+      "stances": [
+        { "topic": "賠償來源", "position": "向政黨求償", "note": "主張政府賠償後應向國民黨行使求償權，因其具備龐大黨產" }
+      ]
+    },
+    "spk-1995-1890bd6b1ea3a397": {
+      "speaker": "徐有守 / 謝瑞智",
+      "identity": "政府官員 (銓敘/考選)",
+      "discourse_logic": "官僚體系穩定論",
+      "political_orientation": "行政保守派",
+      "stances": [
+        { "topic": "任用限制", "position": "維持忠誠考核", "note": "公務員身分特殊，應考與任用需考量政治可靠性" },
+        { "topic": "法律執行", "position": "包裹立法建議", "note": "建議透過特別法處理，而非個別修改現行人事法規" }
+      ]
+    },
+    "spk-1995-dd40f182e167abb5": {
+      "speaker": "謝聰敏",
+      "identity": "立法委員",
+      "discourse_logic": "回復原狀與名譽平反",
+      "political_orientation": "民權捍衛派",
+      "stances": [
+        { "topic": "戒嚴權利回復", "position": "全面發還財產", "note": "強調戒嚴時期被沒收之財產應發還或補償" },
+        { "topic": "司法正義", "position": "否認不正自白", "note": "主張戒嚴時期所得自白不得作為有罪唯一證據" }
+      ]
+    }
+  }
+}

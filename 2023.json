@@ -1,0 +1,326 @@
+{
+  "session_info": {
+    "year": "2023",
+    "meeting_type": "立法院委員會審查 / 院會協商（政治檔案、國家機密、最低工資、原住民保留地等議題）",
+    "analyzed_topics": [
+      "政治檔案條例修正",
+      "永久保密檔案之處理與解密期程",
+      "政治檔案開放應用與國安例外界線",
+      "檔案當事人隱私保障與加害者資訊揭露",
+      "最低工資法立法與審議機制",
+      "原住民保留地管理利用條例立法進度",
+      "轉型正義法制分階段推動"
+    ]
+  },
+  "speakers_analysis": {
+    "spk-2023-7c7374d9f591017d": {
+      "speaker": "高仙桂",
+      "identity": "政府官員（國發會副主任委員）",
+      "political_orientation": "制度整合推進派",
+      "discourse_logic": "修法三主軸治理論",
+      "stances": [
+        {
+          "topic": "政治檔案條例修正",
+          "position": "支持擴大徵集、加速開放、強化權益保障",
+          "note": "說明院版修法以徵集範圍擴大、機密檔分離移轉、當事人優先近用及隱私保護為核心。"
+        },
+        {
+          "topic": "永久保密",
+          "position": "支持刪除永久保密並改採期限化管理",
+          "note": "提出分離機密後移轉與定期檢討解密，降低長期封存。"
+        }
+      ],
+      "key_action": "代表行政院提出政治檔案條例院版完整修法架構並答詢數據。"
+    },
+    "spk-2023-238f1641b3236e9d": {
+      "speaker": "林秋燕",
+      "identity": "政府官員（檔案管理局局長）",
+      "political_orientation": "技術執行派",
+      "discourse_logic": "移轉流程與實務運作論",
+      "stances": [
+        {
+          "topic": "檔案移轉機制",
+          "position": "主張機密分離、複製先行移轉",
+          "note": "強調現行與修法後的技術流程，降低『原件未移轉』造成的開放落差。"
+        }
+      ],
+      "key_action": "就永久保密與分離移轉的作業細節進行實務說明。"
+    },
+    "spk-2023-deefc46f0a91d980": {
+      "speaker": "邱顯智",
+      "identity": "立法委員",
+      "political_orientation": "真相揭露強化派",
+      "discourse_logic": "轉型正義真相權論",
+      "stances": [
+        {
+          "topic": "政治檔案開放",
+          "position": "主張最大開放、最小限制",
+          "note": "批判以國安例外長期限制開放，認為已掏空原則。"
+        },
+        {
+          "topic": "救濟機制",
+          "position": "支持建立復查與專業審查機制",
+          "note": "主張人民遭拒時應有更有效行政救濟路徑。"
+        }
+      ],
+      "key_action": "提出時力版本，要求排除永久保密法律效果與提升可問責性。"
+    },
+    "spk-2023-644ea437913a31f5": {
+      "speaker": "林淑芬",
+      "identity": "立法委員",
+      "political_orientation": "公共治理監督派",
+      "discourse_logic": "國家檔案治理能力論",
+      "stances": [
+        {
+          "topic": "檔案治理",
+          "position": "要求釐清遺失與永久保存管理責任",
+          "note": "質疑檔案保存一致性，並追蹤國家檔案館進度與容量規劃。"
+        }
+      ],
+      "key_action": "聚焦檔案基礎設施與制度可信度，要求行政端提出可驗證時程。"
+    },
+    "spk-2023-2afdea1114a88dbb": {
+      "speaker": "曾銘宗",
+      "identity": "立法委員",
+      "political_orientation": "審慎開放派",
+      "discourse_logic": "透明與國安平衡論",
+      "stances": [
+        {
+          "topic": "政治檔案開放",
+          "position": "大方向支持公開",
+          "note": "同意開放透明，但要求對國安與情報人員安全保護進行審慎評估。"
+        }
+      ],
+      "key_action": "要求行政部門具體盤點未開放檔案及涉及機關。"
+    },
+    "spk-2023-0fc36b13f306fb26": {
+      "speaker": "江永昌",
+      "identity": "立法委員",
+      "political_orientation": "法制銜接派",
+      "discourse_logic": "條文體系一致性論",
+      "stances": [
+        {
+          "topic": "法規銜接",
+          "position": "要求國家檔案法與政治檔案條例一致化",
+          "note": "關注『永久保存』、『移轉』與政治檔案審定規則的落差。"
+        }
+      ],
+      "key_action": "從條文結構面追問修法後制度連動。"
+    },
+    "spk-2023-ba767e70674f21e6": {
+      "speaker": "湯蕙禎",
+      "identity": "立法委員",
+      "political_orientation": "人權平反派",
+      "discourse_logic": "國際比較與歷史責任論",
+      "stances": [
+        {
+          "topic": "轉型正義",
+          "position": "支持政治檔案開放以促進平反",
+          "note": "主張可參照他國成功經驗，建立更完整公開架構。"
+        }
+      ],
+      "key_action": "將政治檔案修法置於國家面對威權歷史的責任框架。"
+    },
+    "spk-2023-46049e79e6166815": {
+      "speaker": "鄭運鵬",
+      "identity": "立法委員",
+      "political_orientation": "定義精準化派",
+      "discourse_logic": "條文邊界檢證論",
+      "stances": [
+        {
+          "topic": "政治檔案定義",
+          "position": "要求明確界定與例外邊界",
+          "note": "追問涉及對陸情報與國際情報等例外範圍，避免過度擴張。"
+        }
+      ],
+      "key_action": "透過逐條詢問確認修法例外條款的可操作性。"
+    },
+    "spk-2023-6c0e8b120f6e4ad2": {
+      "speaker": "范雲",
+      "identity": "立法委員",
+      "political_orientation": "深化轉型正義派",
+      "discourse_logic": "加害者可識別與真相完整論",
+      "stances": [
+        {
+          "topic": "永久保密",
+          "position": "反對永久保密",
+          "note": "主張政治檔案應有明確解密時限，避免制度性遮蔽。"
+        },
+        {
+          "topic": "加害者資訊",
+          "position": "支持揭露壓迫體制責任者資訊",
+          "note": "指出轉型正義不應只見受害者而不見加害體系。"
+        }
+      ],
+      "key_action": "提出跨黨派可支援的修法重點，強化真相揭露力度。"
+    },
+    "spk-2023-79a9a491a2d12ed6": {
+      "speaker": "賴俊兆",
+      "identity": "政府官員（行政院人權及轉型正義處）",
+      "political_orientation": "分階段立法推進派",
+      "discourse_logic": "政策路線圖論",
+      "stances": [
+        {
+          "topic": "轉型正義法制",
+          "position": "支持先處理真相核心法案，再分階段推動其他法案",
+          "note": "表示政治檔案與國家機密修法優先，其他專法持續整合意見。"
+        }
+      ],
+      "key_action": "說明行政院法案排序與後續法制作業進度。"
+    },
+    "spk-2023-7061f70bb94431cf": {
+      "speaker": "陳白立",
+      "identity": "政府官員（情治機關代表）",
+      "political_orientation": "安全風險審慎調整派",
+      "discourse_logic": "安全影響遞減論",
+      "stances": [
+        {
+          "topic": "保密期限",
+          "position": "表示可配合修法檢討永久保密",
+          "note": "指出多數案件年代久遠、對國安影響降低，對期限化方向持開放態度。"
+        }
+      ],
+      "key_action": "提供機關已移轉案件數並表達配合法律調整。"
+    },
+    "spk-2023-0d9f4a509971a72a": {
+      "speaker": "周副主任",
+      "identity": "政府官員（情報體系代表）",
+      "political_orientation": "情報來源保護派",
+      "discourse_logic": "風險防護論",
+      "stances": [
+        {
+          "topic": "檔案開放限制",
+          "position": "主張涉情報來源者應維持限制",
+          "note": "認為若涉及情報人員與合作對象，仍需保留防護機制。"
+        }
+      ],
+      "key_action": "在開放原則下持續主張高風險資訊保護。"
+    },
+    "spk-2023-79bad0f20c83e6e1": {
+      "speaker": "陳淑美",
+      "identity": "政府官員（檔案局組長）",
+      "political_orientation": "程序明確化派",
+      "discourse_logic": "期限審查與視同解密論",
+      "stances": [
+        {
+          "topic": "解密程序",
+          "position": "支持以明確期限控管審議",
+          "note": "說明上級機關不同意或逾期未完成時，得視同解密。"
+        }
+      ],
+      "key_action": "澄清修法後審議不確定性，強化程序可預期性。"
+    },
+    "spk-2023-fb6018662c93aebf": {
+      "speaker": "許銘春",
+      "identity": "政府官員（勞動部部長）",
+      "political_orientation": "彈性審議派",
+      "discourse_logic": "CPI參採與景氣彈性平衡論",
+      "stances": [
+        {
+          "topic": "最低工資法",
+          "position": "支持立法提升位階，反對僵化公式綁定",
+          "note": "主張CPI應納入但不宜成唯一硬指標，仍須考量整體社經情勢與就業風險。"
+        }
+      ],
+      "key_action": "在法制化同時保留審議彈性，避免對邊際勞工造成反效果。"
+    },
+    "spk-2023-f6e403c053043416": {
+      "speaker": "吳玉琴",
+      "identity": "立法委員",
+      "political_orientation": "制度穩定派",
+      "discourse_logic": "成熟機制法制化論",
+      "stances": [
+        {
+          "topic": "最低工資審議委員會",
+          "position": "支持行政院版組成調整",
+          "note": "認為現行審議機制已成熟，法制化應促進運作順暢（單數決策結構）。"
+        }
+      ],
+      "key_action": "支持將既有審議實務上升為法律位階。"
+    },
+    "spk-2023-3b95761bdc0ca780": {
+      "speaker": "鄭天財 Sra Kacaw",
+      "identity": "立法委員",
+      "political_orientation": "原民法案程序推動派",
+      "discourse_logic": "多輪協商累積共識論",
+      "stances": [
+        {
+          "topic": "原保條例",
+          "position": "主張依既有協商共識儘速逐條審查",
+          "note": "強調已歷多次朝野與原民委員會前會，應進入實質審查而非再延後。"
+        }
+      ],
+      "key_action": "以召集協商經驗要求院會按序審理原民土地法案。"
+    },
+    "spk-2023-f225791451c6b8c5": {
+      "speaker": "高金素梅",
+      "identity": "立法委員",
+      "political_orientation": "原民權益保障派",
+      "discourse_logic": "共識條文優先審議論",
+      "stances": [
+        {
+          "topic": "原保條例",
+          "position": "支持立即審查爭點條文",
+          "note": "指出多數條文已具共識，應聚焦少數爭議條文快速完成立法。"
+        }
+      ],
+      "key_action": "要求院長主持協商時優先處理原民土地制度法案。"
+    },
+    "spk-2023-c5bb15c3a917b637": {
+      "speaker": "伍麗華 Saidhai Tahovecahe",
+      "identity": "立法委員",
+      "political_orientation": "原民土地正義派",
+      "discourse_logic": "歷史欠帳修補論",
+      "stances": [
+        {
+          "topic": "原保條例",
+          "position": "支持儘速立法以避免權益持續流失",
+          "note": "強調原住民族土地與建物長期處於制度不合法狀態，需法律一次性修補。"
+        }
+      ],
+      "key_action": "主張至少以院版先行推進，確保立法進度。"
+    },
+    "spk-2023-1d38dd13bfc851eb": {
+      "speaker": "廖國棟",
+      "identity": "立法委員",
+      "political_orientation": "原民法案促成派",
+      "discourse_logic": "歷史時機與代際責任論",
+      "stances": [
+        {
+          "topic": "原保條例",
+          "position": "強烈支持本會期完成審查",
+          "note": "指出法案延宕多年，認為不應再以程序理由延遲。"
+        }
+      ],
+      "key_action": "在協商現場要求即刻審議，形成跨黨原民委員壓力。"
+    },
+    "spk-2023-c4ea42bd2bd4400b": {
+      "speaker": "沈鳳樑",
+      "identity": "政府官員（廉政署副署長）",
+      "political_orientation": "國安保密門檻派",
+      "discourse_logic": "期限延長風險管理論",
+      "stances": [
+        {
+          "topic": "國家機密保護法銜接",
+          "position": "支持『非永久保密』但主張可延長機制",
+          "note": "認為每次延長10年較能兼顧作業負擔與洩密風險控制。"
+        }
+      ],
+      "key_action": "提出30年、60年節點與上級核定機制之政策理由。"
+    },
+    "spk-2023-42cd1d55b0806405": {
+      "speaker": "吳琪銘",
+      "identity": "立法委員",
+      "political_orientation": "政策落地監督派",
+      "discourse_logic": "淨零目標與基礎設施可行性論",
+      "stances": [
+        {
+          "topic": "2050淨零與運具電動化",
+          "position": "支持目標但要求補足充電與電網配套",
+          "note": "指出電動車普及瓶頸在社區充電樁與供電容量，要求跨部會整體解法。"
+        }
+      ],
+      "key_action": "將國家長期目標轉為具體基礎設施治理要求。"
+    }
+  }
+}

@@ -1,0 +1,164 @@
+{
+  "session_info": {
+    "year": "1998",
+    "meeting_type": "立法院內政及邊政委員會 / 司法及國防聯席會議 / 院會",
+    "analyzed_topics": ["二二八補償條例修正", "延平學院平反與復校", "白色恐怖補償條例", "國定假日調移放假"]
+  },
+  "speakers_analysis": {
+    "spk-1998-8dd63a12769ef2d6": {
+      "speaker": "翁金珠",
+      "identity": "立法委員",
+      "political_orientation": "積極平反派 / 文化捍衛者",
+      "discourse_logic": "歷史正義論 / 教育平反",
+      "stances": [
+        {
+          "topic": "延平學院案",
+          "position": "支持恢復名譽與復校",
+          "note": "主張延平學院是台灣人創辦的第一所私立大學，極具歷史價值，因二二八事件被誣指藏有軍械而遭停辦，政府應協助其復校並補償損失。"
+        },
+        {
+          "topic": "二二八紀念日",
+          "position": "支持定為國定假日",
+          "note": "強調 228 應定為每年 2 月 28 日放假，以徹底撫平歷史傷痛。"
+        }
+      ]
+    },
+    "spk-1998-b38a31b1f7b34264": {
+      "speaker": "楊寶發",
+      "identity": "政府官員 (內政部政務次長)",
+      "political_orientation": "行政穩定派",
+      "discourse_logic": "法制行政邏輯 / 部會分工",
+      "stances": [
+        {
+          "topic": "延平學院案",
+          "position": "原則贊同，但須調查",
+          "note": "贊同恢復名譽，但對於「政府協助復校」持保留態度，認為應由教育部表達意見並詳加調查該校當年是否合法立案。"
+        },
+        {
+          "topic": "補償金預算",
+          "position": "預算控管",
+          "note": "指出補償基金會非永久性機構，補償金發放需視申請人數而定，目前預計運作七年。"
+        }
+      ]
+    },
+    "spk-1998-8f2faaec71681e31": {
+      "speaker": "李俊毅",
+      "identity": "立法委員",
+      "political_orientation": "積極平反派",
+      "discourse_logic": "社會融合論 / 政治性節日辯證",
+      "stances": [
+        {
+          "topic": "國定假日調移",
+          "position": "反對 228 調移放假",
+          "note": "主張 228 是政治性節日，具族群融合意義，應固定於當天放假而非配合週休二日調移，以示重視。"
+        }
+      ]
+    },
+    "spk-1998-8dd63a12769ef2d6_sub": {
+      "speaker": "林鉅鐔",
+      "identity": "政府官員 (法務部常務次長)",
+      "political_orientation": "行政配合派",
+      "discourse_logic": "實證法學 / 制度規劃",
+      "stances": [
+        {
+          "topic": "白色恐怖補償條例",
+          "position": "建議行政院統一規劃",
+          "note": "強調法務部正研究如何讓受難者獲得比金錢更適當的補償（如訴訟程式救濟），而非單純補償問題。"
+        },
+        {
+          "topic": "假日規劃",
+          "position": "支持配合週休二日調移",
+          "note": "基於工商業發展與經濟活動，主張除少數節日外應採調移放假制度。"
+        }
+      ]
+    },
+    "spk-1998-136ee5835007e3f7": {
+      "speaker": "鄭興弟",
+      "identity": "政府機構 (228基金會執行長)",
+      "political_orientation": "執行管理派",
+      "discourse_logic": "財務精算 / 業務執行",
+      "stances": [
+        {
+          "topic": "補償金發放",
+          "position": "實務執行報告",
+          "note": "報告補償金平均每案 419 萬元，總經費需求龐大且申請案持續增加中，難以預估精確總額。"
+        }
+      ]
+    },
+    "spk-1998-159aaf632be788b1_ref": {
+      "speaker": "王志雄",
+      "identity": "立法委員",
+      "political_orientation": "財政保守派 / 效率監督者",
+      "discourse_logic": "財政紀律 / 行政效率",
+      "stances": [
+        {
+          "topic": "補償基金會",
+          "position": "反對常設化",
+          "note": "強烈批評基金會執行長無法掌握精確金額與人數，認為基金會應是臨時性任務編組，不應成為「無底洞」或常設機構。"
+        }
+      ]
+    },
+    "spk-1998-4bf153ee49bea23e": {
+      "speaker": "謝聰敏",
+      "identity": "立法委員 (提案人)",
+      "political_orientation": "激進平反派 (受難者代表)",
+      "discourse_logic": "轉型正義 / 國際對比",
+      "stances": [
+        {
+          "topic": "白色恐怖補償條例",
+          "position": "要求盡速通過",
+          "note": "痛批李元簇（白色恐怖執行者）領取高額退職金，受難者補償卻被延宕。主張應比照德、義、法等國對歷史罪行進行補償。"
+        },
+        {
+          "topic": "檔案公開",
+          "position": "支持強制調閱",
+          "note": "主張基金會有權調閱所有政府機關檔案，違者應受刑責，以防國防部或軍法局以「找不到證據」為由拒絕平反。"
+        }
+      ]
+    },
+    "spk-1998-f7e92ce0bbea7068": {
+      "speaker": "張旭成 / 葉菊蘭",
+      "identity": "立法委員",
+      "political_orientation": "積極問責派",
+      "discourse_logic": "歷史清算 / 政黨責任論",
+      "stances": [
+        {
+          "topic": "補償責任",
+          "position": "主張國民黨應捐黨產補償",
+          "note": "認為白色恐怖是國民黨一黨專政下的暴力，不應由全民繳納的國庫買單，國民黨黨鞭應為歷史錯誤贖罪。"
+        }
+      ]
+    },
+    "spk-1998-701c765730a2b4f4": {
+      "speaker": "施明德",
+      "identity": "立法委員 (召集人/受難者)",
+      "political_orientation": "積極平反派 (社會大和解)",
+      "discourse_logic": "法治重建論 / 政治和解",
+      "stances": [
+        {
+          "topic": "軍事審判效力",
+          "position": "主張當時判決無效",
+          "note": "強調軍事審判以行政權代替司法權，違反憲法，原則上判決應視為失靈或無效。"
+        },
+        {
+          "topic": "大和解",
+          "position": "促成朝野協商結論",
+          "note": "在司法委員會中主導朝野黨團達成共識，確保受難者家屬能獲得實質補償與人權保障。"
+        }
+      ]
+    },
+    "spk-1998-c06622181a917ba8": {
+      "speaker": "王拓",
+      "identity": "立法委員",
+      "political_orientation": "積極平反派",
+      "discourse_logic": "生命價值論 / 司法補正",
+      "stances": [
+        {
+          "topic": "補償金額",
+          "position": "主張改「補償」為「賠償」",
+          "note": "認為生命無價，600 萬上限根本不足以慰撫受難者，應採賠償名義以正視法律正義。"
+        }
+      ]
+    }
+  }
+}
