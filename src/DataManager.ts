@@ -139,34 +139,26 @@ export class DataManager {
     return this.imgbbMap[fileName] || '';
   }
 
-  // 從 file_stem 提取會議階段（一讀、二讀、三讀、委員會審查等）
+  // 從 file_stem 提取會議階段（包含日期以區分不同場次）
   static extractStage(fileStem: string): string {
     if (!fileStem) return '未知階段';
     
-    // 優先查找具體的會議階段，並保留括號內的詳細信息
-    if (fileStem.includes('一讀')) {
-      const match = fileStem.match(/一讀[^_]*/);
-      return match ? match[0] : '一讀';
-    }
-    if (fileStem.includes('二讀')) {
-      const match = fileStem.match(/二讀[^_]*/);
-      return match ? match[0] : '二讀';
-    }
-    if (fileStem.includes('三讀')) {
-      const match = fileStem.match(/三讀[^_]*/);
-      return match ? match[0] : '三讀';
-    }
-    if (fileStem.includes('委員會審查')) return '委員會審查';
-    if (fileStem.includes('委員會')) return '委員會';
-    if (fileStem.includes('廣泛討論')) return '廣泛討論';
-    if (fileStem.includes('逐條討論')) return '逐條討論';
-    if (fileStem.includes('協商')) return '協商';
-    if (fileStem.includes('行政院會')) return '行政院會';
-    if (fileStem.includes('公聽會')) return '公聽會';
-    if (fileStem.includes('聽證')) return '聽證';
+    // 根據 file_stem 結構化格式：法案名稱_修正狀態_日期_階段
+    // 例如：國家安全法_制定_19870309_委員會審查
+    const parts = fileStem.split('_');
     
-    // 如果沒有明確的階段標記，回傳未知
-    return '一般會議';
+    // 如果格式符合預期（至少有四部分），結合日期（index 2）與階段（index 3）
+    // 這樣可以確保不同日期的「委員會審查」不會被混在一起
+    if (parts.length >= 4) {
+      return `${parts[2]}_${parts[3]}`;
+    }
+    
+    // 如果不符合標準格式，則取最後兩部分或最後一部分
+    if (parts.length >= 2) {
+      return `${parts[parts.length - 2]}_${parts[parts.length - 1]}`;
+    }
+    
+    return parts[parts.length - 1] || '一般會議';
   }
 
   // 從 file_stem 提取修正狀態和會議階段組合（例如：制定_委員會審查）
@@ -201,21 +193,28 @@ export class DataManager {
       console.log(`[getPDFLink] pdfList is empty`);
       return null;
     }
+
+    // 標準化搜尋名稱：如果沒有 .pdf 則補上，方便比對
+    const searchName = fileName.toLowerCase().endsWith('.pdf') ? fileName : `${fileName}.pdf`;
+
     for (const yearData of this.pdfList) {
-      // PDF_List_Full.json 中使用 "files" 而不是 "pdfs"
+      // PDF_List_Full.json 中使用 "pdfs" 或 "files"
       const files = yearData.pdfs || (yearData as any).files;
-      if (!files || !Array.isArray(files)) {
-        console.log(`[getPDFLink] No files in year ${yearData.year}`);
-        continue;
-      }
-      console.log(`[getPDFLink] Checking year ${yearData.year}, ${files.length} files`);
+      if (!files || !Array.isArray(files)) continue;
+
       const found = files.find(p => {
-        const match = p.fileName === fileName;
-        if (match) console.log(`[getPDFLink] Found match: ${p.fileName}`);
-        return match;
+        // 進行不區分大小寫且包含副檔名的比對
+        const currentFileName = p.fileName || '';
+        const currentFileLower = currentFileName.toLowerCase();
+        const searchLower = searchName.toLowerCase();
+        
+        return currentFileLower === searchLower || 
+               currentFileLower === fileName.toLowerCase() ||
+               currentFileLower.replace('.pdf', '') === fileName.toLowerCase();
       });
+
       if (found) {
-        console.log(`[getPDFLink] Returning PDF link for ${found.fileName}`);
+        console.log(`[getPDFLink] Found PDF match: ${found.fileName}`);
         return found;
       }
     }
@@ -289,7 +288,7 @@ export class DataManager {
       // 但只取底線前面的部分（實際法案名稱）
       const fullFileStem = meta?.file_stem || '';
       const lawName = this.extractBillName(fullFileStem);
-      const stage = this.extractBillDetails(fullFileStem); // 從 file_stem 提取修正狀態 + 會議階段
+      const stage = this.extractStage(fullFileStem); // 從 file_stem 提取包含日期的會議階段
       const speechDate = meta?.date || '';
       
       speeches.push({
@@ -299,7 +298,7 @@ export class DataManager {
         metadata: meta,
         imagePaths,
         lawName: lawName,
-        stage: stage, // 使用提取的會議階段
+        stage: stage, // 使用提取的會議階段 (含日期)
         date: speechDate
       });
     }
