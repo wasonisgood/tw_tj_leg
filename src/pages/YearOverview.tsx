@@ -139,12 +139,16 @@ const YearOverview = () => {
       setLoading(true);
       Promise.all([
         DataManager.init(),
+        // 移除所有開頭的 /，使用相對路徑
         fetch(`summary/${year}.json`).then(res => res.ok ? res.json() : null).catch(() => null)
       ]).then(([_, summary]) => {
         DataManager.getProcessedYearData(year).then(res => {
           setData(res.speeches);
           setSession(res.sessionInfo || null);
-          setIntelligence(summary?.intelligence_layer || res.intelligence || null);
+          // 關鍵修正：確保 intelligence 至少能抓到其中一方的數據
+          const intel = summary?.intelligence_layer || res.intelligence || null;
+          console.log(`Loaded Intelligence for ${year}:`, intel);
+          setIntelligence(intel);
           setSummaryData(summary);
           setLoading(false);
         });
