@@ -35,6 +35,7 @@ export interface SpeechMetadata {
   speaker: string;
   date: string;
   seq: number;
+  file_stem?: string;
 }
 
 export interface ProcessedSpeech extends SpeakerAnalysis {
