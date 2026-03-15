@@ -98,12 +98,8 @@ export class DataManager {
   }
 
   static getImageUrl(fileName: string): string {
-    // 優先從 ImgBB 對應表中查找
-    if (this.imgbbMap && this.imgbbMap[fileName]) {
-      return this.imgbbMap[fileName];
-    }
-    // 若無則使用相對路徑 (修正 GitHub Pages 子目錄問題)
-    return `mapped_page_images/${fileName}`;
+    // 僅從 ImgBB 對應表中查找，移除本地備援邏輯
+    return this.imgbbMap[fileName] || '';
   }
 
   static getPDFLink(fileName: string): PDFLink | null {
