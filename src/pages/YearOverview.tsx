@@ -139,7 +139,7 @@ const YearOverview = () => {
       setLoading(true);
       Promise.all([
         DataManager.init(),
-        fetch(`/summary/${year}.json`).then(res => res.ok ? res.json() : null).catch(() => null)
+        fetch(`summary/${year}.json`).then(res => res.ok ? res.json() : null).catch(() => null)
       ]).then(([_, summary]) => {
         DataManager.getProcessedYearData(year).then(res => {
           setData(res.speeches);

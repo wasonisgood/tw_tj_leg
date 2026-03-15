@@ -34,11 +34,11 @@ const Landing = () => {
     // 批量讀取所有年份數據以生成首頁統計
     const allYears = PHASES.flatMap(p => p.years);
     allYears.forEach(year => {
-      fetch(`/${year}.json`)
+      fetch(`${year}.json`)
         .then(res => res.json())
         .then(data => {
           const count = data.speakers_analysis ? Object.keys(data.speakers_analysis).length : 0;
-          fetch(`/summary/${year}.json`)
+          fetch(`summary/${year}.json`)
             .then(res => res.json())
             .then(sData => {
               setYearStats(prev => ({
