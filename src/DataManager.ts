@@ -76,12 +76,32 @@ export class DataManager {
 
   static async init() {
     if (!this.idMapping) {
-      const resp = await fetch(`${this.getBasePath()}id_mapping.json`);
-      this.idMapping = await resp.json();
+      try {
+        const resp = await fetch(`${this.getBasePath()}id_mapping.json`);
+        if (resp.ok) {
+          this.idMapping = await resp.json();
+        } else {
+          console.error("Failed to load id_mapping.json");
+          this.idMapping = {};
+        }
+      } catch (e) {
+        console.error("Error loading id_mapping.json:", e);
+        this.idMapping = {};
+      }
     }
     if (!this.imageMap) {
-      const resp = await fetch(`${this.getBasePath()}ai_output_id_pdf_page_image_map.json`);
-      this.imageMap = await resp.json();
+      try {
+        const resp = await fetch(`${this.getBasePath()}ai_output_id_pdf_page_image_map.json`);
+        if (resp.ok) {
+          this.imageMap = await resp.json();
+        } else {
+          console.error("Failed to load ai_output_id_pdf_page_image_map.json");
+          this.imageMap = {};
+        }
+      } catch (e) {
+        console.error("Error loading ai_output_id_pdf_page_image_map.json:", e);
+        this.imageMap = {};
+      }
     }
     // 載入 ImgBB 對應表 (如果存在)
     if (Object.keys(this.imgbbMap).length === 0) {
