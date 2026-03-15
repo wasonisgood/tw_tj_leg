@@ -65,19 +65,28 @@ export class DataManager {
   private static pdfList: YearPDFs[] = [];
   private static yearDataCache: { [year: string]: YearData } = {};
 
+  private static getBasePath(): string {
+    // 使用 window.location.pathname 來動態取得 base 路徑
+    const pathname = window.location.pathname;
+    if (pathname.includes('/tw_tj_leg/')) {
+      return '/tw_tj_leg/';
+    }
+    return '/';
+  }
+
   static async init() {
     if (!this.idMapping) {
-      const resp = await fetch('id_mapping.json');
+      const resp = await fetch(`${this.getBasePath()}id_mapping.json`);
       this.idMapping = await resp.json();
     }
     if (!this.imageMap) {
-      const resp = await fetch('ai_output_id_pdf_page_image_map.json');
+      const resp = await fetch(`${this.getBasePath()}ai_output_id_pdf_page_image_map.json`);
       this.imageMap = await resp.json();
     }
     // 載入 ImgBB 對應表 (如果存在)
     if (Object.keys(this.imgbbMap).length === 0) {
       try {
-        const resp = await fetch('imgbb_map.json');
+        const resp = await fetch(`${this.getBasePath()}imgbb_map.json`);
         if (resp.ok) {
           this.imgbbMap = await resp.json();
         } else {
@@ -89,7 +98,7 @@ export class DataManager {
     }
     if (this.pdfList.length === 0) {
       try {
-        const resp = await fetch('PDF_List_Full.json');
+        const resp = await fetch(`${this.getBasePath()}PDF_List_Full.json`);
         this.pdfList = await resp.json();
       } catch (e) {
         console.error("Failed to load PDF_List_Full.json", e);
@@ -114,7 +123,7 @@ export class DataManager {
   static async getYearData(year: string): Promise<YearData | null> {
     if (this.yearDataCache[year]) return this.yearDataCache[year];
     try {
-      const resp = await fetch(`${year}.json`); // 使用相對路徑
+      const resp = await fetch(`${this.getBasePath()}${year}.json`); // 使用相對路徑
       const data = await resp.json();
       this.yearDataCache[year] = data;
       return data;

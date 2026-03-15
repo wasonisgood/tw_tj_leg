@@ -26,6 +26,14 @@ const PHASES = [
   }
 ];
 
+const getBasePath = (): string => {
+  const pathname = window.location.pathname;
+  if (pathname.includes('/tw_tj_leg/')) {
+    return '/tw_tj_leg/';
+  }
+  return '/';
+};
+
 const Landing = () => {
   const [hoveredYear, setHoveredYear] = useState<string | null>(null);
   const [yearStats, setYearStats] = useState<Record<string, { count: number, summary: string }>>({});
@@ -33,12 +41,13 @@ const Landing = () => {
   useEffect(() => {
     // 批量讀取所有年份數據以生成首頁統計
     const allYears = PHASES.flatMap(p => p.years);
+    const basePath = getBasePath();
     allYears.forEach(year => {
-      fetch(`${year}.json`)
+      fetch(`${basePath}${year}.json`)
         .then(res => res.json())
         .then(data => {
           const count = data.speakers_analysis ? Object.keys(data.speakers_analysis).length : 0;
-          fetch(`summary/${year}.json`)
+          fetch(`${basePath}summary/${year}.json`)
             .then(res => res.json())
             .then(sData => {
               setYearStats(prev => ({

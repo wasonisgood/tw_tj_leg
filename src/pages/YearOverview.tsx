@@ -137,10 +137,18 @@ const YearOverview = () => {
   useEffect(() => {
     if (year) {
       setLoading(true);
+      const getBasePath = (): string => {
+        const pathname = window.location.pathname;
+        if (pathname.includes('/tw_tj_leg/')) {
+          return '/tw_tj_leg/';
+        }
+        return '/';
+      };
+      const basePath = getBasePath();
       Promise.all([
         DataManager.init(),
         // 移除所有開頭的 /，使用相對路徑
-        fetch(`summary/${year}.json`).then(res => res.ok ? res.json() : null).catch(() => null)
+        fetch(`${basePath}summary/${year}.json`).then(res => res.ok ? res.json() : null).catch(() => null)
       ]).then(([_, summary]) => {
         DataManager.getProcessedYearData(year).then(res => {
           setData(res.speeches);
