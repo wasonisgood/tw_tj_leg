@@ -1,0 +1,269 @@
+{
+  "session_info": {
+    "year": "2017",
+    "meeting_type": "立法院委員會審查與協商（促轉條例、二二八條例修正、內政與治安議題）",
+    "analyzed_topics": [
+      "促進轉型正義條例協商與修正動議",
+      "原住民族轉型正義與時段範圍爭議",
+      "二二八事件處理及賠償條例修正",
+      "政治檔案與歷史正義法制路徑",
+      "救國團法人治理與人民團體法適法性",
+      "內政治理：身分證換發、治安、移工與警政管理"
+    ]
+  },
+  "speakers_analysis": {
+    "spk-2017-b40340d4a9412c19": {
+      "speaker": "柯建銘",
+      "identity": "立法委員",
+      "political_orientation": "立法推進整合派",
+      "discourse_logic": "框架法先行論",
+      "stances": [
+        {
+          "topic": "促轉條例推進",
+          "position": "主張本會期完成立法",
+          "note": "認為促轉為歷史時刻，不應再以程序延宕。"
+        },
+        {
+          "topic": "原民議題處理方式",
+          "position": "傾向分案推進而非一次塞入同法",
+          "note": "強調原民歷史正義議題時間與主管機關更複雜。"
+        }
+      ],
+      "key_action": "主導協商時程與法案聚焦範圍。"
+    },
+    "spk-2017-9a8ae9265c214fdf": {
+      "speaker": "黃國昌",
+      "identity": "立法委員",
+      "political_orientation": "實質條文化派",
+      "discourse_logic": "框架補血論",
+      "stances": [
+        {
+          "topic": "促轉條例內容",
+          "position": "支持在框架法中加入實質條文",
+          "note": "反對僅成立機構而缺乏可執行的血肉內容。"
+        },
+        {
+          "topic": "戰後國產移轉",
+          "position": "主張納入非國民黨案件的調查可能",
+          "note": "認為不當移轉不應只限單一政黨案例。"
+        }
+      ],
+      "key_action": "提出具體修正動議擴充委員會實質功能。"
+    },
+    "spk-2017-c7b9f4c11e7578d0": {
+      "speaker": "林為洲",
+      "identity": "立法委員",
+      "political_orientation": "權限警戒派",
+      "discourse_logic": "條文界線清晰論",
+      "stances": [
+        {
+          "topic": "威權象徵定義",
+          "position": "質疑條文模糊並擔憂過度擴張",
+          "note": "認為需明確化『移除、改名』的適用邊界。"
+        },
+        {
+          "topic": "調查權",
+          "position": "主張限制準司法式權限",
+          "note": "對入內調查、勘驗等條文提出侵權疑慮。"
+        }
+      ],
+      "key_action": "要求針對關鍵條文重啟修正討論。"
+    },
+    "spk-2017-f0c4d97e937e50d7": {
+      "speaker": "高金素梅",
+      "identity": "立法委員",
+      "political_orientation": "原民族群正義優先派",
+      "discourse_logic": "反選擇性正義論",
+      "stances": [
+        {
+          "topic": "轉型正義範圍",
+          "position": "主張不得僅限1945後威權時段",
+          "note": "要求納入日治時期及更早期對原民土地與社群侵害。"
+        }
+      ],
+      "key_action": "持續以原民土地史例施壓法案調整。"
+    },
+    "spk-2017-10e8d3d35d279c62": {
+      "speaker": "何欣純",
+      "identity": "立法委員",
+      "political_orientation": "階段治理派",
+      "discourse_logic": "先易後難分步論",
+      "stances": [
+        {
+          "topic": "原民轉型正義",
+          "position": "支持處理但主張分階段立法",
+          "note": "認為原漢土地權屬複雜，應透過專法與完整溝通處理。"
+        }
+      ],
+      "key_action": "協調『先處理威權期、再推原民專法』路線。"
+    },
+    "spk-2017-2522a036a6276501": {
+      "speaker": "尤美女",
+      "identity": "立法委員",
+      "political_orientation": "受害者權利回復派",
+      "discourse_logic": "法的門前等待論",
+      "stances": [
+        {
+          "topic": "二二八賠償修法",
+          "position": "支持延長期間並補強財產權回復",
+          "note": "指出受難者與家屬高齡化，不能再讓程序拖延。"
+        }
+      ],
+      "key_action": "推動從名譽回復延伸至財產回復與實質補償。"
+    },
+    "spk-2017-7062c41b2c390c8d": {
+      "speaker": "廖國棟",
+      "identity": "立法委員",
+      "political_orientation": "權利回復擴張派",
+      "discourse_logic": "政府舉證責任論",
+      "stances": [
+        {
+          "topic": "二二八財產返還",
+          "position": "主張由政府負舉證責任",
+          "note": "認為受害者長年弱勢，不能再要求其單方舉證。"
+        }
+      ],
+      "key_action": "提出條文明確化政府舉證與返還義務。"
+    },
+    "spk-2017-ccaea9bbc85baf65": {
+      "speaker": "葉俊榮",
+      "identity": "政府官員（內政部部長）",
+      "political_orientation": "務實行政推進派",
+      "discourse_logic": "行政盤點與法案配合論",
+      "stances": [
+        {
+          "topic": "內政治理",
+          "position": "主張以便民、治安、國土與民主治理並進",
+          "note": "回應身分證換發、防偽升級等制度更新需求。"
+        }
+      ],
+      "key_action": "提供行政端跨議題的執行盤點與政策回應。"
+    },
+    "spk-2017-6ca576eba434add0": {
+      "speaker": "吳玉琴",
+      "identity": "立法委員",
+      "political_orientation": "社團治理監督派",
+      "discourse_logic": "適法性追問論",
+      "stances": [
+        {
+          "topic": "救國團治理",
+          "position": "要求揭露高薪與治理程序正當性",
+          "note": "主張人民團體應受一致法制監督。"
+        }
+      ],
+      "key_action": "聚焦救國團薪資與法人治理透明。"
+    },
+    "spk-2017-82288ab454b3e63e": {
+      "speaker": "賴瑞隆",
+      "identity": "立法委員",
+      "political_orientation": "法遵執行派",
+      "discourse_logic": "章程與法規一致論",
+      "stances": [
+        {
+          "topic": "人民團體法適用",
+          "position": "要求救國團章程與程序回歸法規",
+          "note": "認為主任代表制與解聘程序應受法律檢驗。"
+        }
+      ],
+      "key_action": "以個案督促主管機關啟動法遵審查。"
+    },
+    "spk-2017-8d4c1dad174ba4c7": {
+      "speaker": "劉櫂豪",
+      "identity": "立法委員",
+      "political_orientation": "國會自治平衡派",
+      "discourse_logic": "採訪權與秩序並衡論",
+      "stances": [
+        {
+          "topic": "國會程序衝突",
+          "position": "主張採訪自由與委員問政秩序需雙向平衡",
+          "note": "反對暴力排除，但也強調會議進行自由。"
+        }
+      ],
+      "key_action": "提出國會自治下衝突降階處理框架。"
+    },
+    "spk-2017-9d528e2771416a6e": {
+      "speaker": "曾銘宗",
+      "identity": "立法委員",
+      "political_orientation": "成本效益檢驗派",
+      "discourse_logic": "法源與趨勢並審論",
+      "stances": [
+        {
+          "topic": "身分證換發",
+          "position": "要求先釐清法源依據與技術必要性",
+          "note": "支持與國際趨勢接軌但主張立法與成本透明。"
+        }
+      ],
+      "key_action": "以數據與法源問題推動政策論證。"
+    },
+    "spk-2017-1694648aa2a61baf": {
+      "speaker": "吳琪銘",
+      "identity": "立法委員",
+      "political_orientation": "治安強化派",
+      "discourse_logic": "基層誘因治理論",
+      "stances": [
+        {
+          "topic": "反毒政策",
+          "position": "主張提升查緝誘因與基層士氣",
+          "note": "認為源頭管制外，查緝端制度設計同樣關鍵。"
+        }
+      ],
+      "key_action": "要求警政署建立更有效的毒品查緝激勵機制。"
+    },
+    "spk-2017-f830cb9cd054d786": {
+      "speaker": "吳思瑤",
+      "identity": "立法委員",
+      "political_orientation": "建築文化升級派",
+      "discourse_logic": "法規管制到產業扶植轉向論",
+      "stances": [
+        {
+          "topic": "建築政策",
+          "position": "主張內政部從管制導向轉為文化與設計扶植並重",
+          "note": "關注建築師獎勵、檔案典藏與法規現代化。"
+        }
+      ],
+      "key_action": "把建築治理由工程管理擴展到文化政策層次。"
+    },
+    "spk-2017-cff9a58bd84b446a": {
+      "speaker": "林麗蟬",
+      "identity": "立法委員",
+      "political_orientation": "移工人權務實派",
+      "discourse_logic": "跨部會成本歸責論",
+      "stances": [
+        {
+          "topic": "失聯移工衍生醫療與安置費用",
+          "position": "要求內政與勞動部共同建立支付與處理機制",
+          "note": "指出第一線執法機關承受高社會成本但制度分工不清。"
+        }
+      ],
+      "key_action": "迫使主管機關面對跨部會責任與預算配置。"
+    },
+    "spk-2017-d348c74655c6c181": {
+      "speaker": "徐榛蔚",
+      "identity": "立法委員",
+      "political_orientation": "基層權益監督派",
+      "discourse_logic": "地方治理補正論",
+      "stances": [
+        {
+          "topic": "地方民生與農保議題",
+          "position": "要求中央釐清制度落差與地方執行困境",
+          "note": "關注保險制度與地方產業從業者實際需求。"
+        }
+      ],
+      "key_action": "將中央法規落差轉化為具體行政改進要求。"
+    },
+    "spk-2017-e7f9f11c37c95782": {
+      "speaker": "陳家欽",
+      "identity": "政府官員（警政署署長）",
+      "political_orientation": "警政執行優化派",
+      "discourse_logic": "資料庫建置與程序標準化論",
+      "stances": [
+        {
+          "topic": "涉外執法通譯",
+          "position": "支持各警局建立通譯資料庫與標準作業",
+          "note": "強調跨機關通譯資源整合以提升程序正義。"
+        }
+      ],
+      "key_action": "回應基層執法實務並補強制度化支援。"
+    }
+  }
+}

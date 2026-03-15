@@ -1,0 +1,70 @@
+{
+  "metadata": {
+    "year": "2019",
+    "focus": "政治檔案法施行、刑事訴訟法沒收配套、行政函釋之清理",
+    "data_density": "Ultra_Extreme_High",
+    "session_context": "第九屆第七會期，法治細節的最後修補"
+  },
+  "visual_engine_config": {
+    "render_hints": [
+      { "component": "ArchiveUnlockProgress", "source": "clash_points" },
+      { "component": "AdministrativeDirectiveCleaner", "source": "historical_micro_analysis", "props": { "action": "revoke" } },
+      { "component": "LegalHierarchChart", "source": "dialogue_flow" }
+    ]
+  },
+  "clash_points": [
+    {
+      "id": "2019-C1",
+      "topic": "「法律」位階 vs. 「函釋」障礙",
+      "severity": 0.95,
+      "actors": {
+        "legislative_pushers": {
+          "label": "柯建銘、管碧玲、尤美女",
+          "stance": "撤銷違法函釋",
+          "logic": "過去政府用『法規』或『函釋』擋住檔案申請，現在《政治檔案法》是『法律』，位階最高，舊函釋必須撤銷。",
+          "keyword_focus": "法律優位、函釋、撤銷、歷史學界責怪"
+        },
+        "administrative_factions": {
+          "label": "相關部會/檔案管理單位",
+          "stance": "行政慣性防禦",
+          "logic": "長期依循內部函釋作業，對於法律位階的改變反應遲緩。",
+          "keyword_focus": "查清楚、出問題、附帶決議"
+        }
+      },
+      "micro_nuance": "柯建銘在資料中語氣強硬：『不能當做你們不提供的理由了，全部要照法律來...該撤就撤了吧！』反映出立法權對行政惰性的強力督促。"
+    }
+  ],
+  "historical_micro_analysis": {
+    "hidden_truths": [
+      {
+        "point": "歷史學界的集體壓力",
+        "description": "原始文本中管碧玲提到：『歷史學界有很多學者就一直責怪我們』，顯示出轉型正義的推動力已從立法院擴散到整個學術社群。"
+      },
+      {
+        "point": "刑事訴訟法的配套沒收",
+        "description": "2019 年涉及大量關於『沒收』的新規定，這是為了處理威權時期不當奪取財產返還的法理基礎。",
+        "visual_tag": "Property_Restitution"
+      }
+    ]
+  },
+  "dialogue_flow": {
+    "segments": [
+      {
+        "speaker": "柯建銘",
+        "emotion": "Decisive",
+        "raw_quote": "我們第一項寫得很清楚，是「法律」，不是「法規」了嘛！",
+        "context": "強調《政治檔案法》的強制力，旨在終結部會間的互踢皮球。"
+      },
+      {
+        "speaker": "管碧玲",
+        "emotion": "Relieved_but_Serious",
+        "raw_quote": "終於查清楚了，剛剛一直查，查到最後就是這個函釋出問題。",
+        "context": "揭露了行政體系中隱形的阻礙——那種隱藏在公文堆裡的舊時代函釋。"
+      }
+    ]
+  },
+  "intelligence_layer": {
+    "summary_for_ai_voice": "2019 年是掃除轉型正義障礙的一年。重點在於將『政治檔案法』的法律位階提到最高，撤銷所有阻礙真相的舊時代函釋，讓歷史學者真正能進入檔案室。",
+    "frontend_action_required": "應設計一個『函釋清理進度條』與『檔案開放權限圖』，呈現法律如何層層破除行政體系的保密鎖鏈。"
+  }
+}

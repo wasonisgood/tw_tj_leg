@@ -1,0 +1,32 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* 時尚雜誌色調：象牙白底、灰黑字、重點色 */
+  --magazine-bg: #F9F9F7;
+  --magazine-text: #1A1A1A;
+  --magazine-accent: #8C2F39; /* 酒紅 */
+  --stance-support: #1B4332; /* 深綠 */
+  --stance-oppose: #641212; /* 深紅 */
+  --stance-neutral: #2F3E46; /* 灰藍 */
+}
+
+@layer base {
+  body {
+    @apply bg-[#F9F9F7] text-[#1A1A1A] font-sans antialiased;
+  }
+  
+  h1, h2, h3, .serif {
+    font-family: "Playfair Display", "Noto Serif TC", serif;
+  }
+}
+
+.magazine-grid {
+  background-image: radial-gradient(#d1d1d1 0.5px, transparent 0.5px);
+  background-size: 24px 24px;
+}
+
+.card-shadow {
+  box-shadow: 0 4px 20px -5px rgba(0, 0, 0, 0.1);
+}

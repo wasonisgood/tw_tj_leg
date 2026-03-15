@@ -1,0 +1,499 @@
+{
+  "session_info": {
+    "year": "2022",
+    "meeting_type": "立法院委員會審查 / 公聽會（促轉條例修正、權利回復條例草案、任務移轉）",
+    "analyzed_topics": [
+      "促進轉型正義條例修正與任務落日後承接",
+      "威權統治時期國家不法行為被害者權利回復條例",
+      "司法不法與行政不法之平復範圍",
+      "賠償金額與財產返還計算標準",
+      "二二八基金會與新基金會的制度選擇",
+      "政治檔案移轉、永久保密與開放應用",
+      "被害者家屬照顧療癒與跨部會協調"
+    ]
+  },
+  "speakers_analysis": {
+    "spk-2022-d2b252e87eabe297": {
+      "speaker": "葉虹靈",
+      "identity": "政府官員（促轉會代理主任委員）",
+      "political_orientation": "轉型正義深化推進派",
+      "discourse_logic": "法制補缺與權利回復整合論",
+      "stances": [
+        {
+          "topic": "促轉條例修正",
+          "position": "支持將行政不法與檢察追訴處分納入平復",
+          "note": "主張補足現行僅能處理部分司法不法的缺口。"
+        },
+        {
+          "topic": "權利回復條例",
+          "position": "支持以新法統合生命、人身自由、財產回復",
+          "note": "強調提高基數、拉開長短期受害差距並補強制度公平。"
+        }
+      ],
+      "key_action": "提出院版三案完整架構並逐條答詢。"
+    },
+    "spk-2022-608e22c90d5806d2": {
+      "speaker": "何佩珊",
+      "identity": "政府官員（行政院副秘書長）",
+      "political_orientation": "院層級統合落實派",
+      "discourse_logic": "制度接軌與行政盤點論",
+      "stances": [
+        {
+          "topic": "任務移轉",
+          "position": "支持促轉會落日後由行政院會報統合督導",
+          "note": "主張以會報與專責單位協調跨部會承接。"
+        }
+      ],
+      "key_action": "說明行政院端的人力、預算與承接籌備路線。"
+    },
+    "spk-2022-d575d536c198552f": {
+      "speaker": "曾銘宗",
+      "identity": "立法委員",
+      "political_orientation": "審慎擴權派",
+      "discourse_logic": "時點合理性檢驗論",
+      "stances": [
+        {
+          "topic": "修法時機",
+          "position": "質疑解編前擴張業務範圍之必要性",
+          "note": "要求先釐清既有成果與移交可行性。"
+        }
+      ],
+      "key_action": "要求行政端就司法不法案件數與流程提供具體說明。"
+    },
+    "spk-2022-f399e648649bf1ae": {
+      "speaker": "陳以信",
+      "identity": "立法委員",
+      "political_orientation": "組織整併效率派",
+      "discourse_logic": "立法主導與機構重複檢驗論",
+      "stances": [
+        {
+          "topic": "基金會設計",
+          "position": "傾向整併二二八基金會與新任務",
+          "note": "反對因執行端意願而倒置立法判斷，主張先立法後執行。"
+        }
+      ],
+      "key_action": "以歷次延長修法經驗批判新設機構的重複成本。"
+    },
+    "spk-2022-a31c1cc255d0dc9d": {
+      "speaker": "林思銘",
+      "identity": "立法委員",
+      "political_orientation": "程序治理派",
+      "discourse_logic": "會報制度可操作性論",
+      "stances": [
+        {
+          "topic": "推動轉型正義會報",
+          "position": "要求明確化會議頻率、部會組成與決議執行",
+          "note": "避免成立後流於形式。"
+        }
+      ],
+      "key_action": "要求行政院在子法與運作規範上提出可驗證機制。"
+    },
+    "spk-2022-1e3ef00ed3106010": {
+      "speaker": "葉毓蘭",
+      "identity": "立法委員",
+      "political_orientation": "賠償落差檢驗派",
+      "discourse_logic": "誠信與比例正義論",
+      "stances": [
+        {
+          "topic": "財產賠償折算",
+          "position": "質疑折算比例過低",
+          "note": "指出家屬對最終院版與前期溝通落差有強烈不滿。"
+        }
+      ],
+      "key_action": "要求就折算邏輯與家屬溝通過程提出說明。"
+    },
+    "spk-2022-3644543161fb21c4": {
+      "speaker": "林秋燕",
+      "identity": "政府官員（檔案局局長）",
+      "political_orientation": "檔案開放技術執行派",
+      "discourse_logic": "分離遮蔽與移轉兼容論",
+      "stances": [
+        {
+          "topic": "政治檔案移轉",
+          "position": "支持在保密前提下擴大可開放部分",
+          "note": "以遮蔽複製件移轉提高檔案可近用性。"
+        }
+      ],
+      "key_action": "提出永久保密占比與實務移轉機制數據。"
+    },
+    "spk-2022-580e3e0bd540930b": {
+      "speaker": "陳明堂",
+      "identity": "政府官員（法務部次長）",
+      "political_orientation": "專責化建構派",
+      "discourse_logic": "承接機制漸進論",
+      "stances": [
+        {
+          "topic": "平復與加害者識別",
+          "position": "支持朝專責審議機制規劃",
+          "note": "表示考慮審議小組與專法途徑。"
+        }
+      ],
+      "key_action": "回應承接後的制度型設計方向。"
+    },
+    "spk-2022-ae73a3f324c4827e": {
+      "speaker": "王婉諭",
+      "identity": "立法委員",
+      "political_orientation": "轉型正義深化派",
+      "discourse_logic": "時間壓力與制度漏洞警示論",
+      "stances": [
+        {
+          "topic": "任務交接",
+          "position": "支持持續推進但要求補強承接弱點",
+          "note": "主張避免檔案徵集與平反任務因降階分散而弱化。"
+        }
+      ],
+      "key_action": "以受難者處境要求制度不應停滯。"
+    },
+    "spk-2022-4d84009a0c06d12c": {
+      "speaker": "江永昌",
+      "identity": "立法委員",
+      "political_orientation": "時程風險控管派",
+      "discourse_logic": "程序落地倒排論",
+      "stances": [
+        {
+          "topic": "新基金會成立時程",
+          "position": "質疑設立流程過長造成受害者延宕",
+          "note": "要求交代法案通過後章程、預算、董事與細則完成時間。"
+        }
+      ],
+      "key_action": "以高齡受害者現況要求縮短行政鏈結。"
+    },
+    "spk-2022-bbc2d919794c86c0": {
+      "speaker": "蘇治芬",
+      "identity": "立法委員",
+      "political_orientation": "移轉監督派",
+      "discourse_logic": "任務清單實作檢視論",
+      "stances": [
+        {
+          "topic": "促轉任務移交",
+          "position": "要求逐項核對移交表與承接責任",
+          "note": "關注移轉是否真正可執行。"
+        }
+      ],
+      "key_action": "要求就任務表進行具體說明與對接。"
+    },
+    "spk-2022-e4fc73d398dcee7c": {
+      "speaker": "吳玉琴",
+      "identity": "立法委員",
+      "political_orientation": "治理分工明確派",
+      "discourse_logic": "主管機關轉換論",
+      "stances": [
+        {
+          "topic": "促轉後治理架構",
+          "position": "支持由會報督導、部會執行",
+          "note": "強調督導與主管機關概念需清楚區分。"
+        }
+      ],
+      "key_action": "要求行政端釐清責任鏈與衛福承接能力。"
+    },
+    "spk-2022-91617e38c325ed6d": {
+      "speaker": "黃世傑",
+      "identity": "立法委員",
+      "political_orientation": "檔案透明監督派",
+      "discourse_logic": "開放資料完整性檢核論",
+      "stances": [
+        {
+          "topic": "政治檔案開放",
+          "position": "要求明確區分原件、遮蔽件、完整件",
+          "note": "重點在外界可得知資料完整度與遮蔽邊界。"
+        }
+      ],
+      "key_action": "追問移轉實質內容而非形式移轉。"
+    },
+    "spk-2022-dd7f771d9fed692e": {
+      "speaker": "劉建國",
+      "identity": "立法委員",
+      "political_orientation": "資源與承接能力檢驗派",
+      "discourse_logic": "遲來正義成本論",
+      "stances": [
+        {
+          "topic": "賠償預算",
+          "position": "質疑估算過低",
+          "note": "主張若再折減賠償將弱化正義修復。"
+        },
+        {
+          "topic": "業務分散承接",
+          "position": "要求衛福等部會證明可承接能力",
+          "note": "關注政治創傷療癒是否能實作。"
+        }
+      ],
+      "key_action": "要求在制度設計中同步處理財務與執行能力。"
+    },
+    "spk-2022-b5c1c5b52e1571be": {
+      "speaker": "范雲",
+      "identity": "立法委員",
+      "political_orientation": "被害者代表性強化派",
+      "discourse_logic": "治理比例與問責透明論",
+      "stances": [
+        {
+          "topic": "基金會董事結構",
+          "position": "主張提高被害者/家屬代表比例",
+          "note": "使治理更貼近受害者觀點。"
+        },
+        {
+          "topic": "會報機制",
+          "position": "要求每年至少開會與年度公開報告",
+          "note": "降低制度空轉風險。"
+        }
+      ],
+      "key_action": "提出多項條文微調提高透明與可問責性。"
+    },
+    "spk-2022-5083c89aa5955bd7": {
+      "speaker": "邱顯智",
+      "identity": "立法委員",
+      "political_orientation": "檔案開放強化派",
+      "discourse_logic": "徵集權限與國安例外審查論",
+      "stances": [
+        {
+          "topic": "檔案徵集",
+          "position": "擔憂三級機關難以推動徵集",
+          "note": "主張行政院層級需強化督導與協調。"
+        }
+      ],
+      "key_action": "追問機關不配合徵集與50年限制開放的正當性。"
+    },
+    "spk-2022-8933163a4b93cc8f": {
+      "speaker": "鄭運鵬",
+      "identity": "立法委員",
+      "political_orientation": "分段落實派",
+      "discourse_logic": "臺灣式轉型正義歷史路徑論",
+      "stances": [
+        {
+          "topic": "促轉落日",
+          "position": "支持按期交接但確保後續延續",
+          "note": "主張任務分散常態化並持續法制化收尾。"
+        }
+      ],
+      "key_action": "以歷史法制脈絡說明分期推進必要性。"
+    },
+    "spk-2022-758145a9b7a84085": {
+      "speaker": "陳椒華",
+      "identity": "立法委員",
+      "political_orientation": "院層級責任集中派",
+      "discourse_logic": "基金治理主責論",
+      "stances": [
+        {
+          "topic": "促轉基金管理",
+          "position": "主張由行政院直接管理可再評估",
+          "note": "認為任務統合、協調與監督責任應與基金管理一致。"
+        }
+      ],
+      "key_action": "要求重新檢討基金管理層級配置。"
+    },
+    "spk-2022-dc2a10ae6bd03433": {
+      "speaker": "陳歐珀",
+      "identity": "立法委員",
+      "political_orientation": "執行能量保障派",
+      "discourse_logic": "人力與會報實效論",
+      "stances": [
+        {
+          "topic": "任務承接",
+          "position": "要求專責人力與明確會報目標",
+          "note": "避免轉型正義在交接期中斷。"
+        }
+      ],
+      "key_action": "聚焦承接後人力配置與會報定期化。"
+    },
+    "spk-2022-ab69de90fb1e8e4c": {
+      "speaker": "周春米",
+      "identity": "立法委員",
+      "political_orientation": "平復法制延續派",
+      "discourse_logic": "立法撤銷正當性澄清論",
+      "stances": [
+        {
+          "topic": "司法不法平復",
+          "position": "支持立法方式撤銷不法判決的歷史選擇",
+          "note": "主張該模式是考量司法負擔與時代條件的平衡結果。"
+        }
+      ],
+      "key_action": "澄清立法歷程並要求後續行政不法處理銜接。"
+    },
+    "spk-2022-4dafb2eb9f75b2b9": {
+      "speaker": "陳宗彥",
+      "identity": "政府官員（內政部次長）",
+      "political_orientation": "分工重構派",
+      "discourse_logic": "任務性質分流論",
+      "stances": [
+        {
+          "topic": "基金會安排",
+          "position": "支持新設權利回復基金會",
+          "note": "認為二二八基金會已轉型教育文化任務，性質不同。"
+        }
+      ],
+      "key_action": "就新舊基金會定位差異提出行政理由。"
+    },
+    "spk-2022-883d377be0800d35": {
+      "speaker": "楊瓊瓔",
+      "identity": "立法委員",
+      "political_orientation": "機構膨脹警戒派",
+      "discourse_logic": "新設必要性質疑論",
+      "stances": [
+        {
+          "topic": "新基金會設置",
+          "position": "反對在疑慮未解下重複設置",
+          "note": "質疑督導斷點、人力分散與跨部會未整備。"
+        }
+      ],
+      "key_action": "要求先公聽再審查，補足制度論證。"
+    },
+    "spk-2022-551237379efb8ad2": {
+      "speaker": "賴品妤",
+      "identity": "立法委員",
+      "political_orientation": "被害者時間正義派",
+      "discourse_logic": "時間不可逆與誠意賠償論",
+      "stances": [
+        {
+          "topic": "權利回復立法",
+          "position": "強力支持儘速通過",
+          "note": "認為受難者與家屬高齡化，制度拖延即等同再次傷害。"
+        },
+        {
+          "topic": "賠償標準",
+          "position": "主張較高標準以展現國家誠意",
+          "note": "反對單以財政負擔壓縮修復幅度。"
+        }
+      ],
+      "key_action": "持續提案與質詢推動財產返還法制化。"
+    },
+    "spk-2022-17ea6fbd565e8fd9": {
+      "speaker": "諶立中",
+      "identity": "政府官員（衛福部司長）",
+      "political_orientation": "承接務實派",
+      "discourse_logic": "照顧與療癒雙軌執行論",
+      "stances": [
+        {
+          "topic": "政治創傷照護",
+          "position": "表示可承接並維持既有規模",
+          "note": "以長照與心理創傷療癒連結現有衛福資源。"
+        }
+      ],
+      "key_action": "回應衛福端承接可行性與專業基礎。"
+    },
+    "spk-2022-319fbc412f71bfc6": {
+      "speaker": "何志偉",
+      "identity": "立法委員",
+      "political_orientation": "權利完整回復派",
+      "discourse_logic": "賠償與身分權分離論",
+      "stances": [
+        {
+          "topic": "回復範圍",
+          "position": "要求納入退休金與身分權回復",
+          "note": "認為僅金錢賠償不足以完整回復受害者尊嚴。"
+        }
+      ],
+      "key_action": "提出條文方向要求擴充回復項目。"
+    },
+    "spk-2022-5b988c65aee8ff9d": {
+      "speaker": "柳照遠",
+      "identity": "政府官員（二二八基金會副執行長）",
+      "political_orientation": "協力銜接派",
+      "discourse_logic": "既有認定沿用論",
+      "stances": [
+        {
+          "topic": "新舊案件銜接",
+          "position": "主張避免重複認定受難事實",
+          "note": "可配合新基金會就繼承關係等更新資料。"
+        }
+      ],
+      "key_action": "表態在資料調用與分工上配合承接。"
+    },
+    "spk-2022-8fb998b6f4f60cf4": {
+      "speaker": "蔡碧仲",
+      "identity": "政府官員（法務部次長）",
+      "political_orientation": "承接研議派",
+      "discourse_logic": "尊重總結報告與後續研擬論",
+      "stances": [
+        {
+          "topic": "行政不法承接",
+          "position": "表示將依承接結果檢討機制",
+          "note": "強調先就任務性質完成法務端研議。"
+        }
+      ],
+      "key_action": "對跨部會爭點採保留並承諾後續檢討。"
+    },
+    "spk-2022-534a96ef77425d9b": {
+      "speaker": "張斗輝",
+      "identity": "政府官員（法務部次長）",
+      "political_orientation": "政策接辦派",
+      "discourse_logic": "三讀後廣納意見執行論",
+      "stances": [
+        {
+          "topic": "法務部承接任務",
+          "position": "尊重政策規劃並承諾納入各界意見",
+          "note": "強調待法案確定後依條文與行政院統合落實。"
+        }
+      ],
+      "key_action": "提出承接後將啟動研議與執行配套。"
+    },
+    "spk-2022-fac3963f1d4fbdec": {
+      "speaker": "遊建華",
+      "identity": "政府官員（國發會副主任委員）",
+      "political_orientation": "協調彙整派",
+      "discourse_logic": "檔案職能界線論",
+      "stances": [
+        {
+          "topic": "政治檔案修法",
+          "position": "支持彙整各版本建議後處理",
+          "note": "強調國發會在檔案提供可充分配合，但調查委員會角色需另議。"
+        }
+      ],
+      "key_action": "界定國發會在檔案提供與調查決策間的職權邊界。"
+    },
+    "spk-2022-bcdb65c289979a35": {
+      "speaker": "沈世偉",
+      "identity": "政府官員（國防部司長）",
+      "political_orientation": "軍事場域管制派",
+      "discourse_logic": "營區屬性風險論",
+      "stances": [
+        {
+          "topic": "軍事營區開放",
+          "position": "維持軍事訓練場所管理立場",
+          "note": "認為自由進出與軍事管理存在衝突。"
+        }
+      ],
+      "key_action": "就營區定義與開放邊界維持保守立場。"
+    },
+    "spk-2022-efe15d4b156c143c": {
+      "speaker": "吳林輝",
+      "identity": "政府官員（教育部司長）",
+      "political_orientation": "教育內化派",
+      "discourse_logic": "課綱落實與教材擴散論",
+      "stances": [
+        {
+          "topic": "轉型正義教育",
+          "position": "支持以課綱、師培、教案與活動長期推動",
+          "note": "主張透過制度化教育深化人權與歷史反思。"
+        }
+      ],
+      "key_action": "說明教育端既有推動成果與後續檔案協調。"
+    },
+    "spk-2022-c81d1bb29db52224": {
+      "speaker": "劉世芳",
+      "identity": "立法委員",
+      "political_orientation": "申請資格周延派",
+      "discourse_logic": "國籍與繼承資格邊界論",
+      "stances": [
+        {
+          "topic": "家屬申請資格",
+          "position": "要求釐清非本國籍/中國籍家屬適用標準",
+          "note": "重點在法定繼承與國籍限制如何適用。"
+        }
+      ],
+      "key_action": "促使行政端明確化申請人資格規範。"
+    },
+    "spk-2022-f45cceff2b0c900d": {
+      "speaker": "陳玉珍",
+      "identity": "立法委員",
+      "political_orientation": "程序正義檢驗派",
+      "discourse_logic": "爭議澄清論",
+      "stances": [
+        {
+          "topic": "轉型正義實作",
+          "position": "要求行政端對遭誤解者進行事實澄清",
+          "note": "關注制度運作不應再製標籤化。"
+        }
+      ],
+      "key_action": "在討論中要求具體澄清與回應。"
+    }
+  }
+}

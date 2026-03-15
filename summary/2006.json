@@ -1,0 +1,32 @@
+{
+  "metadata": {
+    "year": "2006",
+    "focus": "白色恐怖補償條例第二條修正：納入邊疆受難者與感化教育",
+    "data_density": "Extreme_High"
+  },
+  "visual_engine_config": {
+    "render_hints": [
+      { "component": "GeographicJusticeMap", "source": "clash_points", "props": { "highlight": ["Dongsha", "Nansha"] } },
+      { "component": "DurationSlider", "source": "metadata", "props": { "max": "8 years" } }
+    ],
+    "color_palette": { "frontier_justice": "#16a085", "extended_window": "#2980b9" }
+  },
+  "clash_points": [
+    {
+      "id": "2006-C1",
+      "topic": "納入「東沙、南沙地區」保衛者之受難事實",
+      "severity": 0.9,
+      "actors": {
+        "government": { "label": "國防部", "stance": "需核實軍事身分", "logic": "針對在邊疆地區因政治因素受處置者，須確認其受難時間（民國 38 年至 76 年）。" },
+        "opposition": { "label": "柯建銘、黃義交等黨團協商", "stance": "大幅放寬期限至八年", "logic": "邊疆地區資訊傳達更慢，且感化教育受難者長期被遺忘，必須給予長達八年的申請窗期。",
+          "keyword_focus": "感化教育、東沙南沙、八年申請期"
+        }
+      },
+      "micro_nuance": "原始資料中罕見地出現了針對『東沙、南沙』的描述，這顯示轉型正義的觸角終於延伸到最偏遠的軍事管制區。"
+    }
+  ],
+  "intelligence_layer": {
+    "summary_for_ai_voice": "2006 年是轉型正義地理與時間的雙重擴張。補償期限延長至八年，且首次承認了邊遠離島受難者的歷史存在。",
+    "frontend_action_required": "設計一個『正義地圖』，特別點亮東沙與南沙群島，並解釋其在戒嚴時期的特殊法律狀態。"
+  }
+}

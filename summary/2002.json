@@ -1,0 +1,39 @@
+{
+  "metadata": {
+    "year": "2002",
+    "focus": "戒嚴時期不當叛亂暨匪諜審判案件補償條例第九條修正",
+    "data_density": "High"
+  },
+  "visual_engine_config": {
+    "render_hints": [
+      { "component": "JusticeLogicComparator", "source": "clash_points", "props": { "principle": "舉輕明重" } },
+      { "component": "RestorationStatus", "source": "historical_micro_analysis" }
+    ]
+  },
+  "clash_points": [
+    {
+      "id": "2002-C1",
+      "topic": "「舉輕明重」的法理適用",
+      "severity": 0.85,
+      "actors": {
+        "government": {
+          "label": "行政院函請審議",
+          "stance": "酌作文字修正",
+          "logic": "配合實務運作，將原本模糊的申請期限與程序進行細節對接。",
+          "keyword_focus": "法律一致性、行政銜接"
+        },
+        "opposition": {
+          "label": "朱鳳芝等委員",
+          "stance": "擴大納入『不當審判』之全部樣態",
+          "logic": "基於法理，情節較輕者若獲補償，情節較重者更不應被排除，必須確保所有受裁判者均能獲致補償。",
+          "keyword_focus": "公平正義、不當審判、法理補漏"
+        }
+      },
+      "micro_nuance": "資料中提到『舉輕明重』的法理，這顯示 2002 年的立法已從『情緒補償』進入『精密法理攻防』階段。"
+    }
+  ],
+  "intelligence_layer": {
+    "summary_for_ai_voice": "2002 年致力於修補法律漏洞。針對白色恐怖時期的不當審判，立法者試圖建立一套更符合比例原則的補償邏輯。",
+    "frontend_action_required": "應高亮顯示『舉輕明重』這個法律術語，並提供解釋彈窗，說明其在轉型正義中的具體應用。"
+  }
+}

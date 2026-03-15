@@ -1,0 +1,287 @@
+{
+  "session_info": {
+    "year": "2016",
+    "meeting_type": "立法院委員會審查（促轉條例、政治檔案法、不當黨產、黨職併公職等）",
+    "analyzed_topics": [
+      "促進轉型正義條例立法範圍與時點",
+      "轉型正義是否應納入原住民族與日治時期歷史",
+      "不當黨產調查與國有財產返還",
+      "政治檔案徵集、移轉與開放應用",
+      "黨職併公職年資與退休給與處理",
+      "行政權限配置與違憲疑慮辯論"
+    ]
+  },
+  "speakers_analysis": {
+    "spk-2016-fa1ed501335c532b": {
+      "speaker": "周弘憲",
+      "identity": "政府官員（考試院/銓敘部長）",
+      "political_orientation": "制度收斂派",
+      "discourse_logic": "法制一致化論",
+      "stances": [
+        {
+          "topic": "政務再任與雙薪限制",
+          "position": "支持與公務員規範一致",
+          "note": "主張政務人員退職限制與公務人員退撫法制接軌。"
+        },
+        {
+          "topic": "黨職併公職",
+          "position": "支持跨體系整合處理",
+          "note": "認為涉及政務、軍、公、教等，需一致性法制處理。"
+        }
+      ],
+      "key_action": "提出退撫與黨職併公職處理之行政端修法方向。"
+    },
+    "spk-2016-ff769a9e891fd6af": {
+      "speaker": "尤美女",
+      "identity": "立法委員",
+      "political_orientation": "轉型正義推進派",
+      "discourse_logic": "真相-寬恕-和解鏈結論",
+      "stances": [
+        {
+          "topic": "促轉條例必要性",
+          "position": "強力支持儘速推動",
+          "note": "主張若無真相揭露，社會無法達成真正和解。"
+        }
+      ],
+      "key_action": "以國際經驗論證促轉立法正當性並反駁政治鬥爭指控。"
+    },
+    "spk-2016-a9ebe4665768e33b": {
+      "speaker": "黃國昌",
+      "identity": "立法委員",
+      "political_orientation": "雙軌立法派",
+      "discourse_logic": "分階段轉型正義論",
+      "stances": [
+        {
+          "topic": "1945後威權轉型正義",
+          "position": "支持單獨立法處理",
+          "note": "認為可與原住民族歷史縱深議題採不同法制路徑同步推進。"
+        }
+      ],
+      "key_action": "提出框架法與分案處理並行的策略。"
+    },
+    "spk-2016-5624bef7b96bd895": {
+      "speaker": "張宏陸",
+      "identity": "立法委員",
+      "political_orientation": "人權價值強化派",
+      "discourse_logic": "普世人權對照論",
+      "stances": [
+        {
+          "topic": "轉型正義定位",
+          "position": "主張以人權普世價值作為核心目的",
+          "note": "要求行政端正面回應轉型正義的價值基礎。"
+        }
+      ],
+      "key_action": "將國內立法置於聯合國與國際人權實務脈絡。"
+    },
+    "spk-2016-ac8fd7f914543b59": {
+      "speaker": "李俊俋",
+      "identity": "立法委員",
+      "political_orientation": "行政責任明確派",
+      "discourse_logic": "行政立場一致性檢驗論",
+      "stances": [
+        {
+          "topic": "行政院對促轉草案態度",
+          "position": "要求行政端明確表態",
+          "note": "追問違憲與法律競合疑慮是否構成反對基礎。"
+        }
+      ],
+      "key_action": "要求行政院在修法爭點上提供一致、可檢驗立場。"
+    },
+    "spk-2016-578ccddbb0ba4780": {
+      "speaker": "段宜康",
+      "identity": "立法委員",
+      "political_orientation": "歷史究責派",
+      "discourse_logic": "記憶政治與道德責任論",
+      "stances": [
+        {
+          "topic": "白色恐怖與歷史責任",
+          "position": "主張公開真相與承認責任不可迴避",
+          "note": "批判『不道歉、只反對』將使轉型正義失真。"
+        }
+      ],
+      "key_action": "透過具體受難案例強化促轉必要性。"
+    },
+    "spk-2016-3ba04f3002701539": {
+      "speaker": "林秋燕",
+      "identity": "政府官員（檔案局代理局長）",
+      "political_orientation": "檔案治理務實派",
+      "discourse_logic": "徵集-典藏-開放三段論",
+      "stances": [
+        {
+          "topic": "政治檔案開放",
+          "position": "支持在法制下加速開放應用",
+          "note": "強調目錄可查詢與數位化率已高，並對當事人提供便利。"
+        }
+      ],
+      "key_action": "提出政治檔案徵集量與開放實績，支撐後續專法討論。"
+    },
+    "spk-2016-693d87e2d707722e": {
+      "speaker": "徐國勇",
+      "identity": "立法委員",
+      "political_orientation": "立法推進派",
+      "discourse_logic": "完成度檢驗論",
+      "stances": [
+        {
+          "topic": "轉型正義立法",
+          "position": "主張未完成即應立法補足",
+          "note": "以『是否已完成』反證立法必要性。"
+        }
+      ],
+      "key_action": "推動由價值共識進入法制落地。"
+    },
+    "spk-2016-62db928357f06402": {
+      "speaker": "吳秉叡",
+      "identity": "立法委員",
+      "political_orientation": "法律技術實證派",
+      "discourse_logic": "民法善意第三人界線論",
+      "stances": [
+        {
+          "topic": "不當黨產返還",
+          "position": "主張非法取得者不受善意第三人保護",
+          "note": "以既有法理回應追討黨產的法律疑義。"
+        }
+      ],
+      "key_action": "將爭點轉回既有私法與公法原則。"
+    },
+    "spk-2016-a42d35b6d9d078c6": {
+      "speaker": "蔡易餘",
+      "identity": "立法委員",
+      "political_orientation": "國產追討派",
+      "discourse_logic": "訴訟策略檢驗論",
+      "stances": [
+        {
+          "topic": "黨產訴訟",
+          "position": "支持財政部捍衛國產提訴",
+          "note": "即便個案敗訴，仍應維持國家財產主張。"
+        }
+      ],
+      "key_action": "要求行政端確認訴訟立場與後續作為。"
+    },
+    "spk-2016-c0bd8d1ce5ac2e00": {
+      "speaker": "周春米",
+      "identity": "立法委員",
+      "political_orientation": "和解工程深化派",
+      "discourse_logic": "補償到結構改革轉進論",
+      "stances": [
+        {
+          "topic": "轉型正義現況",
+          "position": "認為過去偏重補償與紀念，仍需制度性深化",
+          "note": "要求從『呼籲和解』進入『揭露真相與制度改革』。"
+        }
+      ],
+      "key_action": "把促轉從象徵措施推向結構治理。"
+    },
+    "spk-2016-d5c70c21d67e9098": {
+      "speaker": "許毓仁",
+      "identity": "立法委員",
+      "political_orientation": "自由權限控派",
+      "discourse_logic": "反擴權監督論",
+      "stances": [
+        {
+          "topic": "促轉會權限",
+          "position": "支持轉型正義但反對權限過度擴張",
+          "note": "主張應強化對話與程序正當，而非行政強制化。"
+        }
+      ],
+      "key_action": "對促轉條例中調查權設計提出自由權疑慮。"
+    },
+    "spk-2016-219b1ac0cc7f861c": {
+      "speaker": "鄭天財",
+      "identity": "立法委員",
+      "political_orientation": "原住民族轉型正義優先派",
+      "discourse_logic": "歷史縱深校正論",
+      "stances": [
+        {
+          "topic": "轉型正義時點",
+          "position": "反對僅以1945後為框架",
+          "note": "主張應納入日治及更早統治時期對原住民族的土地與文化侵害。"
+        }
+      ],
+      "key_action": "要求將原民土地正義納入法案核心。"
+    },
+    "spk-2016-74abfd599ee64e13": {
+      "speaker": "賴瑞隆",
+      "identity": "立法委員",
+      "political_orientation": "民意授權推動派",
+      "discourse_logic": "程序阻卻最小化論",
+      "stances": [
+        {
+          "topic": "黨產處理",
+          "position": "支持儘速進入實質審查",
+          "note": "主張已有高民意支援，不應再以程序拖延。"
+        }
+      ],
+      "key_action": "推進從詢答階段轉入逐條審查。"
+    },
+    "spk-2016-ee5f0e50e9f04db1": {
+      "speaker": "李彥秀",
+      "identity": "立法委員",
+      "political_orientation": "轉型正義機制化主張派",
+      "discourse_logic": "非選擇性正義論",
+      "stances": [
+        {
+          "topic": "促轉條例範圍",
+          "position": "反對選擇性處理單一時段與對象",
+          "note": "主張納入原民、慰安婦、歷史被徵收土地等議題。"
+        }
+      ],
+      "key_action": "要求法案若通過應同時處理更廣泛歷史不正義。"
+    },
+    "spk-2016-d49837a20dd408df": {
+      "speaker": "郭正亮",
+      "identity": "立法委員",
+      "political_orientation": "轉型正義與社會穩定平衡派",
+      "discourse_logic": "追責與慈悲並行論",
+      "stances": [
+        {
+          "topic": "黨職併公職處理",
+          "position": "支持處理歷史不正義，同時避免次生生活衝擊",
+          "note": "主張可分層、分級處理，兼顧公平與社會成本。"
+        }
+      ],
+      "key_action": "以中間路線框定修法可行邊界。"
+    },
+    "spk-2016-1a7676a1f9930e42": {
+      "speaker": "李鴻鈞",
+      "identity": "立法委員",
+      "political_orientation": "理性協商派",
+      "discourse_logic": "公開透明共識論",
+      "stances": [
+        {
+          "topic": "黨產處理",
+          "position": "支持處理但反對仇恨式推進",
+          "note": "主張以朝野協商與透明程序形成可長期承受之法律。"
+        }
+      ],
+      "key_action": "推動從表決對抗轉向條文協商。"
+    },
+    "spk-2016-55103ba104b1357e": {
+      "speaker": "葉俊榮",
+      "identity": "政府官員（內政部長）",
+      "political_orientation": "程序尊重派",
+      "discourse_logic": "立法目的對應論",
+      "stances": [
+        {
+          "topic": "黨產法制",
+          "position": "尊重立法機關形成之共識版本",
+          "note": "行政端願意在討論中回應，但不先行壟斷立法設計。"
+        }
+      ],
+      "key_action": "代表主管機關承諾配合審議共識與後續執行。"
+    },
+    "spk-2016-3c35f91bbe55a04a": {
+      "speaker": "陳瑩",
+      "identity": "立法委員",
+      "political_orientation": "原民權益導向派",
+      "discourse_logic": "定義校準與時段檢證論",
+      "stances": [
+        {
+          "topic": "原住民族轉型正義",
+          "position": "要求明確納入原民議題與時點界定",
+          "note": "主張不能只談二二八與白色恐怖，而忽略原民長期受侵害歷史。"
+        }
+      ],
+      "key_action": "在委員會上將原民轉型正義置入核心問答。"
+    }
+  }
+}
