@@ -164,9 +164,15 @@ const YearOverview = () => {
     }
   }, [year]);
 
-  const identities = ['All', ...Array.from(new Set(data.map(s => s.identity)))];
+  const identities = ['All', ...Array.from(new Set(data.map(s => {
+    // 規範化 identity：移除括號內容
+    const normalized = s.identity.split('（')[0].split('(')[0].trim();
+    return normalized;
+  })))];
+  
   const filteredData = data.filter(s => {
-    const matchesFilter = filter === 'All' || s.identity === filter;
+    const normalized = s.identity.split('（')[0].split('(')[0].trim();
+    const matchesFilter = filter === 'All' || normalized === filter;
     const matchesSearch = s.speaker.includes(search) || 
                          s.political_orientation.includes(search) ||
                          s.lawName.includes(search);
@@ -259,11 +265,43 @@ const YearOverview = () => {
     }
   };
 
+  const getStageColor = (stage: string) => {
+    // 返回不同會議階段的顏色
+    if (stage.includes('一讀')) return 'bg-blue-600 text-white';
+    if (stage.includes('二讀')) return 'bg-purple-600 text-white';
+    if (stage.includes('三讀')) return 'bg-red-600 text-white';
+    if (stage.includes('委員會')) return 'bg-amber-600 text-white';
+    if (stage.includes('廣泛討論')) return 'bg-cyan-600 text-white';
+    if (stage.includes('逐條討論')) return 'bg-teal-600 text-white';
+    if (stage.includes('協商')) return 'bg-indigo-600 text-white';
+    if (stage.includes('公聽會')) return 'bg-pink-600 text-white';
+    return 'bg-gray-600 text-white';
+  };
+
   const getStanceColor = (stance: string) => {
     const s = stance.trim();
-    if (s.includes('支持') || s.includes('積極')) return 'bg-emerald-600 text-white border-emerald-700';
-    if (s.includes('反對') || s.includes('保留')) return 'bg-rose-700 text-white border-rose-800';
-    return 'bg-slate-700 text-white border-slate-800';
+    
+    // 支持派系 - 綠色系列
+    if (s.includes('支持') || s.includes('贊成') || s.includes('同意')) return 'bg-emerald-600 text-white border-emerald-700';
+    if (s.includes('積極') || s.includes('推進') || s.includes('改革')) return 'bg-lime-600 text-white border-lime-700';
+    
+    // 反對派系 - 紅色系列
+    if (s.includes('反對') || s.includes('反制')) return 'bg-red-700 text-white border-red-800';
+    if (s.includes('保留') || s.includes('疑慮') || s.includes('警惕')) return 'bg-rose-600 text-white border-rose-700';
+    if (s.includes('批判') || s.includes('質疑')) return 'bg-orange-600 text-white border-orange-700';
+    
+    // 中立/程序派系 - 灰藍色系列
+    if (s.includes('中立') || s.includes('平衡') || s.includes('協調')) return 'bg-slate-600 text-white border-slate-700';
+    if (s.includes('程序') || s.includes('正當')) return 'bg-blue-600 text-white border-blue-700';
+    if (s.includes('法制') || s.includes('法律')) return 'bg-cyan-600 text-white border-cyan-700';
+    
+    // 保守派系 - 紫/棕色系列
+    if (s.includes('保守') || s.includes('穩定')) return 'bg-purple-600 text-white border-purple-700';
+    if (s.includes('分階段') || s.includes('階段') || s.includes('漸進')) return 'bg-indigo-600 text-white border-indigo-700';
+    if (s.includes('務實') || s.includes('優化')) return 'bg-amber-600 text-white border-amber-700';
+    
+    // 其他 - 默認灰色
+    return 'bg-gray-600 text-white border-gray-700';
   };
 
   if (loading) return (
@@ -305,9 +343,51 @@ const YearOverview = () => {
           {viewMode === 'guide' ? (
             <YearGuideRenderer year={year} intelligence={intelligence} session={session} data={data} groupedByLaw={groupedByLaw} setViewMode={setViewMode} summaryData={summaryData} />
           ) : (
-            <div className="flex flex-col md:flex-row gap-8 md:gap-16">
+            <>
+              {/* Session Info Banner */}
+              <div className="mb-8 md:mb-16 p-6 md:p-12 bg-gradient-to-r from-gray-50 to-white border-2 border-gray-200">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  <div>
+                    <h3 className="text-[10px] font-black uppercase tracking-[0.3em] text-gray-400 mb-3">Meeting Info</h3>
+                    <p className="text-lg md:text-xl font-bold text-gray-800 leading-snug">{session?.meeting_type}</p>
+                    {session?.analyzed_topics && session.analyzed_topics.length > 0 && (
+                      <div className="mt-4 space-y-1">
+                        <p className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">Analyzed Topics</p>
+                        <ul className="text-xs md:text-sm text-gray-700 space-y-1">
+                          {session.analyzed_topics.slice(0, 5).map((topic, idx) => (
+                            <li key={idx} className="border-l-2 border-[#8C2F39] pl-2">• {topic}</li>
+                          ))}
+                          {session.analyzed_topics.length > 5 && (
+                            <li className="text-gray-500 italic">+ {session.analyzed_topics.length - 5} more topics</li>
+                          )}
+                        </ul>
+                      </div>
+                    )}
+                  </div>
+                  <div>
+                    <h3 className="text-[10px] font-black uppercase tracking-[0.3em] text-gray-400 mb-3">Archive Summary</h3>
+                    <div className="space-y-3">
+                      <div className="flex justify-between items-center p-2 bg-white border border-gray-100">
+                        <span className="text-[10px] font-black uppercase tracking-[0.1em] text-gray-600">Total Speeches</span>
+                        <span className="text-2xl font-black text-[#8C2F39]">{data.length}</span>
+                      </div>
+                      <div className="flex justify-between items-center p-2 bg-white border border-gray-100">
+                        <span className="text-[10px] font-black uppercase tracking-[0.1em] text-gray-600">Legislations Discussed</span>
+                        <span className="text-2xl font-black text-[#8C2F39]">{Object.keys(groupedByLaw).length}</span>
+                      </div>
+                      <div className="flex justify-between items-center p-2 bg-white border border-gray-100">
+                        <span className="text-[10px] font-black uppercase tracking-[0.1em] text-gray-600">Identity Types</span>
+                        <span className="text-2xl font-black text-[#8C2F39]">{identities.length - 1}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Archive Content */}
+              <div className="flex flex-col md:flex-row gap-8 md:gap-16">
               <aside className="w-full md:w-80 shrink-0 space-y-8 md:space-y-12">
-                <div className="md:sticky md:top-8">
+            <div className="md:sticky md:top-8">
                   <h3 className="text-[10px] font-black uppercase tracking-[0.4em] border-b-4 border-black pb-2 mb-4 md:mb-8">Table of Contents</h3>
                   <nav className="flex flex-wrap md:flex-col gap-2 md:gap-4">
                     {Object.keys(groupedByLaw).map(law => (
@@ -315,7 +395,27 @@ const YearOverview = () => {
                     ))}
                   </nav>
                   
-                  <div className="mt-8 md:mt-20 pt-8 border-t border-gray-200">
+                  <div className="mt-8 md:mt-16 pt-8 border-t border-gray-200">
+                    <h4 className="text-[10px] font-black uppercase tracking-[0.4em] border-b-2 border-gray-300 pb-2 mb-4">Filter by Identity</h4>
+                    <div className="flex flex-wrap md:flex-col gap-2">
+                      {identities.map(identity => (
+                        <button
+                          key={identity}
+                          onClick={() => setFilter(identity)}
+                          className={cn(
+                            "text-left text-xs font-bold uppercase tracking-widest px-3 py-2 border-l-3 transition-all",
+                            filter === identity
+                              ? "border-l-[#8C2F39] text-[#8C2F39] bg-gray-50"
+                              : "border-l-gray-200 text-gray-600 hover:border-l-gray-400 hover:text-gray-900"
+                          )}
+                        >
+                          {identity}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                  
+                  <div className="mt-8 md:mt-16 pt-8 border-t border-gray-200">
                     <div className="relative group">
                       <Search className="absolute left-0 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                       <input type="text" placeholder="SEARCH..." value={search} onChange={(e) => setSearch(e.target.value)} className="w-full bg-transparent border-b border-gray-300 pl-8 py-2 text-xs font-black uppercase focus:outline-none focus:border-black transition-all" />
@@ -331,7 +431,7 @@ const YearOverview = () => {
                     {Object.entries(stages).map(([stageName, speeches]) => (
                       <div key={stageName} className="space-y-6 md:space-y-8">
                         <div className="flex items-center space-x-4 md:space-x-6">
-                          <span className="px-3 md:px-4 py-1 bg-[#8C2F39] text-white text-[8px] md:text-[10px] font-black uppercase tracking-[0.2em] md:tracking-[0.3em] whitespace-nowrap">{stageName}</span>
+                          <span className={cn("px-3 md:px-4 py-1 text-white text-[8px] md:text-[10px] font-black uppercase tracking-[0.2em] md:tracking-[0.3em] whitespace-nowrap", getStageColor(stageName))}>{stageName}</span>
                           <div className="h-[2px] flex-grow bg-gray-200"></div>
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-12">
@@ -342,7 +442,9 @@ const YearOverview = () => {
                                 <span className="text-[8px] md:text-[10px] font-black text-gray-400 uppercase tracking-widest">{speech.date}</span>
                               </div>
                               <h3 className="text-3xl md:text-5xl font-black serif group-hover:text-[#8C2F39] transition-colors mb-2 md:mb-4 line-clamp-2">{speech.speaker}</h3>
-                              <p className="text-[8px] md:text-[10px] font-black uppercase tracking-[0.1em] md:tracking-[0.2em] text-gray-400 mb-4 md:mb-8">{speech.identity}</p>
+                              <p className="text-[8px] md:text-[10px] font-black uppercase tracking-[0.1em] md:tracking-[0.2em] text-gray-400 mb-4 md:mb-8">
+                                {speech.identity.split('（')[0].split('(')[0].trim()}
+                              </p>
                               <div className="flex flex-wrap gap-2 mb-4 md:mb-8">
                                 {speech.political_orientation.split('/').map((p, i) => (
                                   <span key={i} className={cn("px-2 py-1 text-[8px] font-black uppercase border", getStanceColor(p))}>{p}</span>
@@ -358,6 +460,7 @@ const YearOverview = () => {
                 ))}
               </div>
             </div>
+            </>
           )}
         </motion.main>
       </AnimatePresence>

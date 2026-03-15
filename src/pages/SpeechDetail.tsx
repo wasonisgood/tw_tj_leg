@@ -15,20 +15,61 @@ const SpeechDetail = () => {
   const [speech, setSpeech] = useState<ProcessedSpeech | null>(null);
   const [pdfLink, setPdfLink] = useState<PDFLink | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (year && speakerId) {
-      DataManager.init().then(() => {
-        DataManager.getProcessedYearData(year).then(res => {
-          const found = res.speeches.find(s => s.id === speakerId);
-          setSpeech(found || null);
-          if (found && found.metadata?.file_stem) {
-            setPdfLink(DataManager.getPDFLink(found.metadata.file_stem));
-          }
-          setLoading(false);
+    if (!year || !speakerId) return;
+
+    const loadSpeech = async () => {
+      try {
+        console.log(`[SpeechDetail] Starting load: year=${year}, speakerId=${speakerId}`);
+        setLoading(true);
+        setError(null);
+
+        await DataManager.init();
+        console.log(`[SpeechDetail] DataManager initialized`);
+
+        const res = await DataManager.getProcessedYearData(year);
+        console.log(`[SpeechDetail] Data loaded:`, {
+          speechesCount: res?.speeches?.length,
+          hasSpeeches: !!res?.speeches,
         });
-      });
-    }
+
+        if (!res || !Array.isArray(res.speeches)) {
+          throw new Error('Invalid response: speeches is not an array');
+        }
+
+        console.log(`[SpeechDetail] Looking for speakerId: ${speakerId}`);
+        console.log(`[SpeechDetail] Sample IDs:`, res.speeches.slice(0, 3).map(s => s.id));
+
+        const found = res.speeches.find(s => s.id === speakerId);
+        console.log(`[SpeechDetail] Search result: ${found ? 'FOUND' : 'NOT FOUND'}`);
+
+        if (!found) {
+          setError(`Speech with ID ${speakerId} not found in year ${year}`);
+          setSpeech(null);
+        } else {
+          setSpeech(found);
+          if (found.metadata?.file_stem) {
+            console.log(`[SpeechDetail] Looking for PDF link with file_stem: ${found.metadata.file_stem}`);
+            const link = DataManager.getPDFLink(found.metadata.file_stem);
+            console.log(`[SpeechDetail] PDF link result:`, link);
+            setPdfLink(link);
+          } else {
+            console.log(`[SpeechDetail] No file_stem found in metadata`);
+          }
+        }
+      } catch (err) {
+        console.error(`[SpeechDetail] Error:`, err);
+        const message = err instanceof Error ? err.message : String(err);
+        setError(`Failed to load data: ${message}`);
+        setSpeech(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadSpeech();
   }, [year, speakerId]);
 
   const renderStanceTags = (orientation: string) => {
@@ -59,7 +100,15 @@ const SpeechDetail = () => {
     </div>
   );
 
-  if (!speech) return <div className="p-20 text-center serif">Speech Not Found</div>;
+  if (error || !speech) return (
+    <div className="min-h-screen bg-[#F9F9F7] flex flex-col items-center justify-center p-8">
+      <div className="text-center">
+        <h2 className="text-3xl font-black serif mb-4">Error</h2>
+        <p className="text-lg mb-4">{error || 'Speech Not Found'}</p>
+        <Link to="/" className="text-blue-600 hover:underline">Back to Home</Link>
+      </div>
+    </div>
+  );
 
   return (
     <motion.main 
@@ -95,7 +144,7 @@ const SpeechDetail = () => {
           <div className="flex flex-wrap gap-y-4 gap-x-8 py-6 border-y border-gray-200">
             <div className="flex flex-col">
               <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Identity</span>
-              <span className="text-sm font-bold flex items-center"><Info className="w-3 h-3 mr-1.5 opacity-30" /> {speech.identity}</span>
+              <span className="text-sm font-bold flex items-center"><Info className="w-3 h-3 mr-1.5 opacity-30" /> {speech.identity.split('（')[0].split('(')[0].trim()}</span>
             </div>
             <div className="flex flex-col">
               <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Archive ID</span>
