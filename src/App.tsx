@@ -4,6 +4,9 @@ import Landing from './pages/Landing';
 import YearOverview from './pages/YearOverview';
 import SpeechDetail from './pages/SpeechDetail';
 import Debug from './pages/Debug';
+import LawDetail from './pages/LawDetail';
+import YearRedirect from './pages/YearRedirect';
+import FullRevisionGuide from './pages/FullRevisionGuide';
 
 function App() {
   return (
@@ -13,7 +16,13 @@ function App() {
         <Routes>
           <Route path="/" element={<Landing />} />
           <Route path="/debug" element={<Debug />} />
-          <Route path="/:year" element={<YearOverview />} />
+          <Route path="/guide/full-revision" element={<FullRevisionGuide />} />
+          <Route path="/laws/:lawSlug" element={<LawDetail />} />
+          <Route path="/:year" element={<YearRedirect />} />
+          <Route path="/:year/guide" element={<YearOverview />} />
+          <Route path="/:year/archive" element={<YearOverview />} />
+          <Route path="/:year/party" element={<YearOverview />} />
+          <Route path="/:year/archive/speech/:speakerId" element={<SpeechDetail />} />
           <Route path="/:year/:speakerId" element={<SpeechDetail />} />
         </Routes>
       </AnimatePresence>

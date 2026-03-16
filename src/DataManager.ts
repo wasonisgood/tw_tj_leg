@@ -58,12 +58,79 @@ export interface YearPDFs {
   pdfs: PDFLink[];
 }
 
+export interface LawLegislationVersion {
+  label: string;
+  version_date: string;
+  publication_date?: string;
+  url?: string;
+  is_current?: boolean;
+}
+
+export interface LawHistoryRevision {
+  date: string;
+  year?: number;
+  month?: number;
+  day?: number;
+  action_type: string;
+  content: string[];
+  reason?: string[];
+  revision_index?: number;
+  is_current?: boolean;
+}
+
+export interface LawArticleHistory {
+  article_no: string;
+  total_revisions: number;
+  revisions: LawHistoryRevision[];
+}
+
+export interface LawHistoryData {
+  metadata: {
+    law_name: string;
+    law_id?: string;
+    current_version_date?: string;
+    total_articles?: number;
+    total_revisions?: number;
+    legislation_versions_count?: number;
+    source_url?: string;
+    filters_applied?: {
+      filter_nth?: number;
+    };
+    target_date?: string;
+  };
+  legislation_versions?: LawLegislationVersion[];
+  table_of_contents?: Array<{ part_id: string; article_no: string }>;
+  current_text?: Array<{ part_id: string; article_no: string; content: string[] }>;
+  article_history?: LawArticleHistory[];
+}
+
+export interface LYLegislatorTerm {
+  時間: string;
+  名單: Record<string, string>;
+}
+
+export type LYHistoryData = Record<string, LYLegislatorTerm>;
+
 export class DataManager {
   private static idMapping: any = null;
   private static imageMap: any = null;
   private static imgbbMap: { [fileName: string]: string } = {};
   private static pdfList: YearPDFs[] = [];
   private static yearDataCache: { [year: string]: YearData } = {};
+  private static lawHistoryCache: Record<string, LawHistoryData> = {};
+  private static lyHistoryCache: LYHistoryData | null = null;
+  private static lawHistoryLoaded = false;
+  private static readonly lawHistoryFiles = [
+    '二二八事件處理及賠償條例.json',
+    '促進轉型正義條例.json',
+    '公職人員年資併社團專職人員年資計發退離給與處理條例.json',
+    '戒嚴時期人民受損權利回復條例.json',
+    '戒嚴時期不當叛亂暨匪諜審判案件補償條例.json',
+    '威權統治時期國家不法行為被害者權利回復條例.json',
+    '政治檔案條例.json',
+    '政黨及其附隨組織不當取得財產處理條例.json',
+    '國家安全法_制定.json'
+  ];
 
   private static getBasePath(): string {
     // 使用 window.location.pathname 來動態取得 base 路徑
@@ -315,5 +382,101 @@ export class DataManager {
       sessionInfo: rawData.session_info,
       intelligence: rawData.intelligence_layer
     };
+  }
+
+  static async loadLawHistoryData(): Promise<Record<string, LawHistoryData>> {
+    if (this.lawHistoryLoaded) {
+      return this.lawHistoryCache;
+    }
+
+    const basePath = this.getBasePath();
+    const results = await Promise.all(
+      this.lawHistoryFiles.map(async (fileName) => {
+        try {
+          const resp = await fetch(`${basePath}law_history/${encodeURIComponent(fileName)}`);
+          if (!resp.ok) return null;
+          const data = await resp.json() as LawHistoryData;
+          const lawName = data?.metadata?.law_name;
+          if (!lawName) return null;
+          return { lawName, data };
+        } catch (e) {
+          console.warn(`[DataManager.loadLawHistoryData] skip ${fileName}:`, e);
+          return null;
+        }
+      })
+    );
+
+    results.forEach((entry) => {
+      if (!entry) return;
+      this.lawHistoryCache[entry.lawName] = entry.data;
+    });
+
+    this.lawHistoryLoaded = true;
+    return this.lawHistoryCache;
+  }
+
+  static async getLawHistoryByName(lawName: string): Promise<LawHistoryData | null> {
+    const map = await this.loadLawHistoryData();
+
+    if (map[lawName]) return map[lawName];
+
+    const normalizeLawName = (input: string): string =>
+      (input || '')
+        .replace(/（.*?）|\(.*?\)/g, '')
+        .replace(/草案/g, '')
+        .replace(/_制定$/, '')
+        .replace(/\s+/g, '')
+        .trim();
+
+    const aliasMap: Record<string, string> = {
+      '228條例': '二二八事件處理及賠償條例',
+      '不當審判條例': '戒嚴時期不當叛亂暨匪諜審判案件補償條例',
+      '促轉條例': '促進轉型正義條例',
+      '回復條例': '戒嚴時期人民受損權利回復條例',
+      '威權時期回復條例': '威權統治時期國家不法行為被害者權利回復條例',
+      '年資處理條例': '公職人員年資併社團專職人員年資計發退離給與處理條例',
+      '黨產條例': '政黨及其附隨組織不當取得財產處理條例',
+      '國家安全法': '國家安全法'
+    };
+
+    const normalized = normalizeLawName(lawName);
+    const aliased = aliasMap[normalized] || normalized;
+    if (map[aliased]) return map[aliased];
+
+    const matchedKey = Object.keys(map).find((key) => {
+      const nk = normalizeLawName(key);
+      return nk === aliased || nk.includes(aliased) || aliased.includes(nk);
+    });
+
+    return matchedKey ? map[matchedKey] : null;
+  }
+
+  static async getAllLawHistory(): Promise<Record<string, LawHistoryData>> {
+    return this.loadLawHistoryData();
+  }
+
+  static async loadLYHistoryData(): Promise<LYHistoryData> {
+    if (this.lyHistoryCache) {
+      return this.lyHistoryCache;
+    }
+
+    try {
+      const resp = await fetch(`${this.getBasePath()}ly_history_data.json`);
+      if (!resp.ok) {
+        this.lyHistoryCache = {};
+        return this.lyHistoryCache;
+      }
+
+      this.lyHistoryCache = await resp.json() as LYHistoryData;
+      return this.lyHistoryCache;
+    } catch (e) {
+      console.warn('[DataManager.loadLYHistoryData] failed:', e);
+      this.lyHistoryCache = {};
+      return this.lyHistoryCache;
+    }
+  }
+
+  static async getLYHistoryData(): Promise<LYHistoryData> {
+    return this.loadLYHistoryData();
   }
 }

@@ -118,7 +118,7 @@ const SpeechDetail = () => {
     >
       {/* Analysis Column */}
       <div className="w-full md:w-5/12 p-8 md:p-16 overflow-y-auto h-screen border-r border-gray-200">
-        <Link to={`/${year}`} className="inline-flex items-center text-[10px] font-black uppercase tracking-[0.3em] text-gray-400 hover:text-black mb-16 transition-colors">
+        <Link to={`/${year}/archive`} className="inline-flex items-center text-[10px] font-black uppercase tracking-[0.3em] text-gray-400 hover:text-black mb-16 transition-colors">
           <ArrowLeft className="w-3 h-3 mr-2" /> Back to Archive
         </Link>
 

@@ -29,6 +29,15 @@ const PHASES = [
   }
 ];
 
+const getPhaseIndexByYear = (year: string): number => {
+  const y = Number(year);
+  if (!Number.isFinite(y)) return 0;
+  if (y <= 1987) return 0;
+  if (y <= 2000) return 1;
+  if (y <= 2013) return 2;
+  return 3;
+};
+
 const getBasePath = (): string => {
   const pathname = window.location.pathname;
   if (pathname.includes('/tw_tj_leg/')) {
@@ -40,6 +49,7 @@ const getBasePath = (): string => {
 const Landing = () => {
   const [hoveredYear, setHoveredYear] = useState<string | null>(null);
   const [yearStats, setYearStats] = useState<Record<string, { count: number, summary: string }>>({});
+  const [lawMilestoneYearMap, setLawMilestoneYearMap] = useState<Record<string, boolean>>({});
   const [showExportModal, setShowExportModal] = useState(false);
   const [exportStatus, setExportStatus] = useState<'idle' | 'loading' | 'complete'>('idle');
   const [exportProgress, setExportProgress] = useState(0);
@@ -47,6 +57,27 @@ const Landing = () => {
   useEffect(() => {
     const allYears = PHASES.flatMap(p => p.years);
     const basePath = getBasePath();
+
+    DataManager.getAllLawHistory()
+      .then((lawMap) => {
+        const nextMap: Record<string, boolean> = {};
+        Object.values(lawMap || {}).forEach((law) => {
+          if (law.metadata?.filters_applied) {
+            return;
+          }
+          (law.legislation_versions || []).forEach((version) => {
+            const y = (version.version_date || '').slice(0, 4);
+            if (/^\d{4}$/.test(y)) {
+              nextMap[y] = true;
+            }
+          });
+        });
+        setLawMilestoneYearMap(nextMap);
+      })
+      .catch(() => {
+        setLawMilestoneYearMap({});
+      });
+
     allYears.forEach(year => {
       fetch(`${basePath}${year}.json`)
         .then(res => {
@@ -86,6 +117,25 @@ const Landing = () => {
         });
     });
   }, []);
+
+  const coreYearSet = new Set(PHASES.flatMap((p) => p.years));
+  const missingLawYears = Object.keys(lawMilestoneYearMap)
+    .filter((year) => !coreYearSet.has(year))
+    .sort((a, b) => a.localeCompare(b));
+
+  const displayPhases = PHASES.map((phase, idx) => {
+    const merged = new Set(phase.years);
+    missingLawYears.forEach((year) => {
+      if (getPhaseIndexByYear(year) === idx) {
+        merged.add(year);
+      }
+    });
+
+    return {
+      ...phase,
+      years: Array.from(merged).sort((a, b) => a.localeCompare(b))
+    };
+  });
 
   const handleExport = async (mode: 'report' | 'index') => {
     if (exportStatus === 'loading') return;
@@ -387,12 +437,19 @@ const Landing = () => {
                 <FileDown className="w-4 h-4" />
                 <span>Export Full Word Archive</span>
               </button>
+              <Link
+                to="/guide/full-revision"
+                className="w-full py-4 border-2 border-black text-[10px] font-black uppercase tracking-[0.28em] hover:bg-black hover:text-white transition-all flex items-center justify-center space-x-3"
+              >
+                <Database className="w-4 h-4" />
+                <span>Missing-Year Law Change Guide</span>
+              </Link>
             </div>
           </div>
         </header>
 
         <div className="space-y-32">
-          {PHASES.map((phase, pIdx) => (
+          {displayPhases.map((phase, pIdx) => (
             <section key={pIdx} className="space-y-12">
               <div className="flex flex-col md:flex-row md:items-end justify-between border-l-[12px] border-black pl-8">
                 <div className="space-y-2">
@@ -406,7 +463,7 @@ const Landing = () => {
                 {phase.years.map((year) => (
                   <Link
                     key={year}
-                    to={`/${year}`}
+                    to={coreYearSet.has(year) ? `/${year}/guide` : `/guide/full-revision?year=${year}`}
                     onMouseEnter={() => setHoveredYear(year)}
                     onMouseLeave={() => setHoveredYear(null)}
                     className="group relative bg-white aspect-square flex flex-col items-center justify-center hover:bg-black transition-all duration-500 overflow-hidden"
@@ -415,6 +472,14 @@ const Landing = () => {
                       <span className="text-[10px] font-black serif group-hover:text-gray-600 transition-colors">#{year.slice(2)}</span>
                       <span className="text-[8px] font-black uppercase text-gray-300 mt-1">{yearStats[year]?.count || '--'} Records</span>
                     </div>
+
+                    {lawMilestoneYearMap[year] && (
+                      <div className="absolute top-4 right-4 z-10">
+                        <span className="px-2 py-1 bg-black text-white text-[8px] font-black uppercase tracking-[0.18em] group-hover:bg-[#8C2F39] transition-colors">
+                          {coreYearSet.has(year) ? '法規節點' : '缺席修法'}
+                        </span>
+                      </div>
+                    )}
 
                     <span className="text-5xl font-black serif group-hover:text-white group-hover:scale-110 transition-all duration-500 relative z-10">
                       {year}
