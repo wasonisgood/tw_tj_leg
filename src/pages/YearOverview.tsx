@@ -10,6 +10,7 @@ import YearGuideRenderer from '../components/year-overview/YearGuideRenderer';
 import ArchiveView from '../components/year-overview/ArchiveView';
 import PartyView from '../components/year-overview/PartyView';
 import { normalizeIdentity } from '../components/year-overview/archiveUtils';
+import { appendConfrontationalModeAppendix } from '../utils/partyWordExport';
 
 function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -136,6 +137,7 @@ const YearOverview = () => {
     if (!year || isExporting) return;
     setIsExporting(true);
     try {
+      const exportLyHistoryData = Object.keys(lyHistoryData).length ? lyHistoryData : await DataManager.getLYHistoryData();
       const children: any[] = [
         new Paragraph({
           text: `${year} 年度轉型正義立法論述檔案`,
@@ -147,6 +149,11 @@ const YearOverview = () => {
           children: [new TextRun({ text: 'DIGITAL ARCHIVE REPORT', bold: true, color: '8C2F39', size: 18 } as any)],
           alignment: AlignmentType.CENTER,
           spacing: { after: 600 }
+        } as any),
+        new Paragraph({
+          children: [new TextRun({ text: '本報告附錄包含政黨對抗模式說明，並同時提供不分程序與分程序兩種視角。', color: '555555' } as any)],
+          alignment: AlignmentType.CENTER,
+          spacing: { after: 400 }
         } as any)
       ];
 
@@ -247,6 +254,13 @@ const YearOverview = () => {
           } as any)
         );
       }
+
+      appendConfrontationalModeAppendix(children, {
+        year,
+        speeches: filteredData,
+        lyHistoryData: exportLyHistoryData,
+        compact: false
+      });
 
       const doc = new Document({ sections: [{ properties: {}, children }] } as any);
       const blob = await Packer.toBlob(doc);

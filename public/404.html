@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Redirecting...</title>
+  </head>
+  <body>
+    <script>
+      (function () {
+        var pathSegmentsToKeep = 1;
+        var location = window.location;
+        var path = location.pathname || '/';
+        var search = location.search || '';
+        var hash = location.hash || '';
+        var segments = path.split('/');
+        var basePath = segments.slice(0, pathSegmentsToKeep + 1).join('/') || '/';
+        var routePath = segments.slice(pathSegmentsToKeep + 1).join('/');
+        var redirectTarget = basePath + '/';
+
+        if (routePath) {
+          redirectTarget += routePath;
+        }
+
+        redirectTarget += search + hash;
+        sessionStorage.setItem('gh-pages-spa-redirect', redirectTarget);
+        location.replace(basePath + '/');
+      })();
+    </script>
+  </body>
+</html>

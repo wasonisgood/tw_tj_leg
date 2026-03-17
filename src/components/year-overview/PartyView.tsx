@@ -6,12 +6,18 @@ import { twMerge } from 'tailwind-merge';
 import { LawHistoryData, LYHistoryData, ProcessedSpeech } from '../../DataManager';
 import {
   getLawMilestonesForYear,
-  getSortedStageBuckets,
-  isOfficialIdentity,
   normalizeIdentity,
   resolveLawHistoryByName,
   toLawSlug
 } from './archiveUtils';
+import {
+  buildPartyLawBuckets,
+  buildTermLookup,
+  getStageModeDescription,
+  normalizePartyDate,
+  PartyMode,
+  sortPartyGroupNames
+} from './partyUtils';
 
 function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -25,116 +31,6 @@ type PartyViewProps = {
   lyHistoryData: LYHistoryData;
   lawHistoryMap: Record<string, LawHistoryData>;
 };
-
-type PartyMode = 'pure' | 'confrontational';
-
-type NormalizedTerm = {
-  term: string;
-  start: string;
-  end: string;
-  partyByName: Record<string, string>;
-};
-
-function normalizeDate(value: string): string {
-  const digits = (value || '').replace(/\D/g, '');
-  if (digits.length < 8) return '';
-  return `${digits.slice(0, 4)}-${digits.slice(4, 6)}-${digits.slice(6, 8)}`;
-}
-
-function normalizePersonName(value: string): string {
-  return (value || '')
-    .replace(/\r?\n/g, '')
-    .replace(/\s+/g, '')
-    .replace(/（.*?）|\(.*?\)/g, '')
-    .trim();
-}
-
-function parseTermDateRange(raw: string): { start: string; end: string } {
-  const [rawStart = '', rawEnd = ''] = (raw || '').split('至');
-  return {
-    start: normalizeDate(rawStart),
-    end: normalizeDate(rawEnd)
-  };
-}
-
-function buildTermLookup(lyData: LYHistoryData): NormalizedTerm[] {
-  return Object.entries(lyData || {})
-    .map(([term, value]) => {
-      const { start, end } = parseTermDateRange(value.時間 || '');
-      const partyByName: Record<string, string> = {};
-
-      Object.entries(value.名單 || {}).forEach(([name, party]) => {
-        const normalized = normalizePersonName(name);
-        if (normalized) {
-          partyByName[normalized] = party || '未知';
-        }
-
-        const primaryChinese = normalized.match(/^[\u4e00-\u9fff]+/)?.[0] || '';
-        if (primaryChinese && !partyByName[primaryChinese]) {
-          partyByName[primaryChinese] = party || '未知';
-        }
-      });
-
-      return { term, start, end, partyByName };
-    })
-    .filter((item) => !!item.start && !!item.end)
-    .sort((a, b) => a.start.localeCompare(b.start));
-}
-
-function resolveTermByDate(date: string, terms: NormalizedTerm[]): NormalizedTerm | null {
-  if (!terms.length) return null;
-  const normalizedDate = normalizeDate(date);
-  if (!normalizedDate) return null;
-
-  const inRange = terms.find((term) => normalizedDate >= term.start && normalizedDate <= term.end);
-  if (inRange) return inRange;
-
-  const latestBefore = [...terms]
-    .filter((term) => term.start <= normalizedDate)
-    .sort((a, b) => b.start.localeCompare(a.start))[0];
-  if (latestBefore) return latestBefore;
-
-  return terms[0];
-}
-
-function resolveParty(speech: ProcessedSpeech, terms: NormalizedTerm[]): string {
-  const term = resolveTermByDate(speech.date || speech.metadata?.date || '', terms);
-  if (!term) return '未知政黨';
-
-  const candidates = (speech.speaker || '')
-    .split(/[\/／,，、；;]+/)
-    .map((name) => normalizePersonName(name))
-    .filter(Boolean);
-
-  if (!candidates.length) return '未知政黨';
-
-  const foundParties = Array.from(
-    new Set(
-      candidates
-        .map((candidate) => term.partyByName[candidate])
-        .filter((party): party is string => !!party)
-    )
-  );
-
-  if (!foundParties.length) return '未知政黨';
-  if (foundParties.length === 1) return foundParties[0];
-  return `跨黨協作（${foundParties.join(' / ')}）`;
-}
-
-function getPartyBucketLabel(speech: ProcessedSpeech, terms: NormalizedTerm[], mode: PartyMode): string {
-  const official = isOfficialIdentity(speech.identity || '');
-  const baseParty = resolveParty(speech, terms);
-
-  if (mode === 'pure') {
-    return official ? '行政官員' : baseParty;
-  }
-
-  if (official) {
-    return `行政官員｜${baseParty}`;
-  }
-
-  return `${baseParty}｜立法委員`;
-}
 
 function getPartyGroupTheme(groupName: string): { box: string; badge: string } {
   if (groupName.includes('行政官員')) {
@@ -155,6 +51,9 @@ function getPartyGroupTheme(groupName: string): { box: string; badge: string } {
   if (groupName.includes('無黨')) {
     return { box: 'border-slate-300 bg-slate-50', badge: 'bg-slate-700 text-white' };
   }
+  if (groupName.includes('老委員')) {
+    return { box: 'border-stone-300 bg-stone-50', badge: 'bg-stone-700 text-white' };
+  }
   return { box: 'border-gray-300 bg-white', badge: 'bg-black text-white' };
 }
 
@@ -166,62 +65,12 @@ export default function PartyView({ year, data, groupedByLaw, getStageColor, lyH
   const normalizedTerms = useMemo(() => buildTermLookup(lyHistoryData), [lyHistoryData]);
 
   const preparedByLaw = useMemo(() => {
-    return Object.entries(groupedByLaw)
-      .map(([lawName, stageMap]) => {
-        if (splitByStage) {
-          const stageBuckets = getSortedStageBuckets(stageMap).map((stage) => {
-            const byParty: Record<string, ProcessedSpeech[]> = {};
-            stage.speeches.forEach((speech) => {
-              const party = getPartyBucketLabel(speech, normalizedTerms, partyMode);
-              if (!byParty[party]) byParty[party] = [];
-              byParty[party].push(speech);
-            });
-            return { stageName: stage.stageName, stageDate: stage.stageDate, byParty };
-          });
-
-          return { lawName, stageBuckets };
-        }
-
-        const allSpeeches = Object.values(stageMap).flat();
-        const byParty: Record<string, ProcessedSpeech[]> = {};
-        allSpeeches.forEach((speech) => {
-          const party = getPartyBucketLabel(speech, normalizedTerms, partyMode);
-          if (!byParty[party]) byParty[party] = [];
-          byParty[party].push(speech);
-        });
-
-        return { lawName, stageBuckets: [{ stageName: '全部程序', stageDate: '', byParty }] };
-      })
+    return buildPartyLawBuckets(groupedByLaw, normalizedTerms, partyMode, splitByStage)
       .filter((item) => {
         if (!search.trim()) return true;
         return item.lawName.includes(search.trim());
       });
   }, [groupedByLaw, normalizedTerms, partyMode, search, splitByStage]);
-
-  const partyOrder = [
-    '民主進步黨',
-    '中國國民黨',
-    '台灣民眾黨',
-    '時代力量',
-    '無黨籍',
-    '無',
-    '未知政黨'
-  ];
-
-  const sortPartyGroups = (groups: Record<string, ProcessedSpeech[]>) => {
-    const names = Object.keys(groups);
-    return names.sort((a, b) => {
-      if (a.includes('行政官員') && !b.includes('行政官員')) return -1;
-      if (b.includes('行政官員') && !a.includes('行政官員')) return 1;
-
-      const ai = partyOrder.indexOf(a);
-      const bi = partyOrder.indexOf(b);
-      if (ai >= 0 && bi >= 0) return ai - bi;
-      if (ai >= 0) return -1;
-      if (bi >= 0) return 1;
-      return groups[b].length - groups[a].length || a.localeCompare(b, 'zh-Hant');
-    });
-  };
 
   return (
     <>
@@ -230,7 +79,7 @@ export default function PartyView({ year, data, groupedByLaw, getStageColor, lyH
           <div>
             <p className="text-[10px] font-black uppercase tracking-[0.3em] text-gray-500">政黨分類模式</p>
             <h2 className="mt-2 text-2xl md:text-3xl font-black serif">{year} 年立法發言政黨分布</h2>
-            <p className="mt-2 text-xs text-gray-500">第一屆僅有第五次增額名單，早期對照不足時會顯示未知政黨。</p>
+            <p className="mt-2 text-xs text-gray-500">第一屆未列於第五次增額名單的委員會歸為老委員，其餘無法辨識者仍顯示未知政黨。</p>
           </div>
 
           <div className="w-full lg:w-auto space-y-3">
@@ -301,6 +150,7 @@ export default function PartyView({ year, data, groupedByLaw, getStageColor, lyH
             <p className="text-[10px] font-black uppercase tracking-[0.12em] text-gray-500">
               {partyMode === 'confrontational' ? '行政官員將獨立於政黨並顯示原屬政黨' : '行政官員視為獨立陣營'}
             </p>
+            <p className="text-[10px] font-bold tracking-[0.08em] text-gray-500">{getStageModeDescription(splitByStage)}</p>
           </div>
         </div>
       </div>
@@ -317,11 +167,11 @@ export default function PartyView({ year, data, groupedByLaw, getStageColor, lyH
               return (
                 <>
                   {law.stageBuckets.map((stage, stageIndex) => {
-                    const stageDate = normalizeDate(stage.stageDate || stage.stageName || '');
+                    const stageDate = normalizePartyDate(stage.stageDate || stage.stageName || '');
 
                     const sameDateIndexes = law.stageBuckets
                       .map((bucket, index) => ({ bucket, index }))
-                      .filter((entry) => normalizeDate(entry.bucket.stageDate || entry.bucket.stageName || '') === stageDate)
+                      .filter((entry) => normalizePartyDate(entry.bucket.stageDate || entry.bucket.stageName || '') === stageDate)
                       .map((entry) => entry.index);
                     const lastIndexOfSameDate = sameDateIndexes.length ? sameDateIndexes[sameDateIndexes.length - 1] : -1;
 
@@ -373,7 +223,7 @@ export default function PartyView({ year, data, groupedByLaw, getStageColor, lyH
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-                  {sortPartyGroups(stage.byParty).map((party) => (
+                  {sortPartyGroupNames(stage.byParty).map((party) => (
                     <div
                       key={`${law.lawName}-${stage.stageName}-${party}`}
                       className={cn('border-2 p-4 space-y-3', getPartyGroupTheme(party).box)}

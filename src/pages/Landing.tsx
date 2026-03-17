@@ -4,7 +4,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { FileDown, ArrowRight, Database, X, FileText, Link2, Loader2 } from 'lucide-react';
 import { Document, Packer, Paragraph, TextRun, HeadingLevel, AlignmentType, ExternalHyperlink } from 'docx';
 import { saveAs } from 'file-saver';
-import { DataManager, ProcessedSpeech } from '../DataManager';
+import { DataManager } from '../DataManager';
+import { appendConfrontationalModeAppendix } from '../utils/partyWordExport';
 
 const PHASES = [
   {
@@ -145,6 +146,7 @@ const Landing = () => {
     const children: any[] = [];
 
     try {
+      const lyHistoryData = await DataManager.getLYHistoryData();
       // 主標題
       children.push(new Paragraph({ 
         text: mode === 'report' ? "轉型正義立法論述：全年度彙整報告 (1987-2024)" : "轉型正義議事檔案：全年度連結索引 (1987-2024)", 
@@ -156,6 +158,11 @@ const Landing = () => {
         children: [new TextRun({ text: "DIGITAL ARCHIVE FULL REPORT / 數位論述考古總彙整", bold: true, color: "8C2F39", size: 20 } as any)],
         alignment: AlignmentType.CENTER,
         spacing: { after: 600 }
+      } as any));
+      children.push(new Paragraph({
+        children: [new TextRun({ text: '各年份附錄均加入政黨對抗模式說明，並同步列出不分程序與分程序兩種分類視角。', color: '555555' } as any)],
+        alignment: AlignmentType.CENTER,
+        spacing: { after: 360 }
       } as any));
 
       for (let i = 0; i < allYears.length; i++) {
@@ -262,6 +269,13 @@ const Landing = () => {
                 spacing: { after: 200 }
               } as any));
             }
+
+            appendConfrontationalModeAppendix(children, {
+              year,
+              speeches: res.speeches,
+              lyHistoryData,
+              compact: true
+            });
           } else {
             // --- 模式二：檔案索引 (保持簡潔) ---
             const uniqueFileStems = Array.from(new Set(res.speeches.map(s => s.metadata?.file_stem).filter(Boolean)));
@@ -281,6 +295,13 @@ const Landing = () => {
                 } as any));
               }
             }
+
+            appendConfrontationalModeAppendix(children, {
+              year,
+              speeches: res.speeches,
+              lyHistoryData,
+              compact: true
+            });
           }
         } catch (yearErr) {
           console.warn(`Skip year ${year} due to error`, yearErr);
