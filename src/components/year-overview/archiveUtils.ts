@@ -213,6 +213,14 @@ function dedupeVersions(versions: LawLegislationVersion[]): LawLegislationVersio
   return Array.from(unique.values()).sort((a, b) => a.version_date.localeCompare(b.version_date));
 }
 
+export function getLawVersionDisplayDate(version: LawLegislationVersion): string {
+  return version.publication_date || version.version_date || '';
+}
+
+export function getLawVersionDisplayYear(version: LawLegislationVersion): string {
+  return getLawVersionDisplayDate(version).slice(0, 4);
+}
+
 function normalizeMilestoneVersions(data: LawHistoryData, year: string): LawLegislationVersion[] {
   const versions = data.legislation_versions || [];
   const filterNth = data.metadata?.filters_applied?.filter_nth;
@@ -228,7 +236,7 @@ function normalizeMilestoneVersions(data: LawHistoryData, year: string): LawLegi
     }
   }
 
-  return dedupeVersions(versions.filter((version) => version.version_date.startsWith(year)));
+  return dedupeVersions(versions.filter((version) => getLawVersionDisplayYear(version) === year));
 }
 
 export function getLawMilestonesForYear(lawName: string, year: string, lawHistory: LawHistoryData | null): LawMilestone[] {
@@ -238,11 +246,14 @@ export function getLawMilestonesForYear(lawName: string, year: string, lawHistor
     .filter((version) => !!version.version_date)
     .map((version) => {
       const actionType = getActionTypeFromLabel(version.label || '');
+      const displayDate = getLawVersionDisplayDate(version) || version.version_date;
       return {
-        key: `${lawName}-${version.version_date}-${actionType}`,
-        date: version.version_date,
+        key: `${lawName}-${displayDate}-${actionType}`,
+        date: displayDate,
         label: version.label,
-        displayLabel: `${version.version_date} ${actionType}`,
+        displayLabel: displayDate === version.version_date
+          ? `${displayDate} ${actionType}`
+          : `${displayDate} 公布 / ${version.version_date} ${actionType}`,
         lawName,
         actionType,
         summary: getMilestoneSummary(lawHistory, version.version_date)

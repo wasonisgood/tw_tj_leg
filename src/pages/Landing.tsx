@@ -6,6 +6,7 @@ import { Document, Packer, Paragraph, TextRun, HeadingLevel, AlignmentType, Exte
 import { saveAs } from 'file-saver';
 import { DataManager } from '../DataManager';
 import { appendConfrontationalModeAppendix } from '../utils/partyWordExport';
+import { getLawVersionDisplayYear } from '../components/year-overview/archiveUtils';
 
 const PHASES = [
   {
@@ -66,7 +67,7 @@ const Landing = () => {
           const filterNth = law.metadata?.filters_applied?.filter_nth;
           const versions = law.legislation_versions || [];
           if (filterNth != null && versions[filterNth - 1]) {
-            const y = (versions[filterNth - 1].version_date || '').slice(0, 4);
+            const y = getLawVersionDisplayYear(versions[filterNth - 1]);
             if (/^\d{4}$/.test(y)) nextMap[y] = true;
             return;
           }
@@ -76,7 +77,7 @@ const Landing = () => {
             return;
           }
           versions.forEach((version) => {
-            const y = (version.version_date || '').slice(0, 4);
+            const y = getLawVersionDisplayYear(version);
             if (/^\d{4}$/.test(y)) {
               nextMap[y] = true;
             }
@@ -467,16 +468,24 @@ const Landing = () => {
                 <FileDown className="w-4 h-4" />
                 <span>Export Full Word Archive</span>
               </button>
-              <Link
-                to="/guide/full-revision"
-                className="w-full py-4 border-2 border-black text-[10px] font-black uppercase tracking-[0.28em] hover:bg-black hover:text-white transition-all flex items-center justify-center space-x-3"
-              >
-                <Database className="w-4 h-4" />
-                <span>Missing-Year Law Change Guide</span>
-              </Link>
             </div>
           </div>
         </header>
+
+        <section className="mb-24 border border-black p-6 md:p-8 bg-gradient-to-r from-[#f6f1e8] via-[#f9f9f7] to-[#ebeef7]">
+          <p className="text-[10px] font-black uppercase tracking-[0.36em] text-[#8C2F39]">Independent Page</p>
+          <h2 className="mt-3 text-3xl md:text-5xl font-black serif leading-tight">時間軸檢視</h2>
+         
+          <div className="mt-5">
+            <Link
+              to="/timeline"
+              className="inline-flex items-center gap-3 px-5 py-3 bg-black text-white text-[10px] font-black uppercase tracking-[0.22em] hover:bg-[#8C2F39] transition-colors"
+            >
+              <Database className="w-4 h-4" />
+              開啟獨立時間軸頁面
+            </Link>
+          </div>
+        </section>
 
         <div className="space-y-32">
           {displayPhases.map((phase, pIdx) => (

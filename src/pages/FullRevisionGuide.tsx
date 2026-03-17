@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { ArrowLeft, Scale } from 'lucide-react';
 import { DataManager, LawHistoryData, LawLegislationVersion } from '../DataManager';
-import { toLawSlug } from '../components/year-overview/archiveUtils';
+import { getLawVersionDisplayDate, getLawVersionDisplayYear, toLawSlug } from '../components/year-overview/archiveUtils';
 
 type FullRevisionEntry = {
   year: string;
@@ -56,7 +56,7 @@ export default function FullRevisionGuide() {
       if (law.metadata?.filters_applied) return;
       const lawName = law.metadata?.law_name || '';
       (law.legislation_versions || []).forEach((version) => {
-        const year = (version.version_date || '').slice(0, 4);
+        const year = getLawVersionDisplayYear(version);
         if (!/^\d{4}$/.test(year)) return;
         if (CORE_YEARS.has(year)) return;
         const actionType = getActionType(version);
@@ -76,7 +76,7 @@ export default function FullRevisionGuide() {
 
     const byYear: Record<string, FullRevisionEntry[]> = {};
     Array.from(unique.values())
-      .sort((a, b) => a.version.version_date.localeCompare(b.version.version_date) || a.lawName.localeCompare(b.lawName, 'zh-Hant') || a.actionType.localeCompare(b.actionType, 'zh-Hant'))
+      .sort((a, b) => getLawVersionDisplayDate(a.version).localeCompare(getLawVersionDisplayDate(b.version)) || a.lawName.localeCompare(b.lawName, 'zh-Hant') || a.actionType.localeCompare(b.actionType, 'zh-Hant'))
       .forEach((item) => {
         if (!byYear[item.year]) byYear[item.year] = [];
         byYear[item.year].push(item);
