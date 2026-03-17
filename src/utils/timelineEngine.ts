@@ -170,7 +170,7 @@ export async function buildLandingTimelineBundle(): Promise<LandingTimelineBundl
 
   const summaryJobs = CORE_YEARS.map(async (year) => {
     try {
-      const summaryResp = await fetch(`${getBasePath()}summary/${year}.json`);
+      const summaryResp = await fetch(`${getBasePath()}data/summary/${year}.json`);
       const summary = summaryResp.ok ? await summaryResp.json() : null;
       const processed = await DataManager.getProcessedYearData(year);
       return { year, summary, processed };

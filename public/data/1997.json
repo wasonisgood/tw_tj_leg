@@ -1,0 +1,185 @@
+{
+  "session_info": {
+    "year": "1997",
+    "meeting_type": "立法院司法、國防聯席會議 / 院會",
+    "analyzed_topics": [
+      "戒嚴時期不當政治審判補償條例",
+      "二二八事件處理及補償條例修正",
+      "檔案保存與國防部責任問責"
+    ]
+  },
+  "speakers_analysis": {
+    "spk-1997-f2cf6d62d1d112a2": {
+      "speaker": "蔡明憲",
+      "identity": "立法委員 (司法委員會召集委員)",
+      "political_orientation": "積極平反派",
+      "discourse_logic": "人權保障論 / 國際法正義",
+      "stances": [
+        {
+          "topic": "法案正當性",
+          "position": "支持全面補償",
+          "note": "引用美國羅斯福總統沒收日裔財產後之補償為例，主張不論時間長久，不正義之審判皆應透過立法補償。"
+        },
+        {
+          "topic": "補償申請期限",
+          "position": "延長時效",
+          "note": "建議將申請給付補償金的期限由一年延長至四或五年。"
+        }
+      ],
+      "key_action": "主持聯席會議並對提案人謝聰敏表示敬意，推動平反程序。"
+    },
+    "spk-1997-76498406702bd809": {
+      "speaker": "彭紹瑾",
+      "identity": "立法委員",
+      "political_orientation": "積極平反派",
+      "discourse_logic": "司法救濟論 / 轉型正義",
+      "stances": [
+        {
+          "topic": "上訴權利",
+          "position": "支持開放再審/特別上訴",
+          "note": "強調即便檔案缺失，亦應給予受難者家屬程式上的上訴權利，由法官認定事實。"
+        },
+        {
+          "topic": "檔案保存",
+          "position": "嚴厲監督國防部",
+          "note": "質疑國防部故意燒毀檔案，要求永久儲存死刑或10年以上刑期之案件資料。"
+        }
+      ],
+      "key_action": "舉出鄭連木、冒名小學校長等具體冤獄案例，要求政府主動補償。"
+    },
+    "spk-1997-858059bd8c5c3d67": {
+      "speaker": "顏錦福",
+      "identity": "立法委員",
+      "political_orientation": "積極平反派 (受難者代表)",
+      "discourse_logic": "歷史受難經驗論 / 道德批判",
+      "stances": [
+        {
+          "topic": "審判適法性",
+          "position": "全盤否定戒嚴審判",
+          "note": "痛陳戒嚴時期特務機關陷人入罪、隨意槍斃，主張法律不應為政治服務。"
+        },
+        {
+          "topic": "受難對象定義",
+          "position": "擴大納入「感化教育」者",
+          "note": "主張未受軍法審判但被送往感化教育的人，也應納入補償範圍。"
+        }
+      ],
+      "key_action": "要求對過去獨裁者進行歷史公判，並提醒領導者應有愛心。"
+    },
+    "spk-1997-3d20d9e902a4b27c": {
+      "speaker": "劉錦安",
+      "identity": "政府官員 (國防部軍法局副局長)",
+      "political_orientation": "行政保守派 / 依法行政",
+      "discourse_logic": "實證法學 / 體制防衛論",
+      "stances": [
+        {
+          "topic": "法案可行性",
+          "position": "持保留態度",
+          "note": "主張當年的審判是依據當時法律，具有其時代的適法性。"
+        },
+        {
+          "topic": "個案平反",
+          "position": "建議採司法救濟",
+          "note": "認為應採取再審或非常上訴等個案途徑，而非集體式補償，以免是非不分。"
+        }
+      ],
+      "key_action": "列席說明軍法檔案管理現況，強調軍事審判法自 78 年已開始研修。"
+    },
+    "spk-1997-a5f70ed8da38a4aa": {
+      "speaker": "高惠宇",
+      "identity": "立法委員",
+      "political_orientation": "積極平反派 (偏向人道關懷)",
+      "discourse_logic": "事實查核論 / 社會公義",
+      "stances": [
+        {
+          "topic": "個案平反 (澎湖案)",
+          "position": "強力支持",
+          "note": "針對山東流亡學生案（澎湖案）提出質詢，批評國防部互推責任，導致受難者背負匪諜名義。"
+        },
+        {
+          "topic": "檔案透明度",
+          "position": "支持全面公開",
+          "note": "呼籲政府應公開戒嚴時期檔案，並組專案小組協助平反。"
+        }
+      ]
+    },
+    "spk-1997-16f986c314fea613": {
+      "speaker": "施明德",
+      "identity": "立法委員 (受難者代表)",
+      "political_orientation": "激進平反派 (大和解倡議者)",
+      "discourse_logic": "政治考量論 / 社會和解",
+      "stances": [
+        {
+          "topic": "處理原則",
+          "position": "主張「政治解決」",
+          "note": "反對採取緩慢的上訴途徑，認為應採政治考量快速立法補償。"
+        },
+        {
+          "topic": "補償金對象",
+          "position": "支持限定範圍",
+          "note": "主張補償應限於直系親屬，以確保公平並加速法案推動。"
+        }
+      ],
+      "key_action": "在公聽會中提出三大原則（政治考量、公平、速決），推動朝野大和解。"
+    },
+    "spk-1997-a096c5b51cbabaaf": {
+      "speaker": "謝聰敏",
+      "identity": "立法委員 (提案人)",
+      "political_orientation": "積極平反派 (人權活動者)",
+      "discourse_logic": "歷史真相論 / 南非模式",
+      "stances": [
+        {
+          "topic": "真相追蹤",
+          "position": "支持南非真相與和解模式",
+          "note": "主張只要說出事實即可免刑，以換取真相大白，重點在於真相而非報復。"
+        },
+        {
+          "topic": "補償名義",
+          "position": "支持「賠償」",
+          "note": "強調賠償代表國家的正式認錯，比補償更具正義意涵。"
+        }
+      ],
+      "key_action": "領銜提出《戒嚴時期不當政治審判補償條例》，並於公聽會中反駁國防部燒毀檔案的說法。"
+    },
+    "spk-1997-d22e806c5dfb03b5": {
+      "speaker": "洪奇昌",
+      "identity": "立法委員",
+      "political_orientation": "積極平反派",
+      "discourse_logic": "政治責任論",
+      "stances": [
+        {
+          "topic": "立法時程",
+          "position": "要求三屆任內完成",
+          "note": "主張立法應有急迫性，若不能在任內完成將採取靜坐抗議。"
+        }
+      ]
+    },
+    "spk-1997-7fe7270a18f2d269": {
+      "speaker": "林雲虎",
+      "identity": "政府官員 (法務部法律事務司司長)",
+      "political_orientation": "行政穩定派",
+      "discourse_logic": "法律技術論",
+      "stances": [
+        {
+          "topic": "平反途徑",
+          "position": "傾向司法路徑",
+          "note": "認為透過個案判決確定為冤獄後進行賠償，比單純發放補償金更能釐清是非。"
+        }
+      ]
+    },
+    "spk-1997-fe0147fe89bab856": {
+      "speaker": "林宏宗",
+      "identity": "立法委員 (司法委員會召集委員)",
+      "political_orientation": "程序推動派",
+      "discourse_logic": "朝野協商優先論",
+      "stances": [
+        {
+          "topic": "立法程序",
+          "position": "堅持主動立法",
+          "note": "強調立法權在立法院，不須等候行政院送對案即可先行公聽與審議。"
+        }
+      ],
+      "key_action": "召開多次公聽會與協商會議，致力將政治受難事件確實平反。"
+    }
+  }
+}

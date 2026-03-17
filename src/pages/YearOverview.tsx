@@ -66,7 +66,7 @@ const YearOverview = () => {
 
     Promise.all([
       DataManager.init(),
-      fetch(`${basePath}summary/${year}.json`).then((res) => (res.ok ? res.json() : null)).catch(() => null),
+      fetch(`${basePath}data/summary/${year}.json`).then((res) => (res.ok ? res.json() : null)).catch(() => null),
       DataManager.getLYHistoryData()
     ]).then(async ([_, summary, lyHistory]) => {
       const res = await DataManager.getProcessedYearData(year);
@@ -226,17 +226,15 @@ const YearOverview = () => {
         }
 
         const linkElements: any[] = [new TextRun({ text: '檔案連結：', bold: true } as any)];
-        if (speech.metadata?.file_stem) {
-          const pdfLink = DataManager.getPDFLink(speech.metadata.file_stem);
-          if (pdfLink) {
-            linkElements.push(
-              new ExternalHyperlink({
-                children: [new TextRun({ text: '查看原始PDF', color: '0000FF', underline: { color: '0000FF' } } as any)],
-                link: pdfLink.previewLink
-              } as any)
-            );
-            linkElements.push(new TextRun({ text: '   ' } as any));
-          }
+        const pdfLink = DataManager.getSpeechPDFLink(speech);
+        if (pdfLink) {
+          linkElements.push(
+            new ExternalHyperlink({
+              children: [new TextRun({ text: '查看原始PDF', color: '0000FF', underline: { color: '0000FF' } } as any)],
+              link: pdfLink.previewLink
+            } as any)
+          );
+          linkElements.push(new TextRun({ text: '   ' } as any));
         }
 
         if (speech.imagePaths && speech.imagePaths.length > 0) {

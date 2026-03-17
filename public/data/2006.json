@@ -1,0 +1,67 @@
+{
+  "session_info": {
+    "year": "2006",
+    "meeting_type": "立法院院會 / 朝野黨團協商",
+    "analyzed_topics": [
+      "戒嚴時期不當叛亂暨匪諜審判案件補償條例（申請期限延長）"
+    ]
+  },
+  "speakers_analysis": {
+    "spk-2006-2b0f5949f7ca6ebf": {
+      "speaker": "高志鵬",
+      "identity": "立法委員",
+      "political_orientation": "積極平反派",
+      "discourse_logic": "人權時效保障論",
+      "stances": [
+        {
+          "topic": "補償金申請期限",
+          "position": "支持延長四年",
+          "note": "領銜提案修正第二條，主張因仍有受裁判者家屬因故未及申請，應將申請期限由施行日起之「四年」延長為「八年」。"
+        }
+      ],
+      "key_action": "領銜提案並推動法案逕付二讀。"
+    },
+    "spk-2006-fba644f51eb142bc": {
+      "speaker": "管碧玲 / 蔡同榮",
+      "identity": "立法委員",
+      "political_orientation": "積極平反派",
+      "discourse_logic": "立法連續性邏輯",
+      "stances": [
+        {
+          "topic": "補償條例修正",
+          "position": "支持延長期限",
+          "note": "參與高志鵬版本之連署，確保白色恐怖受難家屬的權益不因時間屆滿而消失。"
+        }
+      ],
+      "key_action": "參與連署並推動法案審查程序。"
+    },
+    "spk-2006-236f307caafef2d8": {
+      "speaker": "尤清",
+      "identity": "立法委員 (協商主持人)",
+      "political_orientation": "程序協調派",
+      "discourse_logic": "跨黨派共識論",
+      "stances": [
+        {
+          "topic": "朝野協商",
+          "position": "促成期限延長共識",
+          "note": "主持協商會議，最終達成將補償申請期限再延長四年之結論，並定義戒嚴時期之起訖點（含金馬、東、南沙）。"
+        }
+      ],
+      "key_action": "主持協商會議並作成延長申請期限之結論。"
+    },
+    "spk-2006-153effb1bd72d085": {
+      "speaker": "趙良燕",
+      "identity": "立法委員",
+      "political_orientation": "實務參與派",
+      "discourse_logic": "法條文字精確論",
+      "stances": [
+        {
+          "topic": "三讀條文修正",
+          "position": "支持補償條例修正",
+          "note": "作為協商代表，參與確認延長期限及受裁判者家屬申請權之條文內容。"
+        }
+      ],
+      "key_action": "代表參與協商並簽署協商結論。"
+    }
+  }
+}

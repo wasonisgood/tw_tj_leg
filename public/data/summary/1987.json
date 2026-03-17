@@ -1,0 +1,56 @@
+{
+  "metadata": {
+    "year": "1987",
+    "focus": "解嚴配套：國家安全法草案審查",
+    "data_density": "Extreme_High"
+  },
+  "visual_engine_config": {
+    "render_hints": [
+      { "component": "ClauseClashMap", "source": "legal_clashes", "props": { "highlight": "Article_9" } },
+      { "component": "StanceSpectrum", "source": "clash_points", "props": { "axis": "Authority_vs_Liberty" } },
+      { "component": "RhetoricTransformer", "source": "keyword_war" }
+    ],
+    "color_palette": {
+      "security_first": "#c0392b",
+      "civil_rights": "#27ae60",
+      "procedural_war": "#f39c12"
+    }
+  },
+  "clash_points": [
+    {
+      "id": "1987-C1",
+      "topic": "第九條：軍事裁判救濟權的沒收",
+      "severity": 1.0,
+      "actors": {
+        "government": {
+          "label": "行政院(施啟揚、汪道淵)",
+          "stance": "維持現狀 (禁止上訴)",
+          "logic": "基於『法律安定性』，避免數萬件軍審案件湧入普通法院造成司法癱瘓。",
+          "keyword_focus": "法律安定、已確定案件"
+        },
+        "opposition": {
+          "label": "民進黨委員(尤清、朱高正)",
+          "stance": "還權於民 (准予上訴)",
+          "logic": "軍審缺乏正當程序，不應視為確定判決。禁止上訴是二次傷害。",
+          "keyword_focus": "違憲、戒嚴法第十條、人權"
+        }
+      },
+      "micro_nuance": "原始文本中，官員在答詢時顯露出對『司法體系崩潰』的極度行政焦慮。"
+    }
+  ],
+  "keyword_war": {
+    "title": "1987 政治修辭轉化",
+    "entries": [
+      {
+        "term": "分離意識",
+        "transformation": "從『政治禁忌』轉向『法律口袋罪名』",
+        "semantic_shift": "政府試圖定義『分離意識』為違法行為，遭立委抨擊為審查思想。",
+        "impact_score": 0.95
+      }
+    ]
+  },
+  "intelligence_layer": {
+    "summary_for_ai_voice": "1987 年是權力移轉的拉鋸戰。政府試圖用國安法將戒嚴體制『內化』為常態法律，特別是第九條對救濟權的封鎖，是當時最大的法律爭議點。",
+    "frontend_action_required": "應高亮顯示第九條與戒嚴法第十條的『法理斷層』，並利用視覺化呈現行政機關對案件量湧入的恐懼數據。"
+  }
+}

@@ -1,0 +1,84 @@
+{
+  "metadata": {
+    "year": "2017",
+    "focus": "促進轉型正義條例三讀、二二八賠償條例修正、檔案解降密權限爭議",
+    "data_density": "Ultra_Extreme_High",
+    "session_context": "第九屆第四會期，轉型正義法制化的最後攻堅"
+  },
+  "visual_engine_config": {
+    "render_hints": [
+      { "component": "LegalLogicGraph", "source": "clash_points", "props": { "type": "inter-law-conflict" } },
+      { "component": "ExpertTestimonyPanel", "source": "expert_debates", "props": { "highlight": "Classification_of_Perpetrators" } },
+      { "component": "ArchiveAccessGauge", "source": "historical_micro_analysis" }
+    ],
+    "color_palette": {
+      "transitional_justice": "#8e44ad",
+      "national_security": "#2c3e50",
+      "privacy_protection": "#27ae60"
+    }
+  },
+  "clash_points": [
+    {
+      "id": "2017-C1",
+      "topic": "「解降密」權限的歸屬：原機關 vs. 促轉會",
+      "severity": 0.98,
+      "actors": {
+        "reform_advocates": {
+          "label": "學者、民進黨委員",
+          "stance": "打破原機關遮羞布",
+          "logic": "若解密權仍在國防部或國安局，真相永遠無法揭露。必須透過法案強制移轉權限。",
+          "keyword_focus": "國家機密保護法、窒礙難行、真相公開"
+        },
+        "bureaucratic_resistance": {
+          "label": "行政部門/保密機關",
+          "stance": "維護國家安全連續性",
+          "logic": "部分檔案涉及現行情報佈建，若輕易解密將導致國安危機。",
+          "keyword_focus": "國家利益、情報來源保護、行政慣例"
+        }
+      },
+      "micro_nuance": "原始文本中提到『解降密許可權留在原機關，在轉型正義真相揭露上確實有窒礙難行之處』，這是對官僚體系『軟抵抗』的直接指控。"
+    },
+    {
+      "id": "2017-C2",
+      "topic": "加害者與被害者的「身分混淆」與「常識挑戰」",
+      "severity": 0.92,
+      "actors": {
+        "legal_formalists": {
+          "label": "部分學者/在野委員",
+          "stance": "難以區分論",
+          "logic": "威權體制下加害者也可能變階下囚，難以一體適用加害者標籤。",
+          "keyword_focus": "判準混淆、歷史複雜性"
+        },
+        "historical_realists": {
+          "label": "如周老師、陳委員等",
+          "stance": "常識判斷論",
+          "logic": "難道無法區別彭孟緝與陳澄波嗎？若陷入清談式討論是在浪費時間。",
+          "keyword_focus": "鎮壓者、常識、檔案申請當事人區辨"
+        }
+      },
+      "micro_nuance": "文本中出現極具張力的對比：『彭孟緝與張慕陶是鎮壓者，或陳澄波是鎮壓者嗎？』，以此反擊試圖模糊化轉型正義的言論。"
+    }
+  ],
+  "expert_debates": [
+    {
+      "expert": "周教授/老師",
+      "point": "國家機密保護法的侷限",
+      "detail": "強烈建議立法院參考關於解降密的部分，若不從法律位階修改，真相將被鎖死在原機關的保險箱中。",
+      "vivid_quote": "解降密權限留在原機關...這點在草案或未來是有意義的參照點。"
+    }
+  ],
+  "dialogue_flow": {
+    "segments": [
+      {
+        "speaker": "（公聽會/委員會發言片段）",
+        "emotion": "Assertive",
+        "raw_quote": "這部法案要處理的重點在於規定從檔案申請當事人的身分出發做一個區辨，不是毫無區別的將歷史狀態當成檔案申請時需要區別保護隱私或權益的狀態。",
+        "context": "針對『隱私權』是否應作為威權檔案不公開藉口的法理回應。"
+      }
+    ]
+  },
+  "intelligence_layer": {
+    "summary_for_ai_voice": "2017 年是從空談轉向實作的法律元年。焦點在於如何破解國安單位對檔案的壟斷，以及如何用『常識』去定義威權時期的加害者行為。",
+    "frontend_action_required": "應設計『加害者 vs 受難者』的光譜區辨圖，並高亮顯示檔案解密流程的法律衝突點。"
+  }
+}

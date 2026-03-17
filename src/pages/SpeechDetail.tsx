@@ -59,14 +59,9 @@ const SpeechDetail = () => {
           setSpeech(null);
         } else {
           setSpeech(found);
-          if (found.metadata?.file_stem) {
-            console.log(`[SpeechDetail] Looking for PDF link with file_stem: ${found.metadata.file_stem}`);
-            const link = DataManager.getPDFLink(found.metadata.file_stem);
-            console.log(`[SpeechDetail] PDF link result:`, link);
-            setPdfLink(link);
-          } else {
-            console.log(`[SpeechDetail] No file_stem found in metadata`);
-          }
+          const link = DataManager.getSpeechPDFLink(found);
+          console.log(`[SpeechDetail] PDF link result:`, link);
+          setPdfLink(link);
         }
       } catch (err) {
         console.error(`[SpeechDetail] Error:`, err);

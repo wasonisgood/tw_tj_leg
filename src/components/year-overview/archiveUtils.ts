@@ -69,7 +69,6 @@ function normalizeLawName(input: string): string {
   return input
     .replace(/（.*?）|\(.*?\)/g, '')
     .replace(/草案/g, '')
-    .replace(/_制定$/, '')
     .replace(/\s+/g, '')
     .trim();
 }

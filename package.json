@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "build:unified-map": "node scripts/build_unified_speech_map.cjs",
+    "check:unified-map": "node scripts/validate_unified_speech_map.cjs"
   },
   "dependencies": {
     "axios": "^1.13.6",

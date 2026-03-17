@@ -1,0 +1,158 @@
+{
+  "session_info": {
+    "year": "1999",
+    "meeting_type": "立法院內政及民族委員會 / 司法、法制聯席會議 / 院會",
+    "analyzed_topics": [
+      "二二八事件處理及補償條例修正",
+      "戒嚴時期人民受損權利回復條例修正",
+      "補償申請期限延長爭議"
+    ]
+  },
+  "speakers_analysis": {
+    "spk-1999-cecc723b807df804": {
+      "speaker": "蔡同榮",
+      "identity": "立法委員",
+      "political_orientation": "積極平反派",
+      "discourse_logic": "生命經驗與真相挖掘論",
+      "stances": [
+        {
+          "topic": "二二八補償期限",
+          "position": "支持延長二年",
+          "note": "以導師林茂生遇害為例，強調家屬在威權時期因恐懼不敢挖掘真相，導致證據蒐集困難，必須延長申請期限。"
+        },
+        {
+          "topic": "檔案真相",
+          "position": "要求政府公開檔案",
+          "note": "主張嘉義飛機場等遺骸身分需鑑定，要求政府主動告知受難者下落，否則家屬難以提出補償申請。"
+        }
+      ]
+    },
+    "spk-1999-7516d894410b9f78": {
+      "speaker": "許添財",
+      "identity": "立法委員",
+      "political_orientation": "激進問責派",
+      "discourse_logic": "心理創傷與制度反省論",
+      "stances": [
+        {
+          "topic": "名義之爭",
+          "position": "主張改為「賠償」",
+          "note": "認為「補償」一詞不具反省意涵。指出台灣精神病患比例高與戒嚴扭曲人性有絕對關係，法律應具備「過而自新」的表現。"
+        },
+        {
+          "topic": "申請期限",
+          "position": "支持延長且應保留申請紀錄",
+          "note": "批評基金會隨意退回案件且未留統計，主張延長期限是為了彌補被扭曲的政治歷史。"
+        }
+      ]
+    },
+    "spk-1999-3818d237fb1bf103": {
+      "speaker": "翁金珠",
+      "identity": "立法委員",
+      "political_orientation": "法律平反推動者",
+      "discourse_logic": "法律完備性與誠意論",
+      "stances": [
+        {
+          "topic": "受損權利回復",
+          "position": "支持擴大適用對象",
+          "note": "提案修正第6條與第6-1條，將戒嚴時期所有刑事特別法之受難者（如內亂、外患罪外）均納入平反範圍。"
+        },
+        {
+          "topic": "行政責任",
+          "position": "批判行政怠慢",
+          "note": "指出施行細則拖延一年才公佈，且國民黨百般阻撓，顯見政府對平反並無真正悔過之心。"
+        }
+      ]
+    },
+    "spk-1999-ac6b8b5db911f6dd": {
+      "speaker": "黃爾璇",
+      "identity": "立法委員",
+      "political_orientation": "宏觀平反倡議派",
+      "discourse_logic": "國際轉型正義比較論",
+      "stances": [
+        {
+          "topic": "轉型正義模式",
+          "position": "支持南非真相委員會模式",
+          "note": "引用德國與南非經驗，強調不能只用金錢填平傷口，應設立「真相與和解委員會」公開加害者，追求公理正義。"
+        }
+      ]
+    },
+    "spk-1999-65e62dc598df42b7": {
+      "speaker": "蔡明憲",
+      "identity": "立法委員",
+      "political_orientation": "實務法律救援派",
+      "discourse_logic": "比較法學與人道主義",
+      "stances": [
+        {
+          "topic": "感化教育者平反",
+          "position": "支持比照冤獄賠償法",
+          "note": "以盧修一為例，主張戒嚴時期未經判刑但被感化、管訓者，應明文化給予國家賠償，並延長申請期限至十年。"
+        }
+      ]
+    },
+    "spk-1999-16d31d78dff61397": {
+      "speaker": "何明寮",
+      "identity": "政府機構代表 (二二八基金會專門委員)",
+      "political_orientation": "行政執行派",
+      "discourse_logic": "實務執行現狀論",
+      "stances": [
+        {
+          "topic": "申請期限",
+          "position": "支持延長但有技術困難",
+          "note": "承認目前尚有210餘件案件處理中，支持延長期限，但強調蒐集信服證據之行政難度極高。"
+        }
+      ]
+    },
+    "spk-1999-3818d237fb1bf103_2": {
+      "speaker": "林堤儀",
+      "identity": "政府官員 (司法院刑事廳長)",
+      "political_orientation": "司法實務派",
+      "discourse_logic": "法學審查層次論",
+      "stances": [
+        {
+          "topic": "審查標準",
+          "position": "行政審查寬於司法審查",
+          "note": "說明司法再審標準極嚴格，建議利用行政審查（補償條例）提供受難者更寬鬆的救濟管道。"
+        }
+      ]
+    },
+    "spk-1999-240808e93736e48e": {
+      "speaker": "陳美伶",
+      "identity": "政府官員 (法務部參事)",
+      "political_orientation": "法律技術派",
+      "discourse_logic": "法條文字精確論",
+      "stances": [
+        {
+          "topic": "法條修正",
+          "position": "支持文字補強但需區隔",
+          "note": "建議將內亂外患罪之字眼加入回復條例，使權利回復與補償條例之對象更具一致性與周延性。"
+        }
+      ]
+    },
+    "spk-1999-1324738fa3810518": {
+      "speaker": "黃明和",
+      "identity": "立法委員",
+      "political_orientation": "法律安定派",
+      "discourse_logic": "法律競合避免論",
+      "stances": [
+        {
+          "topic": "受領限制",
+          "position": "主張禁止重複領取",
+          "note": "認為若受難者已依《冤獄賠償法》獲得賠償，就不應再依《補償條例》重複聲請。"
+        }
+      ]
+    },
+    "spk-1999-d14502f6cda36b08": {
+      "speaker": "馮滬祥",
+      "identity": "立法委員",
+      "political_orientation": "程序保守派",
+      "discourse_logic": "會議程序優先論",
+      "stances": [
+        {
+          "topic": "議案處理",
+          "position": "對程序提出異議",
+          "note": "在院會中針對多項法案之處理方式提出異議，要求退回委員會或按程序重新提出。"
+        }
+      ]
+    }
+  }
+}

@@ -153,9 +153,6 @@ export default function TimelineNavigator() {
                 <span className="text-[10px] font-black uppercase tracking-[0.18em] text-[#8C2F39]">{politicalPattern.label}</span>
                 <span className="text-[10px] font-bold text-[#5f5149]">{politicalPattern.executiveSeats}:{politicalPattern.oppositionSeats}</span>
               </div>
-              <p className="mt-2 text-[11px] text-[#5f5149] leading-relaxed">
-                以行政權所屬政黨對照國會席次，呈現 {politicalPattern.label} 的歷史結構。
-              </p>
               {seatContext?.isSupplementaryOnly && (
                 <p className="mt-1 text-[10px] font-black uppercase tracking-[0.2em] text-[#8C2F39]">第一屆僅顯示增額席次</p>
               )}

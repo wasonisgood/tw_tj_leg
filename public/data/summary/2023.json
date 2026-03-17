@@ -1,0 +1,114 @@
+{
+  "metadata": {
+    "year": "2023",
+    "focus": "政治檔案條例修正：強化檔案開放、增設申請審議制度、保障訴願權利",
+    "data_density": "Ultra_Extreme_High",
+    "legislative_milestone": "三讀通過《政治檔案條例》修正案，破解『國家安全』無限上綱的遮掩",
+    "total_clash_index": 0.92
+  },
+  "visual_engine_config": {
+    "render_hints": [
+      { "component": "ArchiveUnlockLogic", "source": "clash_points", "props": { "highlight": "Mandatory_Review" } },
+      { "component": "ProceduralRightsTimeline", "source": "dialogue_flow", "props": { "steps": ["Application", "Rejection", "Review", "Appeal"] } },
+      { "component": "AdministrativeAtonementCard", "source": "historical_micro_analysis" }
+    ],
+    "color_palette": {
+      "transparency_push": "#2980b9",
+      "security_restraint": "#34495e",
+      "legal_redress": "#c0392b",
+      "legislative_oversight": "#8e44ad"
+    }
+  },
+  "clash_points": [
+    {
+      "id": "2023-C1",
+      "topic": "第十四條：申請審議制度與訴願權的連動",
+      "severity": 0.98,
+      "actors": {
+        "reform_advocates": {
+          "label": "賴瑞隆等 18 人提案 / 司法及法制委員會",
+          "stance": "增設『申請審議』作為先行程序，並保留訴願權",
+          "logic": "若民眾不服檔案局處分，應先由『國家檔案管理委員會』審議，若仍不服則可打行政訴訟。這能透過專業委員會制衡原機關的保密慣性。",
+          "keyword_focus": "申請審議、國家檔案管理委員會、二個月期限、訴願、行政訴訟"
+        },
+        "administrative_logic": {
+          "label": "行政院提案版本",
+          "stance": "維持既有訴願體系，彈性修正",
+          "logic": "同意增設審議機制，但強調應參考《稅捐稽徵法》或《關稅法》的先行程序邏輯，確保程序不致過於冗長。",
+          "keyword_focus": "二個月內作成決定、必要時延長、逕行提起訴願"
+        }
+      },
+      "micro_nuance": "原始文本顯示，2023 年的修法非常在意『時間效率』，特別規定檔案局必須在 2 個月內召開委員會作成決定，這反映了過去受難者家屬在行政程序中被無限期空轉的痛苦。"
+    },
+    {
+      "id": "2023-C2",
+      "topic": "「國家安全」與「情報來源」的解密自動化",
+      "severity": 0.9,
+      "actors": {
+        "legislative_intent": {
+          "label": "修正條例核心",
+          "stance": "屆滿一定年限必須解除遮掩",
+          "logic": "針對過去以『情報來源或管道』為由遮掩的內容，應明定在法律中，除非極少數例外，否則時間到就應開放，不能由原機關永遠含糊遮蓋。",
+          "keyword_focus": "檔案局處分、史實真相、責任歸屬"
+        }
+      },
+      "micro_nuance": "文本中強調基金會與檔案局辦理事務時，『不得違背二二八事件之史實真相』，這在 2023 年已成為一種法律上不容挑戰的指導原則。"
+    }
+  ],
+  "keyword_war": {
+    "title": "2023 檔案正義關鍵詞",
+    "entries": [
+      {
+        "term": "申請審議",
+        "transformation": "從『行政裁量』轉向『第三方專業委員會制衡』",
+        "semantic_shift": "2023 年將審議制度化，使檔案局不再是唯一的守門人，引入外部專家介入判斷檔案是否應公開。",
+        "impact_score": 0.95
+      },
+      {
+        "term": "不得逾一個月",
+        "transformation": "從『不限期行政』轉向『時效性正義』",
+        "semantic_shift": "在 2023 年的條文中頻繁出現具體的時間限制（如延長最長不得逾一個月），反映了對『延遲的正義不是正義』的深刻認知。",
+        "impact_score": 0.88
+      }
+    ]
+  },
+  "dialogue_flow": {
+    "description": "2023.11 司法及法制委員會 檔案條例修正實錄",
+    "segments": [
+      {
+        "speaker": "賴瑞隆等提案人",
+        "emotion": "Strategic_Progressive",
+        "raw_quote": "申請人對於政治檔案應用之處分如有不服，得於接獲檔案局處分決定次日起三十日內，依規定格式向檔案局申請審議。",
+        "context": "這是 2023 年修法最重要的制度設計：在行政處分與司法訴訟之間插入專業審議層。"
+      },
+      {
+        "speaker": "行政院提案說明",
+        "emotion": "Technocratic_Cooperative",
+        "raw_quote": "檔案局應於二個月內召開國家檔案管理委員會作成決定...申請人得逕行提起訴願。",
+        "context": "行政部門承諾限時完成審議，避免申請案沉沒於官僚大海。"
+      },
+      {
+        "speaker": "審查會決議",
+        "emotion": "Authoritative_Unanimous",
+        "raw_quote": "第十七條：本條例自公布日施行。（照行政院提案通過）",
+        "context": "這象徵著檔案正義最後一塊拼圖——『程序保障』正式入法。"
+      }
+    ]
+  },
+  "historical_micro_analysis": {
+    "hidden_truths": [
+      {
+        "point": "對抗「軟性阻礙」的法制化",
+        "description": "資料顯示，2023 年的修法不再是大開大闔的口號，而是針對檔案局內部如何應對其他部會（如國安局、國防部）的『不予提供』處分，建立一套內部的法律對抗機制。"
+      },
+      {
+        "point": "參考「稅捐/關稅法」的跨域借鑑",
+        "description": "原始文本揭露，立法者參考了極其專業的財稅法律救濟機制來設計政治檔案的救濟，這顯示轉型正義在 2023 年已具備極高的法律技術水平。"
+      }
+    ]
+  },
+  "intelligence_layer": {
+    "summary_for_ai_voice": "2023 年是台灣政治檔案從『有法可依』邁向『有權可追』的關鍵。修法建立了專業審議制度，強制行政機關在限期內對檔案開放與否做出決定，並賦予受難者家屬與歷史學者強大的司法武器來挑戰國家安全的遮羞布。",
+    "frontend_action_required": "應設計一個『檔案申請救濟流程圖』，呈現從申請、處分、審議到訴願的完整路徑，並高亮顯示 2023 年新增的『二個月審議期』限制。"
+  }
+}

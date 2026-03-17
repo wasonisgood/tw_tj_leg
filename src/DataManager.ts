@@ -58,6 +58,27 @@ export interface YearPDFs {
   pdfs: PDFLink[];
 }
 
+export interface UnifiedSpeechRecord {
+  id: string;
+  year: string;
+  speaker?: string;
+  date?: string;
+  seq?: number;
+  file_stem?: string;
+  law_name?: string;
+  stage?: string;
+  image_urls?: string[];
+  pdf_file_name?: string;
+  pdf_preview_link?: string;
+  pdf_download_link?: string;
+  source_flags?: {
+    has_metadata?: boolean;
+    has_image_map?: boolean;
+    has_image_urls?: boolean;
+    has_pdf_links?: boolean;
+  };
+}
+
 export interface LawLegislationVersion {
   label: string;
   version_date: string;
@@ -112,6 +133,8 @@ export interface LYLegislatorTerm {
 export type LYHistoryData = Record<string, LYLegislatorTerm>;
 
 export class DataManager {
+  private static unifiedSpeechMap: { [id: string]: UnifiedSpeechRecord } | null = null;
+  private static unifiedPdfLinkMap: { [fileStemOrName: string]: PDFLink } = {};
   private static idMapping: any = null;
   private static imageMap: any = null;
   private static imgbbMap: { [fileName: string]: string } = {};
@@ -129,8 +152,12 @@ export class DataManager {
     '威權統治時期國家不法行為被害者權利回復條例.json',
     '政治檔案條例.json',
     '政黨及其附隨組織不當取得財產處理條例.json',
-    '國家安全法_制定.json'
+    '國家安全法.json'
   ];
+
+  private static getDataPath(): string {
+    return `${this.getBasePath()}data/`;
+  }
 
   private static getBasePath(): string {
     // 使用 window.location.pathname 來動態取得 base 路徑
@@ -142,9 +169,55 @@ export class DataManager {
   }
 
   static async init() {
+    if (!this.unifiedSpeechMap) {
+      try {
+        const resp = await fetch(`${this.getDataPath()}unified_speech_map.json`);
+        if (resp.ok) {
+          const data = await resp.json();
+          this.unifiedSpeechMap = data.by_id || data;
+
+          for (const record of Object.values(this.unifiedSpeechMap || {})) {
+            const link: PDFLink | null =
+              record.pdf_file_name && record.pdf_preview_link && record.pdf_download_link
+                ? {
+                    fileName: record.pdf_file_name,
+                    previewLink: record.pdf_preview_link,
+                    downloadLink: record.pdf_download_link
+                  }
+                : null;
+
+            if (link) {
+              const fileStem = (record.file_stem || '').trim();
+              const pdfName = (record.pdf_file_name || '').trim();
+              const lowerStem = fileStem.toLowerCase();
+              const lowerPdfName = pdfName.toLowerCase();
+              if (fileStem) {
+                this.unifiedPdfLinkMap[fileStem] = link;
+                this.unifiedPdfLinkMap[lowerStem] = link;
+                this.unifiedPdfLinkMap[`${lowerStem}.pdf`] = link;
+              }
+              if (pdfName) {
+                this.unifiedPdfLinkMap[pdfName] = link;
+                this.unifiedPdfLinkMap[lowerPdfName] = link;
+                this.unifiedPdfLinkMap[lowerPdfName.replace('.pdf', '')] = link;
+              }
+            }
+          }
+
+          console.log(
+            `[DataManager.init] unifiedSpeechMap loaded, keys count:`,
+            Object.keys(this.unifiedSpeechMap || {}).length
+          );
+        }
+      } catch (e) {
+        console.warn('[DataManager.init] unified_speech_map.json unavailable, fallback to legacy mappings');
+        this.unifiedSpeechMap = null;
+      }
+    }
+
     if (!this.idMapping) {
       try {
-        const resp = await fetch(`${this.getBasePath()}id_mapping.json`);
+        const resp = await fetch(`${this.getDataPath()}id_mapping.json`);
         if (resp.ok) {
           const data = await resp.json();
           // id_mapping.json 的結構中有 "by_id" 對象
@@ -162,7 +235,7 @@ export class DataManager {
     }
     if (!this.imageMap) {
       try {
-        const resp = await fetch(`${this.getBasePath()}ai_output_id_pdf_page_image_map.json`);
+        const resp = await fetch(`${this.getDataPath()}ai_output_id_pdf_page_image_map.json`);
         if (resp.ok) {
           const data = await resp.json();
           // 如果有 by_id 結構則使用，否則使用整個響應
@@ -181,7 +254,7 @@ export class DataManager {
     // 載入 ImgBB 對應表 (如果存在)
     if (Object.keys(this.imgbbMap).length === 0) {
       try {
-        const resp = await fetch(`${this.getBasePath()}imgbb_map.json`);
+        const resp = await fetch(`${this.getDataPath()}imgbb_map.json`);
         if (resp.ok) {
           this.imgbbMap = await resp.json();
         } else {
@@ -193,7 +266,7 @@ export class DataManager {
     }
     if (this.pdfList.length === 0) {
       try {
-        const resp = await fetch(`${this.getBasePath()}PDF_List_Full.json`);
+        const resp = await fetch(`${this.getDataPath()}PDF_List_Full.json`);
         this.pdfList = await resp.json();
       } catch (e) {
         console.error("Failed to load PDF_List_Full.json", e);
@@ -202,7 +275,7 @@ export class DataManager {
   }
 
   static getImageUrl(fileName: string): string {
-    // 僅從 ImgBB 對應表中查找，移除本地備援邏輯
+    if (/^https?:\/\//i.test(fileName)) return fileName;
     return this.imgbbMap[fileName] || '';
   }
 
@@ -255,6 +328,16 @@ export class DataManager {
   }
 
   static getPDFLink(fileName: string): PDFLink | null {
+    const normalizedSearch = fileName.toLowerCase().endsWith('.pdf') ? fileName.toLowerCase() : `${fileName.toLowerCase()}.pdf`;
+    const unifiedLink =
+      this.unifiedPdfLinkMap[fileName] ||
+      this.unifiedPdfLinkMap[fileName.toLowerCase()] ||
+      this.unifiedPdfLinkMap[normalizedSearch] ||
+      this.unifiedPdfLinkMap[fileName.toLowerCase().replace('.pdf', '')];
+    if (unifiedLink) {
+      return unifiedLink;
+    }
+
     console.log(`[getPDFLink] Searching for: ${fileName}`);
     if (!this.pdfList || this.pdfList.length === 0) {
       console.log(`[getPDFLink] pdfList is empty`);
@@ -289,10 +372,28 @@ export class DataManager {
     return null;
   }
 
+  static getSpeechFileStem(speech: Pick<ProcessedSpeech, 'id' | 'metadata'>): string {
+    const direct = speech?.metadata?.file_stem || '';
+    if (direct) return direct;
+
+    const baseId = (speech?.id || '').replace(/_\d+$/, '');
+    const unifiedRecord = this.unifiedSpeechMap?.[speech.id] || this.unifiedSpeechMap?.[baseId];
+    if (unifiedRecord?.file_stem) return unifiedRecord.file_stem;
+
+    const legacyMeta = this.idMapping?.[speech.id] || this.idMapping?.[baseId];
+    return legacyMeta?.file_stem || '';
+  }
+
+  static getSpeechPDFLink(speech: Pick<ProcessedSpeech, 'id' | 'metadata'>): PDFLink | null {
+    const fileStem = this.getSpeechFileStem(speech);
+    if (!fileStem) return null;
+    return this.getPDFLink(fileStem);
+  }
+
   static async getYearData(year: string): Promise<YearData | null> {
     if (this.yearDataCache[year]) return this.yearDataCache[year];
     try {
-      const resp = await fetch(`${this.getBasePath()}${year}.json`); // 使用相對路徑
+      const resp = await fetch(`${this.getDataPath()}${year}.json`);
       if (!resp.ok) {
         console.error(`[getYearData] Failed to fetch ${year}.json, status: ${resp.status}`);
         return null;
@@ -327,26 +428,42 @@ export class DataManager {
     }
 
     for (const [id, analysis] of Object.entries(rawData.speakers_analysis)) {
-      // id 已經是完整的 ID（例如 "spk-1987-0d7e3ee6b90ef827"）
-      // 保持使用完整的 ID，不要提取 cleanId，以避免在查詢時出現不匹配
-      // 若找不到，嘗試去掉 _N 後綴（如 spk-1999-xxxx_2 → spk-1999-xxxx）
-      let meta = this.idMapping[id] as SpeechMetadata;
-      if (!meta) {
-        const baseId = id.replace(/_\d+$/, '');
-        if (baseId !== id) meta = this.idMapping[baseId] as SpeechMetadata;
-      }
-      console.log(`[getProcessedYearData] Processing ID: ${id}, meta exists: ${!!meta}`);
-      
+      const baseId = id.replace(/_\d+$/, '');
+      const unifiedRecord = this.unifiedSpeechMap?.[id] || this.unifiedSpeechMap?.[baseId];
+
+      let meta: SpeechMetadata | undefined = undefined;
       let imagePaths: string[] = [];
-      // imageMap 中的鍵是完整的 ID（例如 "spk-1987-0d7e3ee6b90ef827"）
-      const imageData = this.imageMap[id] as { image_paths: string[] };
-      if (imageData?.image_paths && Array.isArray(imageData.image_paths)) {
-        imagePaths = imageData.image_paths.map(p => {
-          // 從完整路徑提取文件名
-          const parts = p.split('/');
-          const fileName = parts[parts.length - 1];
-          return fileName;
-        });
+
+      if (unifiedRecord) {
+        meta = {
+          id,
+          speaker: unifiedRecord.speaker || analysis.speaker || '',
+          date: unifiedRecord.date || '',
+          seq: Number(unifiedRecord.seq || 0),
+          file_stem: unifiedRecord.file_stem || ''
+        };
+        if (Array.isArray(unifiedRecord.image_urls) && unifiedRecord.image_urls.length > 0) {
+          imagePaths = [...unifiedRecord.image_urls];
+        }
+      }
+
+      if (!meta) {
+        let fallbackMeta = this.idMapping[id] as SpeechMetadata;
+        if (!fallbackMeta && baseId !== id) {
+          fallbackMeta = this.idMapping[baseId] as SpeechMetadata;
+        }
+        meta = fallbackMeta;
+      }
+
+      if (imagePaths.length === 0) {
+        const imageData = (this.imageMap[id] || this.imageMap[baseId]) as { image_paths: string[] };
+        if (imageData?.image_paths && Array.isArray(imageData.image_paths)) {
+          imagePaths = imageData.image_paths.map(p => {
+            const parts = p.split('/');
+            const fileName = parts[parts.length - 1];
+            return fileName;
+          });
+        }
       }
       
       // 如果沒有圖像，添加默認的文件名以供後續查詢
@@ -356,12 +473,10 @@ export class DataManager {
         imagePaths = [`spk-${hashPart}.png`];
       }
 
-      // 使用 file_stem 作為 lawName（法案名稱），來自 id_mapping
-      // 但只取底線前面的部分（實際法案名稱）
-      const fullFileStem = meta?.file_stem || '';
-      const lawName = this.extractBillName(fullFileStem);
-      const stage = this.extractStage(fullFileStem); // 從 file_stem 提取包含日期的會議階段
-      const speechDate = meta?.date || '';
+      const fullFileStem = unifiedRecord?.file_stem || meta?.file_stem || '';
+      const lawName = unifiedRecord?.law_name || this.extractBillName(fullFileStem);
+      const stage = unifiedRecord?.stage || this.extractStage(fullFileStem);
+      const speechDate = unifiedRecord?.date || meta?.date || '';
       
       speeches.push({
         ...analysis,
@@ -394,11 +509,11 @@ export class DataManager {
       return this.lawHistoryCache;
     }
 
-    const basePath = this.getBasePath();
+    const dataPath = this.getDataPath();
     const results = await Promise.all(
       this.lawHistoryFiles.map(async (fileName) => {
         try {
-          const resp = await fetch(`${basePath}law_history/${encodeURIComponent(fileName)}`);
+          const resp = await fetch(`${dataPath}law_history/${encodeURIComponent(fileName)}`);
           if (!resp.ok) return null;
           const data = await resp.json() as LawHistoryData;
           const lawName = data?.metadata?.law_name;
@@ -429,7 +544,6 @@ export class DataManager {
       (input || '')
         .replace(/（.*?）|\(.*?\)/g, '')
         .replace(/草案/g, '')
-        .replace(/_制定$/, '')
         .replace(/\s+/g, '')
         .trim();
 
@@ -466,7 +580,7 @@ export class DataManager {
     }
 
     try {
-      const resp = await fetch(`${this.getBasePath()}ly_history_data.json`);
+      const resp = await fetch(`${this.getDataPath()}ly_history_data.json`);
       if (!resp.ok) {
         this.lyHistoryCache = {};
         return this.lyHistoryCache;

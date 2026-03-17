@@ -90,14 +90,14 @@ const Landing = () => {
       });
 
     allYears.forEach(year => {
-      fetch(`${basePath}${year}.json`)
+      fetch(`${basePath}data/${year}.json`)
         .then(res => {
           if (!res.ok) throw new Error('Not found');
           return res.json();
         })
         .then(data => {
           const count = data.speakers_analysis ? Object.keys(data.speakers_analysis).length : 0;
-          fetch(`${basePath}summary/${year}.json`)
+          fetch(`${basePath}data/summary/${year}.json`)
             .then(res => res.ok ? res.json() : null)
             .then(sData => {
               if (sData) {
@@ -112,7 +112,7 @@ const Landing = () => {
             }).catch(() => {});
         })
         .catch(() => {
-          fetch(`${basePath}summary/${year}.json`)
+          fetch(`${basePath}data/summary/${year}.json`)
             .then(res => res.ok ? res.json() : null)
             .then(sData => {
               if (sData) {
@@ -249,15 +249,13 @@ const Landing = () => {
 
               // 5. 檔案連結工具列
               const linkElements: any[] = [new TextRun({ text: "檔案檢索：", bold: true, size: 18 } as any)];
-              if (s.metadata?.file_stem) {
-                const pdfLink = DataManager.getPDFLink(s.metadata.file_stem);
-                if (pdfLink) {
-                  linkElements.push(new ExternalHyperlink({
-                    children: [new TextRun({ text: "[原始PDF預覽]", color: "0000FF", underline: {} } as any)],
-                    link: pdfLink.previewLink
-                  } as any));
-                  linkElements.push(new TextRun({ text: "  " } as any));
-                }
+              const pdfLink = DataManager.getSpeechPDFLink(s);
+              if (pdfLink) {
+                linkElements.push(new ExternalHyperlink({
+                  children: [new TextRun({ text: "[原始PDF預覽]", color: "0000FF", underline: {} } as any)],
+                  link: pdfLink.previewLink
+                } as any));
+                linkElements.push(new TextRun({ text: "  " } as any));
               }
               if (s.imagePaths && s.imagePaths.length > 0) {
                 s.imagePaths.forEach((imgPath, idx) => {
@@ -288,7 +286,9 @@ const Landing = () => {
             });
           } else {
             // --- 模式二：檔案索引 (保持簡潔) ---
-            const uniqueFileStems = Array.from(new Set(res.speeches.map(s => s.metadata?.file_stem).filter(Boolean)));
+            const uniqueFileStems = Array.from(
+              new Set(res.speeches.map((s) => DataManager.getSpeechFileStem(s)).filter(Boolean))
+            );
             for (const stem of uniqueFileStems) {
               const pdfLink = DataManager.getPDFLink(stem!);
               if (pdfLink) {

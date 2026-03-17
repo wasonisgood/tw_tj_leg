@@ -1,0 +1,40 @@
+{
+  "metadata": {
+    "year": "2001",
+    "focus": "二二八事件處理及補償條例第二條修正：申請期限之二次延長",
+    "data_density": "Extreme_High"
+  },
+  "visual_engine_config": {
+    "render_hints": [
+      { "component": "DeadlineExtensionChart", "source": "clash_points", "props": { "phases": ["1995-1997", "1997-1999", "1999-2001"] } },
+      { "component": "LegislativeHeatmap", "source": "historical_micro_analysis" }
+    ],
+    "color_palette": { "extension_needed": "#e67e22", "legal_barrier": "#34495e" }
+  },
+  "clash_points": [
+    {
+      "id": "2001-C1",
+      "topic": "申請期限屆滿後的「法律空白期」補救",
+      "severity": 0.9,
+      "actors": {
+        "government": {
+          "label": "行政院/二二八基金會",
+          "stance": "依程序審核",
+          "logic": "既有期限（至八十八年十月六日）已屆滿，需透過法律修正才能重新啟動受理窗口。",
+          "keyword_focus": "法律程序、授權依據"
+        },
+        "opposition": {
+          "label": "許添財、朱立倫、陳學聖等跨黨派委員",
+          "stance": "再延長兩年",
+          "logic": "仍有受難者因旅居海外、恐懼或資訊不足未及申請。轉型正義不應因行政便利而設限。",
+          "keyword_focus": "保障受難權益、撫平歷史傷痕、族群融合"
+        }
+      },
+      "micro_nuance": "原始資料顯示，此時已出現跨黨派合作（如許添財與朱立倫聯名），顯示二二八補償已逐漸脫離單一政黨色彩，成為國家層級的義務。"
+    }
+  ],
+  "intelligence_layer": {
+    "summary_for_ai_voice": "2001 年的重點在於打破『最後期限』。立法者意識到歷史創傷的癒合速度遠慢於行政規定的四年期限，因此開啟了『再延長兩年』的先例。",
+    "frontend_action_required": "設計一個『申請窗口開關』動畫，呈現 1995 年至今多次關閉又重啟的動態過程。"
+  }
+}
