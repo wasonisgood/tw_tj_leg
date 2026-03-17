@@ -1,21 +1,30 @@
 import { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { DataManager, ProcessedSpeech, PDFLink } from '../DataManager';
-import { ArrowLeft, ExternalLink, Calendar, MapPin, Info, Tag, Quote, FileText, Download } from 'lucide-react';
+import { ArrowLeft, ExternalLink, Info, Tag, Quote, FileText, Download, Users, BookOpen } from 'lucide-react';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
+import { buildTermLookup, resolveParty, normalizePersonName } from '../components/year-overview/partyUtils';
 
 function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+const ALL_YEARS = ['1987','1992','1993','1994','1995','1997','1998','1999','2000','2001','2002','2003','2006','2009','2013','2016','2017','2019','2022','2023','2024'];
+
+type OtherSpeechItem = { year: string; id: string; lawName: string; stage: string; date: string };
+
 const SpeechDetail = () => {
   const { year, speakerId } = useParams<{ year: string; speakerId: string }>();
+  const navigate = useNavigate();
   const [speech, setSpeech] = useState<ProcessedSpeech | null>(null);
   const [pdfLink, setPdfLink] = useState<PDFLink | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [partyDisplay, setPartyDisplay] = useState<string | null>(null);
+  const [otherSpeeches, setOtherSpeeches] = useState<OtherSpeechItem[]>([]);
+  const [otherSpeechesLoading, setOtherSpeechesLoading] = useState(false);
 
   useEffect(() => {
     if (!year || !speakerId) return;
@@ -72,6 +81,34 @@ const SpeechDetail = () => {
     loadSpeech();
   }, [year, speakerId]);
 
+  useEffect(() => {
+    if (!speech) return;
+
+    // 黨籍查詢
+    DataManager.getLYHistoryData().then((lyData) => {
+      const terms = buildTermLookup(lyData);
+      setPartyDisplay(resolveParty(speech, terms));
+    }).catch(() => {});
+
+    // 跨年度相同委員其他發言
+    const normalizedSpeaker = normalizePersonName(speech.speaker || '');
+    if (!normalizedSpeaker) return;
+    setOtherSpeechesLoading(true);
+    Promise.all(
+      ALL_YEARS.map(async (y): Promise<OtherSpeechItem[]> => {
+        try {
+          const res = await DataManager.getProcessedYearData(y);
+          return res.speeches
+            .filter(s => s.id !== speech.id && normalizePersonName(s.speaker || '') === normalizedSpeaker)
+            .map(s => ({ year: y, id: s.id, lawName: s.lawName, stage: s.stage, date: s.date }));
+        } catch { return []; }
+      })
+    ).then((results) => {
+      setOtherSpeeches(results.flat().sort((a, b) => a.date.localeCompare(b.date)));
+      setOtherSpeechesLoading(false);
+    }).catch(() => setOtherSpeechesLoading(false));
+  }, [speech]);
+
   const renderStanceTags = (orientation: string) => {
     const parts = orientation.split('/').map(p => p.trim());
     return (
@@ -118,9 +155,9 @@ const SpeechDetail = () => {
     >
       {/* Analysis Column */}
       <div className="w-full md:w-5/12 p-8 md:p-16 overflow-y-auto h-screen border-r border-gray-200">
-        <Link to={`/${year}/archive`} className="inline-flex items-center text-[10px] font-black uppercase tracking-[0.3em] text-gray-400 hover:text-black mb-16 transition-colors">
+        <button onClick={() => navigate(-1)} className="inline-flex items-center text-[10px] font-black uppercase tracking-[0.3em] text-gray-400 hover:text-black mb-16 transition-colors">
           <ArrowLeft className="w-3 h-3 mr-2" /> Back to Archive
-        </Link>
+        </button>
 
         <header className="mb-20">
           <div className="flex flex-col space-y-4 mb-10">
@@ -150,6 +187,12 @@ const SpeechDetail = () => {
               <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Archive ID</span>
               <span className="text-sm font-bold flex items-center"><Tag className="w-3 h-3 mr-1.5 opacity-30" /> {speech.id}</span>
             </div>
+            {partyDisplay && (
+              <div className="flex flex-col">
+                <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">黨籍</span>
+                <span className="text-sm font-bold flex items-center"><Users className="w-3 h-3 mr-1.5 opacity-30" /> {partyDisplay}</span>
+              </div>
+            )}
             {pdfLink && (
               <div className="flex flex-col">
                 <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Original PDF</span>
@@ -201,6 +244,37 @@ const SpeechDetail = () => {
           <div className="space-y-4">
             <h2 className="text-[10px] font-black uppercase tracking-[0.4em] mb-4 opacity-60">Political Orientation</h2>
             {renderStanceTags(speech.political_orientation)}
+          </div>
+
+          <div className="space-y-4 pt-4 border-t border-gray-100">
+            <h2 className="text-[10px] font-black uppercase tracking-[0.4em] mb-4 flex items-center gap-2 text-gray-500">
+              <BookOpen className="w-3 h-3 opacity-50" />
+              <span>同名委員其他時期／法案發言</span>
+              {otherSpeechesLoading && <span className="text-gray-300 normal-case font-normal text-[9px] italic">Loading...</span>}
+            </h2>
+            {!otherSpeechesLoading && otherSpeeches.length === 0 && (
+              <p className="text-xs text-gray-400 italic">無其他時期或法案之發言記錄</p>
+            )}
+            {otherSpeeches.length > 0 && (
+              <div className="space-y-3">
+                {Array.from(new Set(otherSpeeches.map(s => s.year))).map(y => (
+                  <div key={y} className="border-l-2 border-gray-200 pl-3">
+                    <div className="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1.5">{y}</div>
+                    <div className="space-y-1">
+                      {otherSpeeches.filter(s => s.year === y).map(s => (
+                        <Link
+                          key={s.id}
+                          to={`/${s.year}/archive/speech/${s.id}`}
+                          className="block text-xs text-gray-600 hover:text-black hover:underline truncate"
+                        >
+                          {s.lawName}｜{s.stage}
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </section>
       </div>

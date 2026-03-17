@@ -127,10 +127,18 @@ const YearOverview = () => {
 
   const yearHasLawMilestone = useMemo(() => {
     if (!year) return false;
-    return Object.values(lawHistoryMap || {}).some((law) =>
-      !law.metadata?.filters_applied &&
-      (law.legislation_versions || []).some((version) => (version.version_date || '').startsWith(year))
-    );
+    return Object.values(lawHistoryMap || {}).some((law) => {
+      const versions = law.legislation_versions || [];
+      const filterNth = law.metadata?.filters_applied?.filter_nth;
+      if (filterNth != null) {
+        const v = versions[filterNth - 1];
+        return !!v && (v.version_date || '').startsWith(year);
+      }
+      if (law.metadata?.target_date) {
+        return (law.metadata.target_date || '').startsWith(year);
+      }
+      return versions.some((version) => (version.version_date || '').startsWith(year));
+    });
   }, [lawHistoryMap, year]);
 
   const exportToWord = async () => {

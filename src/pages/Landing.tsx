@@ -63,10 +63,19 @@ const Landing = () => {
       .then((lawMap) => {
         const nextMap: Record<string, boolean> = {};
         Object.values(lawMap || {}).forEach((law) => {
-          if (law.metadata?.filters_applied) {
+          const filterNth = law.metadata?.filters_applied?.filter_nth;
+          const versions = law.legislation_versions || [];
+          if (filterNth != null && versions[filterNth - 1]) {
+            const y = (versions[filterNth - 1].version_date || '').slice(0, 4);
+            if (/^\d{4}$/.test(y)) nextMap[y] = true;
             return;
           }
-          (law.legislation_versions || []).forEach((version) => {
+          if (law.metadata?.target_date) {
+            const y = (law.metadata.target_date as string).slice(0, 4);
+            if (/^\d{4}$/.test(y)) nextMap[y] = true;
+            return;
+          }
+          versions.forEach((version) => {
             const y = (version.version_date || '').slice(0, 4);
             if (/^\d{4}$/.test(y)) {
               nextMap[y] = true;

@@ -214,14 +214,10 @@ function dedupeVersions(versions: LawLegislationVersion[]): LawLegislationVersio
 }
 
 function normalizeMilestoneVersions(data: LawHistoryData, year: string): LawLegislationVersion[] {
-  if (data.metadata?.filters_applied) {
-    return [];
-  }
-
   const versions = data.legislation_versions || [];
   const filterNth = data.metadata?.filters_applied?.filter_nth;
 
-  if (filterNth && versions[filterNth - 1]) {
+  if (filterNth != null && versions[filterNth - 1]) {
     return dedupeVersions([versions[filterNth - 1]]);
   }
 

@@ -1,5 +1,5 @@
-import { useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useMemo } from 'react';
+import { Link, useSearchParams } from 'react-router-dom';
 import { Building2, GitBranch } from 'lucide-react';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
@@ -58,9 +58,15 @@ function getPartyGroupTheme(groupName: string): { box: string; badge: string } {
 }
 
 export default function PartyView({ year, data, groupedByLaw, getStageColor, lyHistoryData, lawHistoryMap }: PartyViewProps) {
-  const [search, setSearch] = useState('');
-  const [splitByStage, setSplitByStage] = useState(true);
-  const [partyMode, setPartyMode] = useState<PartyMode>('confrontational');
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const search = searchParams.get('q') ?? '';
+  const splitByStage = searchParams.get('stage') !== 'off';
+  const partyMode: PartyMode = searchParams.get('mode') === 'pure' ? 'pure' : 'confrontational';
+
+  const setSearch = (val: string) => setSearchParams((prev) => { const next = new URLSearchParams(prev); val ? next.set('q', val) : next.delete('q'); return next; }, { replace: true });
+  const setSplitByStage = (val: boolean) => setSearchParams((prev) => { const next = new URLSearchParams(prev); val ? next.delete('stage') : next.set('stage', 'off'); return next; }, { replace: true });
+  const setPartyMode = (val: PartyMode) => setSearchParams((prev) => { const next = new URLSearchParams(prev); val === 'pure' ? next.set('mode', 'pure') : next.delete('mode'); return next; }, { replace: true });
 
   const normalizedTerms = useMemo(() => buildTermLookup(lyHistoryData), [lyHistoryData]);
 
@@ -79,7 +85,6 @@ export default function PartyView({ year, data, groupedByLaw, getStageColor, lyH
           <div>
             <p className="text-[10px] font-black uppercase tracking-[0.3em] text-gray-500">政黨分類模式</p>
             <h2 className="mt-2 text-2xl md:text-3xl font-black serif">{year} 年立法發言政黨分布</h2>
-            <p className="mt-2 text-xs text-gray-500">第一屆未列於第五次增額名單的委員會歸為老委員，其餘無法辨識者仍顯示未知政黨。</p>
           </div>
 
           <div className="w-full lg:w-auto space-y-3">

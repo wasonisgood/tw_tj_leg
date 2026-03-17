@@ -329,7 +329,12 @@ export class DataManager {
     for (const [id, analysis] of Object.entries(rawData.speakers_analysis)) {
       // id 已經是完整的 ID（例如 "spk-1987-0d7e3ee6b90ef827"）
       // 保持使用完整的 ID，不要提取 cleanId，以避免在查詢時出現不匹配
-      const meta = this.idMapping[id] as SpeechMetadata;
+      // 若找不到，嘗試去掉 _N 後綴（如 spk-1999-xxxx_2 → spk-1999-xxxx）
+      let meta = this.idMapping[id] as SpeechMetadata;
+      if (!meta) {
+        const baseId = id.replace(/_\d+$/, '');
+        if (baseId !== id) meta = this.idMapping[baseId] as SpeechMetadata;
+      }
       console.log(`[getProcessedYearData] Processing ID: ${id}, meta exists: ${!!meta}`);
       
       let imagePaths: string[] = [];

@@ -57,6 +57,16 @@ function articleSortIndex(order: string[], articleNo: string): number {
   return idx >= 0 ? idx : Number.MAX_SAFE_INTEGER;
 }
 
+/** 從全版本清單計算正式修法次數（去重後扣除制定版本） */
+function getAmendmentCount(data: LawHistoryData): number {
+  const unique = new Map<string, LawLegislationVersion>();
+  (data.legislation_versions || []).forEach((item) => {
+    const key = `${item.version_date}-${getActionType(item.label || '')}`;
+    if (!unique.has(key)) unique.set(key, item);
+  });
+  return Array.from(unique.values()).filter((v) => !v.label?.includes('制定')).length;
+}
+
 function buildSnapshot(data: LawHistoryData, date: string): Array<{ articleNo: string; content: string[]; reason: string[] }> {
   const order = (data.table_of_contents || []).map((item) => item.article_no);
   return (data.article_history || [])
@@ -243,7 +253,7 @@ export default function LawDetail() {
             <p className="text-[10px] font-black uppercase tracking-[0.3em] text-[#8C2F39] mb-3">Law Detail</p>
             <h1 className="text-4xl md:text-6xl font-black serif leading-tight">{lawData.metadata.law_name}</h1>
             <p className="mt-4 text-xs md:text-sm text-gray-600">
-              共 {lawData.metadata.total_articles || lawData.article_history?.length || 0} 條，累計修正 {lawData.metadata.total_revisions || 0} 次
+              共 {lawData.metadata.total_articles || lawData.article_history?.length || 0} 條，累計修正 {getAmendmentCount(lawData)} 次
             </p>
           </div>
           <div className="space-y-3">
