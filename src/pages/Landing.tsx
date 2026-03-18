@@ -60,8 +60,8 @@ const Landing = () => {
     const allYears = PHASES.flatMap(p => p.years);
     const basePath = getBasePath();
 
-    DataManager.getAllLawHistory()
-      .then((lawMap) => {
+    Promise.all([DataManager.getAllLawHistory(), DataManager.loadBillsData()])
+      .then(([lawMap, billsData]) => {
         const nextMap: Record<string, boolean> = {};
         Object.values(lawMap || {}).forEach((law) => {
           const filterNth = law.metadata?.filters_applied?.filter_nth;
@@ -83,6 +83,24 @@ const Landing = () => {
             }
           });
         });
+
+        billsData.forEach(bill => {
+          if (bill.提案日期) {
+            const y = bill.提案日期.slice(0, 4);
+            if (/^\d{4}$/.test(y)) nextMap[y] = true;
+          }
+          if (Array.isArray(bill.議案流程)) {
+            bill.議案流程.forEach(p => {
+              if (p.日期) {
+                p.日期.forEach(d => {
+                  const match = d.match(/(\d{4})/);
+                  if (match) nextMap[match[1]] = true;
+                });
+              }
+            });
+          }
+        });
+
         setLawMilestoneYearMap(nextMap);
       })
       .catch(() => {

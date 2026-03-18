@@ -45,7 +45,8 @@ const policyGroupBadge: Record<string, string> = {
 type ArchiveViewProps = {
   year: string;
   data: ProcessedSpeech[];
-  groupedByLaw: Record<string, Record<string, ProcessedSpeech[]>>;
+  bills?: any[];
+  groupedByLaw: Record<string, Record<string, { speeches: ProcessedSpeech[]; billEvents: any[] }>>;
   identities: string[];
   filter: string;
   search: string;
@@ -89,6 +90,7 @@ function normalizeDateKey(input: string): string {
 export default function ArchiveView({
   year,
   data,
+  bills,
   groupedByLaw,
   identities,
   filter,
@@ -355,6 +357,23 @@ export default function ArchiveView({
               </section>
             );
           })}
+
+          {bills && bills.length > 0 && (
+            <section id="bills-section" className="space-y-8 md:space-y-16 mt-24 border-t-8 border-black pt-12">
+              <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+                <h2 className="text-4xl md:text-7xl font-black serif uppercase tracking-tighter inline-block max-w-full break-words">本年度相關議案</h2>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {bills.map(bill => (
+                  <Link key={bill.議案編號} to={`/bills/${bill.議案編號}`} className="group block border-2 border-gray-200 bg-white p-6 hover:border-black hover:shadow-2xl transition-all">
+                    <p className="text-[10px] font-black uppercase tracking-widest text-[#8C2F39] mb-2">{bill.提案日期}</p>
+                    <h3 className="text-xl font-black serif mb-4 group-hover:text-[#8C2F39] transition-colors">{bill.提案名稱}</h3>
+                    <p className="text-sm font-bold opacity-80 line-clamp-3 leading-relaxed text-gray-600">{bill.案由 || '無案由紀錄'}</p>
+                  </Link>
+                ))}
+              </div>
+            </section>
+          )}
         </div>
       </div>
     </>

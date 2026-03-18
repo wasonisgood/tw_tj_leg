@@ -32,7 +32,7 @@ export type TimelineEventItem = {
   id: string;
   date: string;
   year: string;
-  eventType: 'meeting' | 'law';
+  eventType: 'meeting' | 'law' | 'bill';
   title: string;
   subtitle: string;
   badge: string;
@@ -126,7 +126,11 @@ function toLawSlug(input: string): string {
 export async function buildLandingTimelineBundle(): Promise<LandingTimelineBundle> {
   if (bundleCache) return bundleCache;
 
-  const lawHistoryMap = await DataManager.getAllLawHistory();
+  const [lawHistoryMap, billsData] = await Promise.all([
+    DataManager.getAllLawHistory(),
+    DataManager.loadBillsData()
+  ]);
+
   const lawItems: LawMenuItem[] = [];
   const cumulativeRaw: Array<{ date: string; actionType: '制定' | '修正'; lawName: string }> = [];
 
@@ -166,6 +170,41 @@ export async function buildLandingTimelineBundle(): Promise<LandingTimelineBundl
       totalEnactments: enactments,
       totalRevisions: revisions
     };
+  });
+
+  const billItems: TimelineEventItem[] = [];
+  billsData.forEach(bill => {
+    const addEvent = (rawDate: string, badge: string) => {
+      const date = formatDate(rawDate);
+      if (!date) return;
+      const id = `bill-${bill.議案編號}-${date}-${badge}`;
+      if (!billItems.find(i => i.id === id)) {
+        billItems.push({
+          id,
+          date,
+          year: date.slice(0, 4),
+          eventType: 'bill',
+          title: bill.提案名稱 || '未知議案',
+          subtitle: bill.提案人 ? `提案人：${bill.提案人}` : '無提案人資訊',
+          badge: badge,
+          href: `/bills/${bill.議案編號}`
+        });
+      }
+    };
+
+    if (bill.提案日期) {
+      addEvent(bill.提案日期, '提案');
+    }
+    
+    if (Array.isArray(bill.議案流程)) {
+      bill.議案流程.forEach(process => {
+        if (process.日期 && process.日期.length > 0) {
+          process.日期.forEach(d => {
+            addEvent(d, process.狀態 || '流程更新');
+          });
+        }
+      });
+    }
   });
 
   const summaryJobs = CORE_YEARS.map(async (year) => {
@@ -274,7 +313,8 @@ export async function buildLandingTimelineBundle(): Promise<LandingTimelineBundl
       subtitle: `${item.governmentLabel} vs ${item.oppositionLabel}`,
       badge: item.meetingType,
       href: item.href
-    }))
+    })),
+    ...billItems
   ].sort((a, b) => a.date.localeCompare(b.date) || a.eventType.localeCompare(b.eventType));
 
   bundleCache = {

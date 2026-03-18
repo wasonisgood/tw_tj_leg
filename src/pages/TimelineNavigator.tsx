@@ -240,6 +240,7 @@ export default function TimelineNavigator() {
               <div className="flex flex-wrap gap-2 text-[10px] font-black uppercase tracking-[0.16em] text-[#6c5d54]">
                 <span className="px-2 py-1 border border-[#cdbfae] bg-[#e9decd]">會議</span>
                 <span className="px-2 py-1 border border-[#cdbfae] bg-[#e9decd]">法規</span>
+                <span className="px-2 py-1 border border-[#cdbfae] bg-[#e9decd]">議案</span>
                 <span className="px-2 py-1 border border-[#8C2F39]/40 text-[#8C2F39]">可點擊進入原頁</span>
                 <span className="px-2 py-1 border border-black/20">共 {events.length} 筆</span>
               </div>
@@ -275,7 +276,7 @@ export default function TimelineNavigator() {
                         <div className="flex items-center justify-between gap-3">
                           <div className="flex flex-wrap items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] text-[#6c5d54]">
                             <span>{event.date}</span>
-                            <span className="px-2 py-1 border border-[#cdbfae] bg-[#e9decd]">{event.eventType === 'meeting' ? '會議' : '法規'}</span>
+                            <span className="px-2 py-1 border border-[#cdbfae] bg-[#e9decd]">{event.eventType === 'meeting' ? '會議' : event.eventType === 'bill' ? '議案' : '法規'}</span>
                             <span className="px-2 py-1 border border-[#8C2F39]/40 text-[#8C2F39]">{event.badge}</span>
                           </div>
                           <span className="text-5xl font-black serif leading-none text-black/10 group-hover:text-[#8C2F39]/30 transition-colors">{String(index + 1).padStart(2, '0')}</span>

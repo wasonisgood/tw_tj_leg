@@ -132,6 +132,69 @@ export interface LYLegislatorTerm {
 
 export type LYHistoryData = Record<string, LYLegislatorTerm>;
 
+export interface BillProcess {
+  會期?: string;
+  "院會/委員會"?: string;
+  狀態: string;
+  日期?: string[];
+  會議代碼?: string;
+}
+
+export interface BillAttachment {
+  網址: string;
+  名稱: string;
+  HTML結果?: string;
+}
+
+export interface BillRelated {
+  議案編號: string;
+  議案名稱: string;
+}
+
+export interface BillArticleRow {
+  說明?: string;
+  增訂?: string;
+  修正?: string;
+  條文?: string;
+  [key: string]: string | undefined;
+}
+
+export interface BillComparison {
+  law_id?: string;
+  law_name?: string;
+  立法種類?: string;
+  title?: string;
+  rows?: BillArticleRow[];
+}
+
+export interface BillData {
+  提案編號?: string;
+  議案編號: string;
+  屆次?: string;
+  期別?: string;
+  次別?: string;
+  提案名稱: string;
+  提案日期?: string;
+  最新進度日期?: string;
+  議案狀態?: string;
+  提案人?: string;
+  連署人?: string[];
+  會議代碼?: string;
+  會議代碼str?: string;
+  法律編號?: string[];
+  法律編號str?: string[];
+  議案類別?: string;
+  提案來源?: string;
+  議案流程?: BillProcess[];
+  相關附件?: BillAttachment[];
+  關連議案?: BillRelated[];
+  案由?: string;
+  說明?: string;
+  對照表?: BillComparison[];
+  api_data_source?: string;
+  api_data_update_time?: string;
+}
+
 export class DataManager {
   private static unifiedSpeechMap: { [id: string]: UnifiedSpeechRecord } | null = null;
   private static unifiedPdfLinkMap: { [fileStemOrName: string]: PDFLink } = {};
@@ -597,5 +660,49 @@ export class DataManager {
 
   static async getLYHistoryData(): Promise<LYHistoryData> {
     return this.loadLYHistoryData();
+  }
+
+  private static billsDataCache: BillData[] | null = null;
+
+  static async loadBillsData(): Promise<BillData[]> {
+    if (this.billsDataCache) {
+      return this.billsDataCache;
+    }
+    try {
+      const dataPath = this.getDataPath();
+      const indexResp = await fetch(`${dataPath}bills_data/_INDEX.json`);
+      if (!indexResp.ok) {
+        this.billsDataCache = [];
+        return this.billsDataCache;
+      }
+      const indexData = await indexResp.json();
+      const files = indexData.files || [];
+      
+      const billPromises = files.map(async (f: any) => {
+        if (!f.檔案名) return null;
+        try {
+          const resp = await fetch(`${dataPath}bills_data/${encodeURIComponent(f.檔案名)}`);
+          if (resp.ok) {
+            return await resp.json() as BillData;
+          }
+        } catch (e) {
+          console.warn(`[DataManager.loadBillsData] Failed to load bill ${f.檔案名}`, e);
+        }
+        return null;
+      });
+
+      const results = await Promise.all(billPromises);
+      this.billsDataCache = results.filter(b => b !== null) as BillData[];
+      return this.billsDataCache;
+    } catch (e) {
+      console.error('[DataManager.loadBillsData] Failed', e);
+      this.billsDataCache = [];
+      return this.billsDataCache;
+    }
+  }
+
+  static async getBillById(billId: string): Promise<BillData | null> {
+    const bills = await this.loadBillsData();
+    return bills.find(b => b.議案編號 === billId) || null;
   }
 }

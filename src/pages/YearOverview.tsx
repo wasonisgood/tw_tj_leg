@@ -21,6 +21,7 @@ const YearOverview = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [data, setData] = useState<ProcessedSpeech[]>([]);
+  const [bills, setBills] = useState<any[]>([]);
   const [session, setSession] = useState<SessionInfo | null>(null);
   const [intelligence, setIntelligence] = useState<any>(null);
   const [summaryData, setSummaryData] = useState<any>(null);
@@ -67,11 +68,20 @@ const YearOverview = () => {
     Promise.all([
       DataManager.init(),
       fetch(`${basePath}data/summary/${year}.json`).then((res) => (res.ok ? res.json() : null)).catch(() => null),
-      DataManager.getLYHistoryData()
-    ]).then(async ([_, summary, lyHistory]) => {
+      DataManager.getLYHistoryData(),
+      DataManager.loadBillsData()
+    ]).then(async ([_, summary, lyHistory, allBills]) => {
       const res = await DataManager.getProcessedYearData(year);
       if (!mounted) return;
+
+      const yearBills = allBills.filter(b => {
+        if (b.提案日期 && b.提案日期.startsWith(year)) return true;
+        if (b.議案流程 && b.議案流程.some(p => p.日期 && p.日期.some(d => d.replace(/\D/g, '').startsWith(year)))) return true;
+        return false;
+      });
+
       setData(res.speeches);
+      setBills(yearBills);
       setSession(res.sessionInfo || null);
       setIntelligence(summary?.intelligence_layer || res.intelligence || null);
       setSummaryData(summary);
@@ -81,6 +91,7 @@ const YearOverview = () => {
       console.error('[YearOverview] primary load failed:', err);
       if (!mounted) return;
       setData([]);
+      setBills([]);
       setSession(null);
       setIntelligence(null);
       setSummaryData(null);
@@ -112,18 +123,59 @@ const YearOverview = () => {
     [data, filter, search]
   );
 
-  const groupedByLaw = useMemo(
-    () =>
-      filteredData.reduce((acc, speech) => {
-        const law = speech.lawName || '其他';
+  const groupedByLaw = useMemo(() => {
+    const acc: Record<string, Record<string, { speeches: ProcessedSpeech[]; billEvents: any[] }>> = {};
+
+    // Group speeches
+    filteredData.forEach((speech) => {
+      const law = speech.lawName || '其他';
+      if (!acc[law]) acc[law] = {};
+      const stage = speech.stage || '一般會議';
+      if (!acc[law][stage]) acc[law][stage] = { speeches: [], billEvents: [] };
+      acc[law][stage].speeches.push(speech);
+    });
+
+    // Group bills
+    if (year) {
+      const allLawNames = Object.keys(lawHistoryMap);
+      bills.forEach((bill) => {
+        const law = findLawNameForBill(bill, allLawNames);
         if (!acc[law]) acc[law] = {};
-        const stage = speech.stage || '一般會議';
-        if (!acc[law][stage]) acc[law][stage] = [];
-        acc[law][stage].push(speech);
-        return acc;
-      }, {} as Record<string, Record<string, ProcessedSpeech[]>>),
-    [filteredData]
-  );
+
+        // 提案 event
+        if (bill.提案日期 && bill.提案日期.startsWith(year)) {
+          const stage = '提案階段';
+          if (!acc[law][stage]) acc[law][stage] = { speeches: [], billEvents: [] };
+          acc[law][stage].billEvents.push({
+            bill,
+            status: '提案',
+            date: bill.提案日期
+          });
+        }
+
+        // 議案流程 events
+        if (Array.isArray(bill.議案流程)) {
+          bill.議案流程.forEach((proc: any) => {
+            if (Array.isArray(proc.日期)) {
+              proc.日期.forEach((d: string) => {
+                if (d.replace(/\D/g, '').startsWith(year)) {
+                  const stage = proc.狀態 || '其他階段';
+                  if (!acc[law][stage]) acc[law][stage] = { speeches: [], billEvents: [] };
+                  acc[law][stage].billEvents.push({
+                    bill,
+                    status: proc.狀態,
+                    date: d
+                  });
+                }
+              });
+            }
+          });
+        }
+      });
+    }
+
+    return acc;
+  }, [filteredData, bills, year, lawHistoryMap]);
 
   const yearHasLawMilestone = useMemo(() => {
     if (!year) return false;
@@ -393,6 +445,7 @@ const YearOverview = () => {
             <ArchiveView
               year={year || ''}
               data={data}
+              bills={bills}
               groupedByLaw={groupedByLaw}
               identities={identities}
               filter={filter}

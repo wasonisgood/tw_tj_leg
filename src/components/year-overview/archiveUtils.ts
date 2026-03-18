@@ -14,6 +14,11 @@ export type StageBucket = {
   stageName: string;
   stageDate: string;
   speeches: ProcessedSpeech[];
+  billEvents?: Array<{
+    bill: any;
+    status: string;
+    date: string;
+  }>;
 };
 
 const OFFICIAL_KEYWORDS = ['部長', '次長', '主委', '主任委員', '官員', '行政院', '機關', '院長', '政務'];
@@ -64,13 +69,37 @@ const LAW_NAME_ALIASES: Record<string, string> = {
   '國家安全法': '國家安全法'
 };
 
-function normalizeLawName(input: string): string {
+export function normalizeLawName(input: string): string {
   if (!input) return '';
   return input
     .replace(/（.*?）|\(.*?\)/g, '')
+    .replace(/修正草案/g, '')
     .replace(/草案/g, '')
     .replace(/\s+/g, '')
     .trim();
+}
+
+export function findLawNameForBill(bill: any, allLawNames: string[]): string {
+  // 1. Try from 對照表
+  if (bill.對照表 && bill.對照表.length > 0) {
+    for (const comp of bill.對照表) {
+      if (comp.law_name) {
+        const norm = normalizeLawName(comp.law_name);
+        const match = allLawNames.find(n => normalizeLawName(n) === norm);
+        if (match) return match;
+      }
+    }
+  }
+
+  // 2. Try from 提案名稱
+  const title = bill.提案名稱 || '';
+  const normTitle = normalizeLawName(title);
+  for (const lawName of allLawNames) {
+    const normLaw = normalizeLawName(lawName);
+    if (normTitle.includes(normLaw)) return lawName;
+  }
+
+  return '其他';
 }
 
 function resolveLawNameAlias(input: string): string {
@@ -149,17 +178,29 @@ export function parseStageDate(stageName: string, fallbackDate = ''): string {
   return fallbackDate;
 }
 
-export function getSortedStageBuckets(stageMap: Record<string, ProcessedSpeech[]>): StageBucket[] {
+export function getSortedStageBuckets(
+  stageMap: Record<string, { speeches: ProcessedSpeech[]; billEvents?: any[] }>
+): StageBucket[] {
   return Object.entries(stageMap)
-    .map(([stageName, speeches]) => {
+    .map(([stageName, entry]) => {
+      const { speeches, billEvents } = entry;
       const earliestSpeechDate = [...speeches]
         .map((speech) => speech.date || speech.metadata?.date || '')
         .filter(Boolean)
         .sort()[0] || '';
+      
+      const earliestBillDate = (billEvents || [])
+        .map(e => e.date)
+        .filter(Boolean)
+        .sort()[0] || '';
+
+      const fallbackDate = earliestSpeechDate || earliestBillDate;
+
       return {
         stageName,
-        stageDate: parseStageDate(stageName, earliestSpeechDate),
-        speeches
+        stageDate: parseStageDate(stageName, fallbackDate),
+        speeches,
+        billEvents
       };
     })
     .sort((a, b) => {
