@@ -60,8 +60,8 @@ const Landing = () => {
     const allYears = PHASES.flatMap(p => p.years);
     const basePath = getBasePath();
 
-    Promise.all([DataManager.getAllLawHistory(), DataManager.loadBillsData()])
-      .then(([lawMap, billsData]) => {
+    DataManager.getAllLawHistory()
+      .then((lawMap) => {
         const nextMap: Record<string, boolean> = {};
         Object.values(lawMap || {}).forEach((law) => {
           const filterNth = law.metadata?.filters_applied?.filter_nth;
@@ -83,29 +83,40 @@ const Landing = () => {
             }
           });
         });
-
-        billsData.forEach(bill => {
-          if (bill.提案日期) {
-            const y = bill.提案日期.slice(0, 4);
-            if (/^\d{4}$/.test(y)) nextMap[y] = true;
-          }
-          if (Array.isArray(bill.議案流程)) {
-            bill.議案流程.forEach(p => {
-              if (p.日期) {
-                p.日期.forEach(d => {
-                  const match = d.match(/(\d{4})/);
-                  if (match) nextMap[match[1]] = true;
-                });
-              }
-            });
-          }
-        });
-
         setLawMilestoneYearMap(nextMap);
       })
       .catch(() => {
         setLawMilestoneYearMap({});
       });
+
+    // Load bill timeline events to detect years with bills
+    // Disabled due to encoding issues - will be added back after fixing
+    // DataManager.getAllBillTimelineEvents()
+    //   .then((billEvents) => {
+    //     const billYearStats: Record<string, { count: number; summary: string }> = {};
+    //     const billYears = new Set<string>();
+    //     
+    //     billEvents.forEach((event) => {
+    //       billYears.add(event.year);
+    //     });
+    //
+    //     billYears.forEach((year) => {
+    //       billYearStats[year] = {
+    //         count: 0,
+    //         summary: `本年度議案資訊載入中`
+    //       };
+    //     });
+    //
+    //     setYearStats(prev => ({
+    //       ...prev,
+    //       ...billYearStats
+    //     }));
+    //   })
+    //   .catch(() => {
+    //     // Bill events loading failed, continue without bill years
+    //   });
+
+    // Load bill timeline events to detect years with bills - disabled temporarily
 
     allYears.forEach(year => {
       fetch(`${basePath}data/${year}.json`)
@@ -151,10 +162,16 @@ const Landing = () => {
   const missingLawYears = Object.keys(lawMilestoneYearMap)
     .filter((year) => !coreYearSet.has(year))
     .sort((a, b) => a.localeCompare(b));
+  
+  const missingBillYears = Object.keys(yearStats)
+    .filter((year) => !coreYearSet.has(year) && !missingLawYears.includes(year))
+    .sort((a, b) => a.localeCompare(b));
+  
+  const allMissingYears = Array.from(new Set([...missingLawYears, ...missingBillYears])).sort((a, b) => a.localeCompare(b));
 
   const displayPhases = PHASES.map((phase, idx) => {
     const merged = new Set(phase.years);
-    missingLawYears.forEach((year) => {
+    allMissingYears.forEach((year) => {
       if (getPhaseIndexByYear(year) === idx) {
         merged.add(year);
       }

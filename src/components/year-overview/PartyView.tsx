@@ -26,7 +26,7 @@ function cn(...inputs: ClassValue[]) {
 type PartyViewProps = {
   year: string;
   data: ProcessedSpeech[];
-  groupedByLaw: Record<string, Record<string, ProcessedSpeech[]>>;
+  groupedByLaw: Record<string, Record<string, { speeches: ProcessedSpeech[]; billEvents: any[] }>>;
   getStageColor: (stage: string) => string;
   lyHistoryData: LYHistoryData;
   lawHistoryMap: Record<string, LawHistoryData>;

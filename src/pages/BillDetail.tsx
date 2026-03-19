@@ -1,31 +1,48 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { DataManager, BillData } from '../DataManager';
 import { FileText, ArrowLeft, Link2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 export default function BillDetail() {
-  const { bill_id } = useParams<{ bill_id: string }>();
+  const { billId } = useParams<{ billId: string }>();
   const navigate = useNavigate();
   const [bill, setBill] = useState<BillData | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     let mounted = true;
-    DataManager.getBillById(bill_id || '')
-      .then((data) => {
+    const loadData = async () => {
+      try {
+        setLoading(true);
+        await DataManager.init();
+        const data = await DataManager.getBillById(billId || '');
         if (!mounted) return;
         setBill(data);
-        setLoading(false);
-      })
-      .catch(() => {
-        if (!mounted) return;
-        setLoading(false);
-      });
+      } catch (err) {
+        console.error('[BillDetail] Failed to load bill:', err);
+      } finally {
+        if (mounted) setLoading(false);
+      }
+    };
+    
+    loadData();
     return () => {
       mounted = false;
     };
-  }, [bill_id]);
+  }, [billId]);
+
+  const hasContentMismatch = useMemo(() => {
+    if (!bill || !bill.對照表 || bill.對照表.length === 0) return false;
+    const title = bill.提案名稱 || '';
+    const contentLaw = bill.對照表[0].law_name || '';
+    if (!contentLaw) return false;
+    
+    // 簡單判斷標題是否包含對照表中的法律名稱
+    const normTitle = title.replace(/\s+/g, '');
+    const normContent = contentLaw.replace(/\s+/g, '');
+    return !normTitle.includes(normContent) && !normContent.includes(normTitle);
+  }, [bill]);
 
   if (loading) {
     return (
@@ -55,6 +72,17 @@ export default function BillDetail() {
         </button>
 
         <header className="mb-16 border-b-[6px] border-black pb-12">
+          {hasContentMismatch && (
+            <div className="mb-8 p-4 bg-red-50 border-2 border-red-600 text-red-800">
+              <div className="flex items-center gap-2 mb-2">
+                <span className="text-sm font-black uppercase tracking-widest">⚠️ Data Inconsistency Warning</span>
+              </div>
+              <p className="text-xs font-bold leading-relaxed">
+                本議案之「對照表」內容（{bill.對照表?.[0]?.law_name}）與其「提案名稱」明顯不符。
+                這可能是原始資料來源（立法院 API）的錄入錯誤，請以提案標題與原始 PDF 連結為準。
+              </p>
+            </div>
+          )}
           <p className="text-[10px] font-black uppercase tracking-[0.4em] text-[#8C2F39] mb-4">Legislative Bill Archive</p>
           <h1 className="text-4xl md:text-6xl font-black serif leading-tight tracking-tighter mb-8">
             {bill.提案名稱}
@@ -84,24 +112,28 @@ export default function BillDetail() {
           <div className="lg:col-span-8 space-y-16">
             
             {/* 案由與說明 */}
-            <section>
-              <div className="flex items-center gap-4 mb-6">
-                <h2 className="text-2xl font-black serif">案由與說明</h2>
-                <div className="h-[2px] flex-grow bg-black"></div>
-              </div>
-              <div className="bg-white border-2 border-black p-6 md:p-8 space-y-6 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
-                <div>
-                  <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-[#8C2F39] mb-2">案由</h3>
-                  <p className="text-sm leading-loose text-justify">{bill.案由 || '無紀錄'}</p>
+            {(bill.案由 || bill.說明) && (
+              <section>
+                <div className="flex items-center gap-4 mb-6">
+                  <h2 className="text-2xl font-black serif">案由與說明</h2>
+                  <div className="h-[2px] flex-grow bg-black"></div>
                 </div>
-                {bill.說明 && (
-                  <div className="pt-6 border-t border-gray-200">
-                    <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-[#8C2F39] mb-2">說明</h3>
-                    <p className="text-sm leading-loose whitespace-pre-wrap text-justify">{bill.說明}</p>
-                  </div>
-                )}
-              </div>
-            </section>
+                <div className="bg-white border-2 border-black p-6 md:p-8 space-y-6 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
+                  {bill.案由 && (
+                    <div>
+                      <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-[#8C2F39] mb-2">案由</h3>
+                      <p className="text-sm leading-loose text-justify">{bill.案由}</p>
+                    </div>
+                  )}
+                  {bill.說明 && (
+                    <div className={bill.案由 ? "pt-6 border-t border-gray-200" : ""}>
+                      <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-[#8C2F39] mb-2">說明</h3>
+                      <p className="text-sm leading-loose whitespace-pre-wrap text-justify">{bill.說明}</p>
+                    </div>
+                  )}
+                </div>
+              </section>
+            )}
 
             {/* 法條對照表 */}
             {bill.對照表 && bill.對照表.length > 0 && (

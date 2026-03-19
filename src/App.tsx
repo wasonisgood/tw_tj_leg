@@ -22,7 +22,7 @@ function App() {
           <Route path="/guide/full-revision" element={<FullRevisionGuide />} />
           <Route path="/timeline" element={<TimelineNavigator />} />
           <Route path="/laws/:lawSlug" element={<LawDetail />} />
-          <Route path="/bills/:bill_id" element={<BillDetail />} />
+          <Route path="/bills/:billId" element={<BillDetail />} />
           <Route path="/:year" element={<YearRedirect />} />
           <Route path="/:year/guide" element={<YearOverview />} />
           <Route path="/:year/archive" element={<YearOverview />} />

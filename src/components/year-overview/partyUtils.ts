@@ -145,21 +145,21 @@ export function getPartyBucketLabel(speech: ProcessedSpeech, terms: NormalizedTe
   return `${baseParty}｜立法委員`;
 }
 
-export function groupSpeechesByLaw(speeches: ProcessedSpeech[]): Record<string, Record<string, ProcessedSpeech[]>> {
+export function groupSpeechesByLaw(speeches: ProcessedSpeech[]): Record<string, Record<string, { speeches: ProcessedSpeech[]; billEvents: any[] }>> {
   return speeches.reduce((acc, speech) => {
     const law = speech.lawName || '其他';
     const stage = speech.stage || '一般會議';
 
     if (!acc[law]) acc[law] = {};
-    if (!acc[law][stage]) acc[law][stage] = [];
+    if (!acc[law][stage]) acc[law][stage] = { speeches: [], billEvents: [] };
 
-    acc[law][stage].push(speech);
+    acc[law][stage].speeches.push(speech);
     return acc;
-  }, {} as Record<string, Record<string, ProcessedSpeech[]>>);
+  }, {} as Record<string, Record<string, { speeches: ProcessedSpeech[]; billEvents: any[] }>>);
 }
 
 export function buildPartyLawBuckets(
-  groupedByLaw: Record<string, Record<string, ProcessedSpeech[]>>,
+  groupedByLaw: Record<string, Record<string, { speeches: ProcessedSpeech[]; billEvents: any[] }>>,
   terms: NormalizedTerm[],
   mode: PartyMode,
   splitByStage: boolean
@@ -181,13 +181,13 @@ export function buildPartyLawBuckets(
     }
 
     const byParty: Record<string, ProcessedSpeech[]> = {};
-    Object.values(stageMap)
-      .flat()
-      .forEach((speech) => {
+    Object.values(stageMap).forEach((entry) => {
+      entry.speeches.forEach((speech) => {
         const party = getPartyBucketLabel(speech, terms, mode);
         if (!byParty[party]) byParty[party] = [];
         byParty[party].push(speech);
       });
+    });
 
     return { lawName, stageBuckets: [{ stageName: '全部程序', stageDate: '', byParty }] };
   });

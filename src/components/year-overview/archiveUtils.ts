@@ -66,7 +66,8 @@ const LAW_NAME_ALIASES: Record<string, string> = {
   '威權時期回復條例': '威權統治時期國家不法行為被害者權利回復條例',
   '年資處理條例': '公職人員年資併社團專職人員年資計發退離給與處理條例',
   '黨產條例': '政黨及其附隨組織不當取得財產處理條例',
-  '國家安全法': '國家安全法'
+  '國家安全法': '國家安全法',
+  '國安法': '國家安全法'
 };
 
 export function normalizeLawName(input: string): string {
@@ -80,7 +81,16 @@ export function normalizeLawName(input: string): string {
 }
 
 export function findLawNameForBill(bill: any, allLawNames: string[]): string {
-  // 1. Try from 對照表
+  const title = bill.提案名稱 || '';
+  const normTitle = normalizeLawName(title);
+
+  // 1. 優先從「提案名稱」判斷 (因為發現部分原始資料對照表與標題不符)
+  for (const lawName of allLawNames) {
+    const normLaw = normalizeLawName(lawName);
+    if (normTitle.includes(normLaw)) return lawName;
+  }
+
+  // 2. 次之從「對照表」
   if (bill.對照表 && bill.對照表.length > 0) {
     for (const comp of bill.對照表) {
       if (comp.law_name) {
@@ -89,14 +99,6 @@ export function findLawNameForBill(bill: any, allLawNames: string[]): string {
         if (match) return match;
       }
     }
-  }
-
-  // 2. Try from 提案名稱
-  const title = bill.提案名稱 || '';
-  const normTitle = normalizeLawName(title);
-  for (const lawName of allLawNames) {
-    const normLaw = normalizeLawName(lawName);
-    if (normTitle.includes(normLaw)) return lawName;
   }
 
   return '其他';

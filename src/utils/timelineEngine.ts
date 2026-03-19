@@ -126,11 +126,52 @@ function toLawSlug(input: string): string {
 export async function buildLandingTimelineBundle(): Promise<LandingTimelineBundle> {
   if (bundleCache) return bundleCache;
 
-  const [lawHistoryMap, billsData] = await Promise.all([
-    DataManager.getAllLawHistory(),
-    DataManager.loadBillsData()
-  ]);
+  const lawHistoryMap = await DataManager.getAllLawHistory();
+  const billTimelineEvents: Array<{ date: string; year: string; billId: string; billName: string; status: string }> = [];
+  try {
+    const indexResp = await fetch(`${getBasePath()}data/bills_data/_INDEX.json`);
+    const indexJson = indexResp.ok ? await indexResp.json() : null;
+    const files = Array.isArray(indexJson?.files) ? indexJson.files : [];
 
+    for (const item of files) {
+      const fileName = item?.檔案名;
+      if (!fileName) continue;
+
+      const billResp = await fetch(`${getBasePath()}data/bills_data/${fileName}`);
+      if (!billResp.ok) continue;
+      const bill = await billResp.json() as any;
+
+      const billId = bill.提案編號 || bill.議案編號 || '';
+      const billName = bill.提案名稱 || '未知議案';
+
+      const proposalDate = formatDate(bill.提案日期 || '');
+      if (proposalDate) {
+        billTimelineEvents.push({
+          date: proposalDate,
+          year: proposalDate.slice(0, 4),
+          billId,
+          billName,
+          status: bill.議案狀態 || '提案'
+        });
+      }
+
+      (bill.議案流程 || []).forEach((process: any) => {
+        (process.日期 || []).forEach((rawDate: string) => {
+          const date = formatDate(rawDate);
+          if (!date) return;
+          billTimelineEvents.push({
+            date,
+            year: date.slice(0, 4),
+            billId,
+            billName,
+            status: process.狀態 || '流程更新'
+          });
+        });
+      });
+    }
+  } catch {
+    // Ignore bill timeline failures; law and meeting events can still render.
+  }
   const lawItems: LawMenuItem[] = [];
   const cumulativeRaw: Array<{ date: string; actionType: '制定' | '修正'; lawName: string }> = [];
 
@@ -170,41 +211,6 @@ export async function buildLandingTimelineBundle(): Promise<LandingTimelineBundl
       totalEnactments: enactments,
       totalRevisions: revisions
     };
-  });
-
-  const billItems: TimelineEventItem[] = [];
-  billsData.forEach(bill => {
-    const addEvent = (rawDate: string, badge: string) => {
-      const date = formatDate(rawDate);
-      if (!date) return;
-      const id = `bill-${bill.議案編號}-${date}-${badge}`;
-      if (!billItems.find(i => i.id === id)) {
-        billItems.push({
-          id,
-          date,
-          year: date.slice(0, 4),
-          eventType: 'bill',
-          title: bill.提案名稱 || '未知議案',
-          subtitle: bill.提案人 ? `提案人：${bill.提案人}` : '無提案人資訊',
-          badge: badge,
-          href: `/bills/${bill.議案編號}`
-        });
-      }
-    };
-
-    if (bill.提案日期) {
-      addEvent(bill.提案日期, '提案');
-    }
-    
-    if (Array.isArray(bill.議案流程)) {
-      bill.議案流程.forEach(process => {
-        if (process.日期 && process.日期.length > 0) {
-          process.日期.forEach(d => {
-            addEvent(d, process.狀態 || '流程更新');
-          });
-        }
-      });
-    }
   });
 
   const summaryJobs = CORE_YEARS.map(async (year) => {
@@ -314,7 +320,16 @@ export async function buildLandingTimelineBundle(): Promise<LandingTimelineBundl
       badge: item.meetingType,
       href: item.href
     })),
-    ...billItems
+    ...billTimelineEvents.map((item: { date: string; year: string; billId: string; billName: string; status: string }, idx: number) => ({
+      id: `event-bill-${item.year}-${idx}`,
+      date: item.date,
+      year: item.year,
+      eventType: 'bill' as const,
+      title: item.billName,
+      subtitle: `議案狀態：${item.status}`,
+      badge: '議案',
+      href: `/bills/${item.billId}`
+    }))
   ].sort((a, b) => a.date.localeCompare(b.date) || a.eventType.localeCompare(b.eventType));
 
   bundleCache = {

@@ -223,8 +223,11 @@ export class DataManager {
   }
 
   private static getBasePath(): string {
-    // 使用 window.location.pathname 來動態取得 base 路徑
+    // 取得當前完整 URL 路徑
     const pathname = window.location.pathname;
+    
+    // 如果路徑中包含專案子路徑，則回傳該子路徑
+    // 這裡使用更加強健的檢查，確保在 /tw_tj_leg/bills/xxx 也能正確回傳 /tw_tj_leg/
     if (pathname.includes('/tw_tj_leg/')) {
       return '/tw_tj_leg/';
     }
@@ -346,17 +349,14 @@ export class DataManager {
   static extractStage(fileStem: string): string {
     if (!fileStem) return '未知階段';
     
-    // 根據 file_stem 結構化格式：法案名稱_修正狀態_日期_階段
-    // 例如：國家安全法_制定_19870309_委員會審查
-    const parts = fileStem.split('_');
+    // 移除所有空格以確保名稱乾淨
+    const cleanedStem = fileStem.replace(/\s+/g, '');
+    const parts = cleanedStem.split('_');
     
-    // 如果格式符合預期（至少有四部分），結合日期（index 2）與階段（index 3）
-    // 這樣可以確保不同日期的「委員會審查」不會被混在一起
     if (parts.length >= 4) {
       return `${parts[2]}_${parts[3]}`;
     }
     
-    // 如果不符合標準格式，則取最後兩部分或最後一部分
     if (parts.length >= 2) {
       return `${parts[parts.length - 2]}_${parts[parts.length - 1]}`;
     }
@@ -368,18 +368,15 @@ export class DataManager {
   static extractBillDetails(fileStem: string): string {
     if (!fileStem) return '未知';
     
-    // file_stem 格式: 法案名稱_修正狀態_日期_階段
-    // 例如: 國家安全法_制定_19870309_委員會審查
-    const parts = fileStem.split('_');
+    const cleanedStem = fileStem.replace(/\s+/g, '');
+    const parts = cleanedStem.split('_');
     
     if (parts.length < 4) {
-      // 如果格式不正確，就只返回最後一個部分
       return parts[parts.length - 1];
     }
     
-    // 提取修正狀態（第2個部分）和階段（最後一個部分）
-    const status = parts[1]; // 修正狀態（如：制定、第1次修正）
-    const stage = parts[parts.length - 1]; // 階段（如：委員會審查）
+    const status = parts[1];
+    const stage = parts[parts.length - 1];
     
     return `${status}_${stage}`;
   }
@@ -387,7 +384,8 @@ export class DataManager {
   // 從 file_stem 提取法案名稱（底線前的部分）
   static extractBillName(fileStem: string): string {
     if (!fileStem) return '未知法案';
-    return fileStem.split('_')[0]; // 取第一個底線之前的部分
+    // 移除所有空格
+    return fileStem.split('_')[0].replace(/\s+/g, '');
   }
 
   static getPDFLink(fileName: string): PDFLink | null {
@@ -537,8 +535,9 @@ export class DataManager {
       }
 
       const fullFileStem = unifiedRecord?.file_stem || meta?.file_stem || '';
-      const lawName = unifiedRecord?.law_name || this.extractBillName(fullFileStem);
-      const stage = unifiedRecord?.stage || this.extractStage(fullFileStem);
+      // 全局移除空格，解決「政治檔案 資料保護法」等原始資料產生的奇怪空隔
+      const lawName = (unifiedRecord?.law_name || this.extractBillName(fullFileStem)).replace(/\s+/g, '');
+      const stage = (unifiedRecord?.stage || this.extractStage(fullFileStem)).replace(/\s+/g, '');
       const speechDate = unifiedRecord?.date || meta?.date || '';
       
       speeches.push({
@@ -665,13 +664,15 @@ export class DataManager {
   private static billsDataCache: BillData[] | null = null;
 
   static async loadBillsData(): Promise<BillData[]> {
-    if (this.billsDataCache) {
+    if (this.billsDataCache && this.billsDataCache.length > 0) {
       return this.billsDataCache;
     }
     try {
       const dataPath = this.getDataPath();
-      const indexResp = await fetch(`${dataPath}bills_data/_INDEX.json`);
+      const indexUrl = `${dataPath}bills_data/_INDEX.json`;
+      const indexResp = await fetch(indexUrl);
       if (!indexResp.ok) {
+        console.error('[DataManager.loadBillsData] Failed to fetch _INDEX.json', indexUrl);
         this.billsDataCache = [];
         return this.billsDataCache;
       }
@@ -681,9 +682,12 @@ export class DataManager {
       const billPromises = files.map(async (f: any) => {
         if (!f.檔案名) return null;
         try {
-          const resp = await fetch(`${dataPath}bills_data/${encodeURIComponent(f.檔案名)}`);
+          // 直接使用檔案名稱，fetch 會處理中文編碼
+          const resp = await fetch(`${dataPath}bills_data/${f.檔案名}`);
           if (resp.ok) {
             return await resp.json() as BillData;
+          } else {
+            console.warn(`[DataManager.loadBillsData] Bill file not found: ${f.檔案名}`);
           }
         } catch (e) {
           console.warn(`[DataManager.loadBillsData] Failed to load bill ${f.檔案名}`, e);
@@ -692,7 +696,13 @@ export class DataManager {
       });
 
       const results = await Promise.all(billPromises);
-      this.billsDataCache = results.filter(b => b !== null) as BillData[];
+      this.billsDataCache = results
+        .filter((b): b is BillData => b !== null)
+        .map(bill => ({
+          ...bill,
+          // 全局移除空格，解決中文法案名稱中莫名其妙的空隔（如「政治檔案 資料保護法」）
+          提案名稱: (bill.提案名稱 || '').replace(/\s+/g, '').trim()
+        }));
       return this.billsDataCache;
     } catch (e) {
       console.error('[DataManager.loadBillsData] Failed', e);

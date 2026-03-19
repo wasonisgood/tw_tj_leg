@@ -9,7 +9,7 @@ import { saveAs } from 'file-saver';
 import YearGuideRenderer from '../components/year-overview/YearGuideRenderer';
 import ArchiveView from '../components/year-overview/ArchiveView';
 import PartyView from '../components/year-overview/PartyView';
-import { normalizeIdentity } from '../components/year-overview/archiveUtils';
+import { normalizeIdentity, findLawNameForBill } from '../components/year-overview/archiveUtils';
 import { appendConfrontationalModeAppendix } from '../utils/partyWordExport';
 
 function cn(...inputs: ClassValue[]) {
@@ -174,7 +174,18 @@ const YearOverview = () => {
       });
     }
 
-    return acc;
+    // [修正] 只有當該法案分類下「有發言紀錄」或「有議案事件」時，才顯示該分類
+    const filteredAcc: typeof acc = {};
+    Object.entries(acc).forEach(([lawName, stages]) => {
+      const hasAnySpeech = Object.values(stages).some(s => s.speeches.length > 0);
+      const hasAnyBillEvent = Object.values(stages).some(s => (s.billEvents?.length || 0) > 0);
+      
+      if (hasAnySpeech || hasAnyBillEvent) {
+        filteredAcc[lawName] = stages;
+      }
+    });
+
+    return filteredAcc;
   }, [filteredData, bills, year, lawHistoryMap]);
 
   const yearHasLawMilestone = useMemo(() => {
