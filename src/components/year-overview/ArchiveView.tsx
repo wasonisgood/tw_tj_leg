@@ -282,6 +282,34 @@ export default function ArchiveView({
                         <div className="h-[2px] flex-grow bg-gray-200"></div>
                       </div>
 
+                      {/* 整合顯示議案事件 */}
+                      {stage.billEvents && stage.billEvents.length > 0 && (
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          {stage.billEvents.map((evt: any, idx: number) => (
+                            <div key={idx} className="bg-gray-100 border-l-4 border-black p-4 md:p-6 shadow-sm group hover:shadow-md transition-all">
+                              <div className="flex justify-between items-start mb-2">
+                                <span className="text-[10px] font-black text-gray-400 uppercase tracking-tighter">{evt.date}</span>
+                                <span className="text-[10px] font-black bg-white border border-gray-200 px-2 py-0.5 rounded">{evt.status}</span>
+                              </div>
+                              <h4 className="text-sm md:text-base font-black leading-tight mb-2 group-hover:text-[#8C2F39] transition-colors">
+                                {evt.bill.提案名稱}
+                              </h4>
+                              {evt.bill.案由 && (
+                                <p className="text-[11px] md:text-xs text-gray-500 line-clamp-2 leading-relaxed italic mb-4">
+                                  {evt.bill.案由}
+                                </p>
+                              )}
+                              <Link 
+                                to={`/bills/${evt.bill.議案編號}`}
+                                className="inline-block text-[10px] font-black uppercase tracking-widest border-b border-black hover:text-[#8C2F39] hover:border-[#8C2F39] transition-all"
+                              >
+                                View Bill Detail →
+                              </Link>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+
                       {groupByPolicy(stage.speeches).map(([policyName, policySpeeches]) => (
                         <div key={policyName} className={cn('border-2 p-4 md:p-6 space-y-4', policyGroupStyle[policyName] || policyGroupStyle['其他立場'])}>
                           <div className="flex items-center gap-3">
@@ -363,52 +391,12 @@ export default function ArchiveView({
                       )}
                     </Link>
                   ))}
-
-                {/* [整合] 屬於此法案類別的相關議案 */}
-                {(() => {
-                  // 從所有 stageBuckets 中收集唯一的議案
-                  const uniqueBillsMap = new Map<string, any>();
-                  stageBuckets.forEach(s => {
-                    s.billEvents?.forEach(e => {
-                      if (e.bill && e.bill.議案編號) {
-                        uniqueBillsMap.set(e.bill.議案編號, e.bill);
-                      }
-                    });
-                  });
-                  
-                  const lawBills = Array.from(uniqueBillsMap.values());
-                  if (lawBills.length === 0) return null;
-
-                  return (
-                    <div className="mt-12 pt-12 border-t-2 border-dashed border-gray-200">
-                      <h3 className="text-[10px] font-black uppercase tracking-[0.3em] text-gray-400 mb-6">相關議案內容</h3>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        {lawBills.map(bill => {
-                          const latestStatus = bill.議案狀態 || (bill.議案流程 && bill.議案流程.length > 0 ? bill.議案流程[bill.議案流程.length - 1].狀態 : '提案階段');
-                          return (
-                            <Link key={bill.議案編號} to={`/bills/${bill.議案編號}`} className="group block border-2 border-gray-200 bg-white p-6 hover:border-black hover:shadow-2xl transition-all">
-                              <div className="flex justify-between items-start mb-4">
-                                <p className="text-[10px] font-black uppercase tracking-widest text-gray-400">{bill.提案日期}</p>
-                                <span className={cn('px-2 py-1 text-[9px] font-black uppercase border', getBillStatusColor(latestStatus))}>
-                                  {latestStatus}
-                                </span>
-                              </div>
-                              <h4 className="text-lg font-black serif mb-4 group-hover:text-[#8C2F39] transition-colors">{bill.提案名稱}</h4>
-                              {bill.案由 && (
-                                <p className="text-sm font-bold opacity-80 line-clamp-2 leading-relaxed text-gray-600 italic">「{bill.案由}」</p>
-                              )}
-                            </Link>
-                          );
-                        })}
-                      </div>
-                    </div>
+                  </section>
                   );
-                })()}
-              </section>
-            );
-          })}
-        </div>
-      </div>
-    </>
-  );
-}
+                  })}
+                  </div>
+                  </div>
+                  </>
+                  );
+                  }
+

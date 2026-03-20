@@ -196,6 +196,123 @@ export interface BillData {
 }
 
 export class DataManager {
+  // --- 分類引擎開始 ---
+  private static readonly CATEGORY_MAP: Record<string, string> = {
+    '促轉條例': '促轉條例',
+    '促進轉型正義條例': '促轉條例',
+    '黨產條例': '黨產條例',
+    '不當黨產處理條例': '黨產條例',
+    '二二八事件處理及賠償條例': '二二八條例',
+    '二二八條例': '二二八條例',
+    '政治檔案條例': '政治檔案條例',
+    '政治檔案法': '政治檔案條例',
+    '戒嚴時期人民受損權利回復條例': '回復條例',
+    '回復條例': '回復條例',
+    '威權統治時期國家不法行為被害者權利回復條例': '權利回復條例',
+    '權利回復條例': '權利回復條例',
+    '戒嚴時期不當叛亂暨匪諜審判案件補償條例': '補償條例',
+    '補償條例': '補償條例',
+    '國家安全法': '國家安全法',
+    '國安法': '國家安全法',
+    '公職人員年資併社團專職人員年資計發退離給與處理條例': '年資處理條例',
+    '年資處理條例': '年資處理條例',
+    '原住民轉型正義': '原住民轉型正義',
+  };
+
+  private static readonly CATEGORY_PRIORITY: Record<string, number> = {
+    '黨產條例': 10,
+    '促轉條例': 20,
+    '政治檔案條例': 30,
+    '年資處理條例': 40,
+    '原住民轉型正義': 45,
+    '二二八條例': 50,
+    '回復條例': 60,
+    '權利回復條例': 70,
+    '補償條例': 80,
+    '國家安全法': 90,
+    '其他': 100,
+  };
+
+  /**
+   * 取得法案的大類別名稱
+   */
+  static getCategory(lawName: string): string {
+    if (!lawName) return '其他';
+    
+    // 移除空白與括號書名號、案由常見冗字
+    const cleaned = lawName
+      .replace(/\s+/g, '')
+      .replace(/[「」『』"()（）]/g, '')
+      .replace(/修正草案/g, '')
+      .replace(/草案/g, '')
+      .replace(/案\。?$/g, '')
+      .replace(/^報告審查/g, '')
+      .replace(/^報告併案審查/g, '');
+    
+    // 1. 核心關鍵字精確判定
+    // 原住民轉型正義 (優先判定，防止被促轉攔截)
+    if (cleaned.includes('原住民') || cleaned.includes('原住民族')) {
+      if (cleaned.includes('歷史正義') || cleaned.includes('權利回復') || cleaned.includes('尊嚴恢復') || cleaned.includes('轉型正義')) {
+        return '原住民轉型正義';
+      }
+    }
+
+    // 二二八獨立
+    if (cleaned.includes('二二八') || cleaned.includes('228')) return '二二八條例';
+    
+    // 國家安全法獨立
+    if (cleaned.includes('國家安全法') || cleaned.includes('國安法')) return '國家安全法';
+    
+    // 黨產條例 (包含政黨不當取得財產、政黨及其附隨組織等)
+    if (cleaned.includes('黨產') || (cleaned.includes('政黨') && cleaned.includes('財產')) || cleaned.includes('不當取得財產')) return '黨產條例';
+    
+    // 促轉條例 (包含促進轉型正義、真相與和解等)
+    if (cleaned.includes('促轉') || cleaned.includes('轉型正義') || cleaned.includes('真相與和解')) return '促轉條例';
+    
+    // 政治檔案
+    if (cleaned.includes('政治檔案')) return '政治檔案條例';
+    
+    // 權利回復 (威權時期國家不法行為)
+    if (cleaned.includes('威權統治時期國家不法行為') && cleaned.includes('權利回復')) return '權利回復條例';
+    
+    // 人民受損權利回復 (戒嚴時期)
+    if (cleaned.includes('人民受損權利回復')) return '回復條例';
+    
+    // 補償條例 (戒嚴時期不當審判)
+    if (cleaned.includes('補償條例') && cleaned.includes('戒嚴')) return '補償條例';
+    
+    // 年資處理
+    if (cleaned.includes('年資') || cleaned.includes('併公職')) return '年資處理條例';
+
+    // 2. 映射表模糊比對 (Fallback)
+    const keywords = Object.keys(this.CATEGORY_MAP).sort((a, b) => b.length - a.length);
+    for (const kw of keywords) {
+      if (cleaned.includes(kw)) return this.CATEGORY_MAP[kw];
+    }
+
+    return '其他';
+  }
+
+  /**
+   * 取得類別的排序權重
+   */
+  static getCategoryPriority(category: string): number {
+    return this.CATEGORY_PRIORITY[category] || 100;
+  }
+
+  /**
+   * 根據法案名稱判斷行動維度
+   */
+  static getActionDimension(lawName: string): string {
+    const name = lawName || '';
+    if (name.includes('賠償') || name.includes('補償') || name.includes('回復')) return '轉型正義與平反推進';
+    if (name.includes('不當') || name.includes('處置') || name.includes('處理')) return '問責監督與歷史究責';
+    if (name.includes('檔案') || name.includes('真相')) return '檔案開放與記憶工程';
+    if (name.includes('監督') || name.includes('管理')) return '行政執行與制度治理';
+    return '社會平衡與穩定協商';
+  }
+  // --- 分類引擎結束 ---
+
   private static unifiedSpeechMap: { [id: string]: UnifiedSpeechRecord } | null = null;
   private static unifiedPdfLinkMap: { [fileStemOrName: string]: PDFLink } = {};
   private static idMapping: any = null;
@@ -381,11 +498,23 @@ export class DataManager {
     return `${status}_${stage}`;
   }
 
-  // 從 file_stem 提取法案名稱（底線前的部分）
+  /**
+   * 從 file_stem 提取法案名稱
+   * 修正：跳過開頭的數字 ID，尋找包含中文字符的描述部分
+   */
   static extractBillName(fileStem: string): string {
     if (!fileStem) return '未知法案';
-    // 移除所有空格
-    return fileStem.split('_')[0].replace(/\s+/g, '');
+    const parts = fileStem.split('_');
+    
+    // 尋找第一個包含中文字符的片段
+    const namePart = parts.find(p => /[\u4e00-\u9fa5]/.test(p));
+    if (namePart) {
+      // 移除可能存在的 .json 或空白
+      return namePart.replace(/\.json$/g, '').replace(/\s+/g, '').trim();
+    }
+    
+    // 如果找不到中文，回傳最後一個片段（通常是描述）
+    return parts[parts.length - 1].replace(/\s+/g, '');
   }
 
   static getPDFLink(fileName: string): PDFLink | null {
@@ -714,5 +843,113 @@ export class DataManager {
   static async getBillById(billId: string): Promise<BillData | null> {
     const bills = await this.loadBillsData();
     return bills.find(b => b.議案編號 === billId) || null;
+  }
+}
+
+/**
+ * 議案實質內容比對引擎
+ */
+export class SubstantiveComparisonEngine {
+  /**
+   * 計算字串相似度 (簡單版)
+   */
+  static calculateSimilarity(s1: string, s2: string): number {
+    const clean = (s: string) => (s || '').replace(/\s+/g, '').replace(/[，。、；：]/g, '');
+    const c1 = clean(s1);
+    const c2 = clean(s2);
+    if (!c1 || !c2) return 0;
+    if (c1 === c2) return 1;
+
+    // 簡單的交集比例
+    const set1 = new Set(c1.split(''));
+    const set2 = new Set(c2.split(''));
+    const intersection = new Set([...set1].filter(x => set2.has(x)));
+    return (2.0 * intersection.size) / (set1.size + set2.size);
+  }
+
+  /**
+   * 對齊多個議案的條文內容
+   */
+  static alignArticles(bills: BillData[]): Array<{
+    title: string; // 歸納出的標題或代表條號
+    articles: Record<string, { content: string; reason: string; articleNo: string }>; // BillId -> Data
+    isCommon: boolean; // 是否為共有
+    hasDifference: boolean; // 共有中是否有文字差異
+  }> {
+    const result: any[] = [];
+    const processedArticles = new Set<string>(); // 格式: billId|index
+
+    bills.forEach((mainBill, bIdx) => {
+      const mainRows = mainBill.對照表?.[0]?.rows || [];
+      mainRows.forEach((mainRow, rIdx) => {
+        const mainKey = `${mainBill.議案編號}|${rIdx}`;
+        if (processedArticles.has(mainKey)) return;
+
+        const mainContent = mainRow.增訂 || mainRow.修正 || mainRow.條文 || '';
+        const mainReason = mainRow.說明 || '';
+        const mainNo = this.extractArticleNo(mainContent);
+
+        const cluster: Record<string, any> = {
+          [mainBill.議案編號]: { 
+            content: mainContent, 
+            reason: mainReason, 
+            articleNo: mainNo 
+          }
+        };
+        processedArticles.add(mainKey);
+
+        // 尋找其他議案中相似的內容
+        bills.forEach((otherBill, otherBIdx) => {
+          if (bIdx === otherBIdx) return;
+          const otherRows = otherBill.對照表?.[0]?.rows || [];
+          
+          let bestMatchIdx = -1;
+          let maxSimilarity = 0;
+
+          otherRows.forEach((otherRow, otherRIdx) => {
+            const otherKey = `${otherBill.議案編號}|${otherRIdx}`;
+            if (processedArticles.has(otherKey)) return;
+
+            const otherContent = otherRow.增訂 || otherRow.修正 || otherRow.條文 || '';
+            const sim = this.calculateSimilarity(mainContent, otherContent);
+            
+            if (sim > 0.7 && sim > maxSimilarity) {
+              maxSimilarity = sim;
+              bestMatchIdx = otherRIdx;
+            }
+          });
+
+          if (bestMatchIdx !== -1) {
+            const matchedRow = otherRows[bestMatchIdx];
+            cluster[otherBill.議案編號] = {
+              content: matchedRow.增訂 || matchedRow.修正 || matchedRow.條文 || '',
+              reason: matchedRow.說明 || '',
+              articleNo: this.extractArticleNo(matchedRow.增訂 || matchedRow.修正 || matchedRow.條文 || '')
+            };
+            processedArticles.add(`${otherBill.議案編號}|${bestMatchIdx}`);
+          }
+        });
+
+        // 判斷狀態
+        const count = Object.keys(cluster).length;
+        const contents = Object.values(cluster).map((v: any) => v.content.replace(/\s+/g, ''));
+        const isCommon = count === bills.length;
+        const hasDifference = new Set(contents).size > 1;
+
+        result.push({
+          title: mainNo || `條款 ${result.length + 1}`,
+          articles: cluster,
+          isCommon,
+          hasDifference
+        });
+      });
+    });
+
+    return result;
+  }
+
+  private static extractArticleNo(content: string): string {
+    const match = content.match(/第[一二三四五六七八九十百\d]+條/);
+    return match ? match[0] : '';
   }
 }

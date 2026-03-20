@@ -234,17 +234,21 @@ export async function buildLandingTimelineBundle(): Promise<LandingTimelineBundl
     const grouped = (processed?.speeches || []).reduce((acc, speech) => {
       const date = normalizeDate(speech.date || '') || extractDateFromStage(speech.stage || '') || `${year}-01-01`;
       const stageName = normalizeStageName(speech.stage || '');
-      const lawName = speech.lawName || '未知法案';
-      const key = `${date}|${lawName}|${stageName}`;
+      const category = DataManager.getCategory(speech.lawName || '未知法案');
+      const key = `${date}|${category}|${stageName}`;
 
       if (!acc[key]) {
-        acc[key] = { date, lawName, stageName, speeches: [] as typeof processed.speeches };
+        acc[key] = { date, category, stageName, speeches: [] as typeof processed.speeches };
       }
       acc[key].speeches.push(speech);
       return acc;
-    }, {} as Record<string, { date: string; lawName: string; stageName: string; speeches: typeof processed.speeches }>);
+    }, {} as Record<string, { date: string; category: string; stageName: string; speeches: typeof processed.speeches }>);
 
-    const entries = Object.values(grouped).sort((a, b) => a.date.localeCompare(b.date));
+    const entries = Object.values(grouped).sort((a, b) => {
+      const dateCmp = a.date.localeCompare(b.date);
+      if (dateCmp !== 0) return dateCmp;
+      return DataManager.getCategoryPriority(a.category) - DataManager.getCategoryPriority(b.category);
+    });
 
     if (!entries.length) {
       const fallbackDate = `${year}-01-01`;
@@ -281,10 +285,10 @@ export async function buildLandingTimelineBundle(): Promise<LandingTimelineBundl
         id: meetingId,
         year,
         date: entry.date,
-        title: `${entry.lawName} / ${entry.stageName}`,
+        title: `${entry.category} / ${entry.stageName}`,
         meetingType,
         clashIndex: index,
-        lawName: entry.lawName,
+        lawName: entry.category,
         stageName: entry.stageName,
         governmentLabel: clash?.actors?.government?.label || governmentSpeech?.speaker || '政府方',
         oppositionLabel: clash?.actors?.opposition?.label || oppositionSpeech?.speaker || '在野方',

@@ -124,69 +124,106 @@ const YearOverview = () => {
   );
 
   const groupedByLaw = useMemo(() => {
+    // 第一層 Key 改為 Category (大類別)
     const acc: Record<string, Record<string, { speeches: ProcessedSpeech[]; billEvents: any[] }>> = {};
 
-    // Group speeches
+    // 處理發言資料 (Speeches)
     filteredData.forEach((speech) => {
-      const law = speech.lawName || '其他';
-      if (!acc[law]) acc[law] = {};
+      const category = DataManager.getCategory(speech.lawName || '其他');
+      if (!acc[category]) acc[category] = {};
       const stage = speech.stage || '一般會議';
-      if (!acc[law][stage]) acc[law][stage] = { speeches: [], billEvents: [] };
-      acc[law][stage].speeches.push(speech);
+      if (!acc[category][stage]) acc[category][stage] = { speeches: [], billEvents: [] };
+      acc[category][stage].speeches.push(speech);
     });
 
-    // Group bills
+    // 處理議案資料 (Bills)
     if (year) {
-      const allLawNames = Object.keys(lawHistoryMap);
-      bills.forEach((bill) => {
-        const law = findLawNameForBill(bill, allLawNames);
-        if (!acc[law]) acc[law] = {};
+      // 用於追蹤每個議案在該年度的「最佳（最後）」階段
+      // 結構: { billId: { stage: string, event: any, priority: number } }
+      const billBestStage: Record<string, { stage: string, event: any, priority: number }> = {};
 
-        // 提案 event
+      const STAGE_PRIORITY: Record<string, number> = {
+        '委員會審查': 30,
+        '黨團協商': 40,
+        '提案階段': 10,
+        '其他階段': 5
+      };
+
+      bills.forEach((bill) => {
+        const category = DataManager.getCategory(bill.提案名稱 || '');
+        
+        const updateBest = (status: string, stage: string, date: string) => {
+          const priority = STAGE_PRIORITY[stage] || 0;
+          const currentBest = billBestStage[bill.議案編號];
+          if (!currentBest || priority > currentBest.priority) {
+            billBestStage[bill.議案編號] = {
+              stage,
+              priority,
+              event: { bill, status, date, category }
+            };
+          }
+        };
+
+        // 1. 提案事件
         if (bill.提案日期 && bill.提案日期.startsWith(year)) {
-          const stage = '提案階段';
-          if (!acc[law][stage]) acc[law][stage] = { speeches: [], billEvents: [] };
-          acc[law][stage].billEvents.push({
-            bill,
-            status: '提案',
-            date: bill.提案日期
-          });
+          updateBest('提案', '提案階段', bill.提案日期);
         }
 
-        // 議案流程 events
+        // 2. 議案流程事件
         if (Array.isArray(bill.議案流程)) {
           bill.議案流程.forEach((proc: any) => {
             if (Array.isArray(proc.日期)) {
               proc.日期.forEach((d: string) => {
-                if (d.replace(/\D/g, '').startsWith(year)) {
-                  const stage = proc.狀態 || '其他階段';
-                  if (!acc[law][stage]) acc[law][stage] = { speeches: [], billEvents: [] };
-                  acc[law][stage].billEvents.push({
-                    bill,
-                    status: proc.狀態,
-                    date: d
-                  });
+                const cleanDate = d.replace(/\D/g, '');
+                if (cleanDate.startsWith(year)) {
+                  const status = proc.狀態 || '';
+                  let targetStage = '其他階段';
+
+                  if (status.includes('交付審查') || status.includes('報告併案')) {
+                    targetStage = '委員會審查';
+                  } 
+                  else if (status.includes('審查完畢') || status.includes('三讀') || status.includes('一讀') || status.includes('排入院會')) {
+                    targetStage = '提案階段'; // 根據您的要求，名稱不一或初始階段皆視為提案生命週期
+                  }
+                  else if (status.includes('協商')) {
+                    targetStage = '黨團協商';
+                  }
+
+                  updateBest(status, targetStage, d);
                 }
               });
             }
           });
         }
       });
+
+      // 將去重後的「最後階段」議案放入 acc
+      Object.values(billBestStage).forEach(({ event, stage }) => {
+        const { category } = event;
+        if (!acc[category]) acc[category] = {};
+        if (!acc[category][stage]) acc[category][stage] = { speeches: [], billEvents: [] };
+        acc[category][stage].billEvents.push(event);
+      });
     }
 
-    // [修正] 只有當該法案分類下「有發言紀錄」或「有議案事件」時，才顯示該分類
-    const filteredAcc: typeof acc = {};
-    Object.entries(acc).forEach(([lawName, stages]) => {
+    // 過濾並根據優先級排序
+    const sortedCategories = Object.keys(acc).sort((a, b) => {
+      return DataManager.getCategoryPriority(a) - DataManager.getCategoryPriority(b);
+    });
+
+    const finalAcc: typeof acc = {};
+    sortedCategories.forEach(cat => {
+      const stages = acc[cat];
       const hasAnySpeech = Object.values(stages).some(s => s.speeches.length > 0);
       const hasAnyBillEvent = Object.values(stages).some(s => (s.billEvents?.length || 0) > 0);
       
       if (hasAnySpeech || hasAnyBillEvent) {
-        filteredAcc[lawName] = stages;
+        finalAcc[cat] = stages;
       }
     });
 
-    return filteredAcc;
-  }, [filteredData, bills, year, lawHistoryMap]);
+    return finalAcc;
+  }, [filteredData, bills, year]);
 
   const yearHasLawMilestone = useMemo(() => {
     if (!year) return false;
