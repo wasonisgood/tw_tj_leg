@@ -225,74 +225,91 @@ export default function BillDetail() {
               {loadingRelated ? (
                 <div className="py-24 text-center">
                   <div className="w-12 h-12 border-4 border-gray-200 border-t-black rounded-full animate-spin mx-auto mb-4"></div>
-                  <p className="text-[10px] font-black uppercase tracking-widest">Aligning Substantive Content...</p>
+                  <p className="text-[10px] font-black uppercase tracking-widest">Aligning Micro-structures (Paragraphs & Items)...</p>
                 </div>
               ) : (
-                <div className="overflow-x-auto pb-12">
-                  <div className="min-w-[1200px]">
-                    {/* 表頭：顯示參與對照的議案 */}
-                    <div className="grid grid-cols-12 gap-4 mb-8 sticky top-0 bg-[#F9F9F7] z-10 py-4 border-b-2 border-black">
-                      <div className="col-span-1 flex items-center">
-                        <span className="text-[10px] font-black uppercase tracking-widest text-gray-400">條款</span>
+                <div className="relative border-2 border-black bg-white">
+                  {/* 黏性表頭 */}
+                  <div className="sticky top-0 z-30 bg-black text-white grid grid-cols-12 gap-0 border-b border-black">
+                    <div className="col-span-1 p-4 border-r border-gray-800 flex items-center justify-center">
+                      <span className="text-[10px] font-black uppercase tracking-widest text-gray-500">條次</span>
+                    </div>
+                    {allParticipatingBills.map((b, idx) => (
+                      <div key={b.議案編號} className="col-span-3 p-4 border-r border-gray-800 last:border-r-0">
+                        <div className="flex justify-between items-start mb-1">
+                          <span className="text-[8px] font-black uppercase tracking-widest text-gray-500">
+                            {idx === 0 ? "Current" : `Related #${idx}`}
+                          </span>
+                          <span className="text-[8px] font-mono text-gray-500">{b.議案編號}</span>
+                        </div>
+                        <h4 className="text-[11px] font-black leading-tight uppercase line-clamp-1">{b.提案人}</h4>
                       </div>
-                      {allParticipatingBills.map((b, idx) => (
-                        <div key={b.議案編號} className="col-span-3">
-                          <p className="text-[10px] font-black uppercase tracking-widest text-[#8C2F39] mb-1">
-                            {idx === 0 ? "當前議案" : `關連議案 ${idx}`}
-                          </p>
-                          <h4 className="text-xs font-black leading-tight line-clamp-2">{b.提案人}</h4>
-                          <p className="text-[9px] font-mono text-gray-400 mt-1">{b.議案編號}</p>
+                    ))}
+                  </div>
+
+                  {/* 比對矩陣主體 */}
+                  <div className="divide-y-2 divide-black">
+                    {comparisonData.map((articleCluster, aIdx) => (
+                      <div key={aIdx} className="group relative">
+                        {/* 條層級標題 (Sticky) */}
+                        <div className="sticky left-0 bg-gray-100 p-2 border-b border-black flex items-center gap-4">
+                          <span className="text-sm font-black serif text-[#8C2F39]">{articleCluster.title}</span>
+                          {articleCluster.isCommon && (
+                            <span className="text-[8px] font-black uppercase bg-emerald-600 text-white px-1 py-0.5">共有核心條款</span>
+                          )}
+                          {!articleCluster.isCommon && (
+                            <span className="text-[8px] font-black uppercase bg-gray-400 text-white px-1 py-0.5">部分提案包含</span>
+                          )}
                         </div>
-                      ))}
-                    </div>
 
-                    {/* 對照內容 */}
-                    <div className="space-y-12">
-                      {comparisonData.map((cluster, cIdx) => (
-                        <div key={cIdx} className={cn(
-                          "grid grid-cols-12 gap-4 p-6 border-2 transition-all",
-                          cluster.isCommon && !cluster.hasDifference ? "bg-emerald-50/30 border-emerald-200" : 
-                          cluster.isCommon && cluster.hasDifference ? "bg-amber-50/30 border-amber-200" :
-                          "bg-white border-gray-100"
-                        )}>
-                          <div className="col-span-1">
-                            <span className="text-lg font-black serif text-[#8C2F39]">{cluster.title}</span>
-                            {cluster.isCommon && (
-                              <div className="mt-2">
-                                <span className="text-[8px] font-black uppercase bg-emerald-600 text-white px-1 py-0.5">共有</span>
+                        {/* 款/項層級對照 */}
+                        <div className="divide-y divide-gray-200">
+                          {articleCluster.fragments.map((frag, fIdx) => (
+                            <div key={fIdx} className="grid grid-cols-12 gap-0 min-h-[100px] hover:bg-gray-50/50 transition-colors">
+                              <div className="col-span-1 p-4 border-r border-gray-200 bg-gray-50 flex items-start justify-center">
+                                <span className="text-[10px] font-bold text-gray-400">{frag.label}</span>
                               </div>
-                            )}
-                          </div>
-
-                          {allParticipatingBills.map((b) => {
-                            const art = cluster.articles[b.議案編號];
-                            return (
-                              <div key={b.議案編號} className="col-span-3 space-y-4">
-                                {art ? (
-                                  <>
-                                    <div className="text-sm font-bold leading-relaxed whitespace-pre-wrap">
-                                      {art.content}
-                                    </div>
-                                    <div className="pt-4 border-t border-dashed border-gray-200">
-                                      <p className="text-[9px] font-black uppercase tracking-widest text-gray-400 mb-2 flex items-center gap-1">
-                                        <Info className="w-3 h-3" /> 獨立理由
-                                      </p>
-                                      <p className="text-[11px] leading-relaxed text-gray-500 italic">
-                                        {art.reason || "未提供獨立說明"}
-                                      </p>
-                                    </div>
-                                  </>
-                                ) : (
-                                  <div className="h-full flex items-center justify-center border-2 border-dashed border-gray-100 bg-gray-50/50">
-                                    <p className="text-[10px] font-black uppercase tracking-widest text-gray-300">無此項規定</p>
+                              
+                              {allParticipatingBills.map((b) => {
+                                const align = frag.alignments[b.議案編號];
+                                return (
+                                  <div key={b.議案編號} className={cn(
+                                    "col-span-3 p-6 border-r border-gray-200 last:border-r-0 relative",
+                                    !align ? "bg-gray-50/30" : 
+                                    frag.isCommon && !frag.hasDiff ? "bg-emerald-50/20" :
+                                    frag.isCommon && frag.hasDiff ? "bg-amber-50/20" : ""
+                                  )}>
+                                    {align ? (
+                                      <div className="space-y-4">
+                                        <p className="text-sm leading-relaxed font-bold">
+                                          {align.text}
+                                        </p>
+                                        
+                                        {/* 立法理由 (懸浮或摺疊) */}
+                                        <div className="pt-4 border-t border-dashed border-gray-200">
+                                          <details className="group">
+                                            <summary className="list-none cursor-pointer flex items-center gap-1 text-[9px] font-black uppercase tracking-widest text-gray-400 hover:text-black transition-colors">
+                                              <Info className="w-3 h-3" /> Legislative Reason
+                                            </summary>
+                                            <p className="mt-2 text-[11px] leading-relaxed text-gray-500 italic bg-white p-2 border border-gray-100 shadow-sm">
+                                              {articleCluster.reasons[b.議案編號] || "未提供詳細理由"}
+                                            </p>
+                                          </details>
+                                        </div>
+                                      </div>
+                                    ) : (
+                                      <div className="h-full flex items-center justify-center">
+                                        <AlertCircle className="w-4 h-4 text-gray-200" />
+                                      </div>
+                                    )}
                                   </div>
-                                )}
-                              </div>
-                            );
-                          })}
+                                );
+                              })}
+                            </div>
+                          ))}
                         </div>
-                      ))}
-                    </div>
+                      </div>
+                    ))}
                   </div>
                 </div>
               )}

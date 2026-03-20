@@ -847,11 +847,11 @@ export class DataManager {
 }
 
 /**
- * 議案實質內容比對引擎
+ * 議案實質內容比對引擎 (升級版：支援項、款拆解)
  */
 export class SubstantiveComparisonEngine {
   /**
-   * 計算字串相似度 (簡單版)
+   * 計算字串相似度
    */
   static calculateSimilarity(s1: string, s2: string): number {
     const clean = (s: string) => (s || '').replace(/\s+/g, '').replace(/[，。、；：]/g, '');
@@ -860,7 +860,6 @@ export class SubstantiveComparisonEngine {
     if (!c1 || !c2) return 0;
     if (c1 === c2) return 1;
 
-    // 簡單的交集比例
     const set1 = new Set(c1.split(''));
     const set2 = new Set(c2.split(''));
     const intersection = new Set([...set1].filter(x => set2.has(x)));
@@ -868,16 +867,30 @@ export class SubstantiveComparisonEngine {
   }
 
   /**
+   * 將條文拆解為更細的片段 (項、款)
+   */
+  private static fragmentContent(content: string): string[] {
+    if (!content) return [];
+    // 依據「一、」、「二、」或「（一）」或 換行 進行拆分
+    return content.split(/\n|(?=[一二三四五六七八九十]+\、)/).filter(s => s.trim().length > 0);
+  }
+
+  /**
    * 對齊多個議案的條文內容
    */
   static alignArticles(bills: BillData[]): Array<{
-    title: string; // 歸納出的標題或代表條號
-    articles: Record<string, { content: string; reason: string; articleNo: string }>; // BillId -> Data
-    isCommon: boolean; // 是否為共有
-    hasDifference: boolean; // 共有中是否有文字差異
+    title: string;
+    isCommon: boolean;
+    hasDifference: boolean;
+    // 每一列代表一個「項」或「款」
+    fragments: Array<{
+      label: string;
+      alignments: Record<string, { text: string; isUnique: boolean; diffLevel: 'none' | 'partial' | 'high' }>;
+    }>;
+    reasons: Record<string, string>; // BillId -> Reason
   }> {
     const result: any[] = [];
-    const processedArticles = new Set<string>(); // 格式: billId|index
+    const processedArticles = new Set<string>();
 
     bills.forEach((mainBill, bIdx) => {
       const mainRows = mainBill.對照表?.[0]?.rows || [];
@@ -886,34 +899,25 @@ export class SubstantiveComparisonEngine {
         if (processedArticles.has(mainKey)) return;
 
         const mainContent = mainRow.增訂 || mainRow.修正 || mainRow.條文 || '';
-        const mainReason = mainRow.說明 || '';
         const mainNo = this.extractArticleNo(mainContent);
-
-        const cluster: Record<string, any> = {
-          [mainBill.議案編號]: { 
-            content: mainContent, 
-            reason: mainReason, 
-            articleNo: mainNo 
-          }
-        };
+        
+        // 建立「條」層級的容器
+        const articleCluster: Record<string, string> = { [mainBill.議案編號]: mainContent };
+        const reasonCluster: Record<string, string> = { [mainBill.議案編號]: mainRow.說明 || '' };
         processedArticles.add(mainKey);
 
-        // 尋找其他議案中相似的內容
+        // 1. 找尋其他議案中相似的「條」
         bills.forEach((otherBill, otherBIdx) => {
           if (bIdx === otherBIdx) return;
           const otherRows = otherBill.對照表?.[0]?.rows || [];
-          
           let bestMatchIdx = -1;
           let maxSimilarity = 0;
 
           otherRows.forEach((otherRow, otherRIdx) => {
-            const otherKey = `${otherBill.議案編號}|${otherRIdx}`;
-            if (processedArticles.has(otherKey)) return;
-
+            if (processedArticles.has(`${otherBill.議案編號}|${otherRIdx}`)) return;
             const otherContent = otherRow.增訂 || otherRow.修正 || otherRow.條文 || '';
             const sim = this.calculateSimilarity(mainContent, otherContent);
-            
-            if (sim > 0.7 && sim > maxSimilarity) {
+            if (sim > 0.6 && sim > maxSimilarity) {
               maxSimilarity = sim;
               bestMatchIdx = otherRIdx;
             }
@@ -921,26 +925,57 @@ export class SubstantiveComparisonEngine {
 
           if (bestMatchIdx !== -1) {
             const matchedRow = otherRows[bestMatchIdx];
-            cluster[otherBill.議案編號] = {
-              content: matchedRow.增訂 || matchedRow.修正 || matchedRow.條文 || '',
-              reason: matchedRow.說明 || '',
-              articleNo: this.extractArticleNo(matchedRow.增訂 || matchedRow.修正 || matchedRow.條文 || '')
-            };
+            articleCluster[otherBill.議案編號] = matchedRow.增訂 || matchedRow.修正 || matchedRow.條文 || '';
+            reasonCluster[otherBill.議案編號] = matchedRow.說明 || '';
             processedArticles.add(`${otherBill.議案編號}|${bestMatchIdx}`);
           }
         });
 
-        // 判斷狀態
-        const count = Object.keys(cluster).length;
-        const contents = Object.values(cluster).map((v: any) => v.content.replace(/\s+/g, ''));
-        const isCommon = count === bills.length;
-        const hasDifference = new Set(contents).size > 1;
+        // 2. 針對該「條」內部的「項、款」進行拆解與微觀對齊
+        const fragmentAlignment: any[] = [];
+        const allFragments = new Set<string>();
+        const billFragments: Record<string, string[]> = {};
+
+        Object.entries(articleCluster).forEach(([bid, text]) => {
+          const frags = this.fragmentContent(text);
+          billFragments[bid] = frags;
+          frags.forEach(f => allFragments.add(f.substring(0, 10))); // 取前10字當特徵
+        });
+
+        // 這裡進行簡化的項次對齊
+        const mainFrags = billFragments[mainBill.議案編號] || [];
+        mainFrags.forEach((f, fIdx) => {
+          const rowAlign: Record<string, any> = {};
+          let diffCount = 0;
+          let matchCount = 0;
+
+          Object.keys(articleCluster).forEach(bid => {
+            const frags = billFragments[bid];
+            // 尋找相似片段
+            const match = frags.find(of => this.calculateSimilarity(f, of) > 0.7);
+            if (match) {
+              rowAlign[bid] = { text: match, isUnique: false };
+              if (match.replace(/\s/g, '') !== f.replace(/\s/g, '')) diffCount++;
+              matchCount++;
+            } else {
+              rowAlign[bid] = null;
+            }
+          });
+
+          fragmentAlignment.push({
+            label: f.match(/^[一二三四五六七八九十]+\、/) ? f.match(/^[一二三四五六七八九十]+\、/)![0] : `第 ${fIdx + 1} 段`,
+            alignments: rowAlign,
+            isCommon: matchCount === bills.length,
+            hasDiff: diffCount > 0
+          });
+        });
 
         result.push({
           title: mainNo || `條款 ${result.length + 1}`,
-          articles: cluster,
-          isCommon,
-          hasDifference
+          isCommon: Object.keys(articleCluster).length === bills.length,
+          hasDifference: new Set(Object.values(articleCluster).map(v => v.replace(/\s/g, ''))).size > 1,
+          fragments: fragmentAlignment,
+          reasons: reasonCluster
         });
       });
     });
