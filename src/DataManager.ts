@@ -886,6 +886,8 @@ export class SubstantiveComparisonEngine {
     fragments: Array<{
       label: string;
       alignments: Record<string, { text: string; isUnique: boolean; diffLevel: 'none' | 'partial' | 'high' }>;
+      isCommon: boolean;
+      hasDiff: boolean;
     }>;
     reasons: Record<string, string>; // BillId -> Reason
   }> {
