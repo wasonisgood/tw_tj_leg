@@ -324,15 +324,15 @@ export class DataManager {
   private static lyHistoryCache: LYHistoryData | null = null;
   private static lawHistoryLoaded = false;
   private static readonly lawHistoryFiles = [
-    '二二八事件處理及賠償條例.json',
-    '促進轉型正義條例.json',
-    '公職人員年資併社團專職人員年資計發退離給與處理條例.json',
-    '戒嚴時期人民受損權利回復條例.json',
-    '戒嚴時期不當叛亂暨匪諜審判案件補償條例.json',
-    '威權統治時期國家不法行為被害者權利回復條例.json',
-    '政治檔案條例.json',
-    '政黨及其附隨組織不當取得財產處理條例.json',
-    '國家安全法.json'
+    'law_01.json',
+    'law_02.json',
+    'law_03.json',
+    'law_04.json',
+    'law_05.json',
+    'law_06.json',
+    'law_07.json',
+    'law_08.json',
+    'law_09.json'
   ];
 
   private static getDataPath(): string {
