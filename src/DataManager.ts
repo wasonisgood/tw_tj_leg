@@ -340,15 +340,18 @@ export class DataManager {
   }
 
   private static getBasePath(): string {
-    // 取得當前完整 URL 路徑
-    const pathname = window.location.pathname;
-    
-    // 如果路徑中包含專案子路徑，則回傳該子路徑
-    // 這裡使用更加強健的檢查，確保在 /tw_tj_leg/bills/xxx 也能正確回傳 /tw_tj_leg/
-    if (pathname.includes('/tw_tj_leg/')) {
-      return '/tw_tj_leg/';
+    if (typeof document !== 'undefined' && document.baseURI && !document.baseURI.startsWith('about:')) {
+      const base = document.baseURI;
+      return base.endsWith('/') ? base : base + '/';
     }
-    return '/';
+    const pathname = typeof window !== 'undefined' ? window.location.pathname : '/';
+    if (pathname.includes('/tw-tj-leg/')) {
+      return pathname.substring(0, pathname.indexOf('/tw-tj-leg/') + '/tw-tj-leg/'.length);
+    }
+    if (pathname.includes('/tw_tj_leg/')) {
+      return pathname.substring(0, pathname.indexOf('/tw_tj_leg/') + '/tw_tj_leg/'.length);
+    }
+    return './';
   }
 
   static async init() {

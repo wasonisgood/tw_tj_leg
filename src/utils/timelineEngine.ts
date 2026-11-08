@@ -84,8 +84,18 @@ const CORE_YEARS = [
 let bundleCache: LandingTimelineBundle | null = null;
 
 function getBasePath(): string {
-  const pathname = window.location.pathname;
-  return pathname.includes('/tw_tj_leg/') ? '/tw_tj_leg/' : '/';
+  if (typeof document !== 'undefined' && document.baseURI && !document.baseURI.startsWith('about:')) {
+    const base = document.baseURI;
+    return base.endsWith('/') ? base : base + '/';
+  }
+  const pathname = typeof window !== 'undefined' ? window.location.pathname : '/';
+  if (pathname.includes('/tw-tj-leg/')) {
+    return pathname.substring(0, pathname.indexOf('/tw-tj-leg/') + '/tw-tj-leg/'.length);
+  }
+  if (pathname.includes('/tw_tj_leg/')) {
+    return pathname.substring(0, pathname.indexOf('/tw_tj_leg/') + '/tw_tj_leg/'.length);
+  }
+  return './';
 }
 
 function normalizeDate(raw: string): string {

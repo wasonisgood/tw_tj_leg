@@ -45,11 +45,18 @@ const YearOverview = () => {
     setLoading(true);
 
     const getBasePath = (): string => {
-      const pathname = window.location.pathname;
-      if (pathname.includes('/tw_tj_leg/')) {
-        return '/tw_tj_leg/';
+      if (typeof document !== 'undefined' && document.baseURI && !document.baseURI.startsWith('about:')) {
+        const base = document.baseURI;
+        return base.endsWith('/') ? base : base + '/';
       }
-      return '/';
+      const pathname = typeof window !== 'undefined' ? window.location.pathname : '/';
+      if (pathname.includes('/tw-tj-leg/')) {
+        return pathname.substring(0, pathname.indexOf('/tw-tj-leg/') + '/tw-tj-leg/'.length);
+      }
+      if (pathname.includes('/tw_tj_leg/')) {
+        return pathname.substring(0, pathname.indexOf('/tw_tj_leg/') + '/tw_tj_leg/'.length);
+      }
+      return './';
     };
 
     const basePath = getBasePath();
